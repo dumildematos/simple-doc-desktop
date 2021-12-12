@@ -1,0 +1,21 @@
+{
+  "home": {
+    "new_team": "Nova Equipe",
+    "user_dropdown_menu" : {
+      "profile":  "Perfil",
+      "logout": "Terminar Sessão"
+    },
+    "settings": {
+      "setting": "Definições",
+      "general": "Geral",
+      "theme": {
+        "title": "Tema",
+        "light": "Claro",
+        "dark": "Escuro"
+      },
+      "application": {
+        "title": "Aplicação"
+      }
+    }
+  }
+}

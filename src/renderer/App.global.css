@@ -1,0 +1,93 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+@import 'antd/dist/antd.css';
+@import 'draft-js/dist/Draft.css';
+@import '@draft-js-plugins/side-toolbar/lib/plugin.css';
+@import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
+@import '@draft-js-plugins/image/lib/plugin.css';
+@import '@draft-js-plugins/alignment/lib/plugin.css';
+@import '@draft-js-plugins/focus/lib/plugin.css';
+@import '@draft-js-plugins/emoji/lib/plugin.css';
+
+
+
+
+@font-face {
+  font-family: 'berlin-demi-bold';
+  src: url(../../assets/fonts/Berlin-Sans-FB-Demi-Bold/Berlin-Sans-FB-Demi-Bold.ttf);
+}
+@font-face {
+  font-family: 'berlin-regurlar';
+  src: url(../../assets/fonts/Berlin-Sans-FB-Regular/Berlin-Sans-FB-Regular.ttf);
+}
+@font-face {
+  font-family: 'candara';
+  src: url(../../assets/fonts/candara/Candara.ttf);
+}
+:root {
+  --BerninDemiBold: 'berlin-demi-bold';
+  --BerlinRegular: 'berlin-regurlar';
+  --candara: 'candara';
+
+  --purple-1: #4c5fe1;
+  --purple-2: #cdd3f8c7;
+  --purple-3: #6474e4;
+
+  --black-1: rgb(112, 112, 112);
+  --white-1: #f7f7f7;
+
+
+  --gray-1: #f7f6f3;
+  --gray-2: #dad9d7;
+
+
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+}
+a {
+  text-decoration: none;
+  height: fit-content;
+  width: fit-content;
+  margin: 10px;
+}
+#root,
+section.ant-layout.layout {
+  height: 100vh;
+  background-color: #f7f7f7;
+}
+
+
+/* Override default */
+.Draftail-Toolbar {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Override default */
+.DraftEditor-root {
+  border: none !important;
+  width: 60% !important;
+  margin-top: 100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Override default */
+.public-DraftEditor-content {
+  font-family: Georgia, "Times New Roman", Times, serif !important;
+}
+
+/* Override default */
+.public-DraftEditorPlaceholder-inner {
+  font-family: Georgia, "Times New Roman", Times, serif !important;
+}
+
+.ant-pagination-item a {
+  display: unset !important;
+}
