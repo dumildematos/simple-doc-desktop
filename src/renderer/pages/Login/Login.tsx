@@ -306,7 +306,7 @@ export default function Login(props: any) {
           </div>
         </Content>
         <FooterBox style={{ textAlign: 'center' }}>
-          Ant Design ©2018 Created by Ant UED
+          Copyright ©2020 Created by Dumilde Matos
         </FooterBox>
       </Layout>
     </>

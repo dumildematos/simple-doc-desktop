@@ -159,7 +159,7 @@ function Group(props: any) {
                 <Card style={{ width: '100%' }}>
                   <Meta
                     avatar={<Avatar icon={<FileFilled />} />}
-                    title="Card title"
+                    title="Card title Dumilde"
                   />
                 </Card>
               </Link>
