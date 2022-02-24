@@ -10,19 +10,21 @@ import {
   Row,
   Skeleton,
   Modal,
-  Layout,
-  Tag,
   Space,
   Table,
   Popover,
   Pagination,
+  Select,
+  Menu,
+  Dropdown,
+  Tooltip,
 } from 'antd';
 import {
   TeamOutlined,
   UnorderedListOutlined,
   TableOutlined,
-  SettingOutlined,
   SmileOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { FaUsers } from '@react-icons/all-files/fa/FaUsers';
 import { IoIosDocument } from '@react-icons/all-files/io/IoIosDocument';
@@ -33,29 +35,38 @@ import Picker from 'emoji-picker-react';
 
 const { Meta } = Card;
 const { TextArea } = Input;
+const { Option } = Select;
 
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
-    background: ${(props) => props.theme.modalBg};
+    background: ${(props: { theme: { modalBg: any } }) => props.theme.modalBg};
     .ant-modal-header {
-      background: ${(props) => props.theme.modalBg};
-      border-color: ${(props) => props.theme.modalInnerBorderColor};
+      background: ${(props: { theme: { modalBg: any } }) =>
+        props.theme.modalBg};
+      border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
+        props.theme.modalInnerBorderColor};
       .ant-modal-title {
-        color: ${(props) => props.theme.modalInputColor} !important;
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor} !important;
       }
     }
     .ant-modal-body {
       label {
-        color: ${(props) => props.theme.modalInputColor} !important;
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor} !important;
       }
       .ant-input {
-        background: ${(props) => props.theme.modalBgInput} !important;
-        border: ${(props) => props.theme.modalInputBorder};
-        color: ${(props) => props.theme.modalInputColor} !important;
+        background: ${(props: { theme: { modalBgInput: any } }) =>
+          props.theme.modalBgInput} !important;
+        border: ${(props: { theme: { modalInputBorder: any } }) =>
+          props.theme.modalInputBorder};
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor} !important;
       }
     }
     .ant-modal-footer {
-      border-color: ${(props) => props.theme.modalInnerBorderColor};
+      border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
+        props.theme.modalInnerBorderColor};
       button.ant-btn.ant-btn-primary {
         background-color: var(--purple-1);
         border: none;
@@ -137,31 +148,6 @@ const tableColumns = [
   },
 ];
 
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-    membros: 12,
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
-
 export default function Groups({ theme, t }) {
   const { isRouted, defineRoutedState, definePageInfo } =
     useContext(MainContext);
@@ -204,6 +190,7 @@ export default function Groups({ theme, t }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [viewAs, setChangeView] = useState('grid');
   const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [emojiSelectInput, setEmojiSelectInput] = useState('');
 
   useEffect(() => {
     // anchorRef();
@@ -230,7 +217,7 @@ export default function Groups({ theme, t }) {
     const createdTeam = [
       {
         id: Math.floor(Math.random(10) * 1000),
-        title: values.title,
+        title: `${chosenEmoji.emoji} ${values.title}`,
         desc: values.description,
         menbers: 0,
         docs: 0,
@@ -240,6 +227,7 @@ export default function Groups({ theme, t }) {
     setTeams([...teams, ...createdTeam]);
     teamArray.push();
     setIsModalVisible(false);
+    setChosenEmoji(null);
   };
 
   const setRoutState = (item: any) => {
@@ -248,7 +236,10 @@ export default function Groups({ theme, t }) {
     definePageInfo(item);
   };
 
-  const onEmojiClick = (event, emojiObject) => {
+  const onEmojiClick = (
+    _event: any,
+    emojiObject: React.SetStateAction<any>
+  ) => {
     console.log(emojiObject);
     console.log(form.getFieldValue('title'));
     console.log(form);
@@ -265,6 +256,30 @@ export default function Groups({ theme, t }) {
       )}
       <Picker onEmojiClick={onEmojiClick} />
     </div>
+  );
+
+  const handleButtonClick = (e: any) => {
+    console.log('click left button', e);
+  };
+
+  const handleMenuClick = (e: any) => {
+    console.log('click', e);
+    console.log(chosenEmoji);
+  };
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="1">
+        <div>
+          {chosenEmoji ? (
+            <span>You chose: {chosenEmoji.emoji}</span>
+          ) : (
+            <span>No emoji Chosen</span>
+          )}
+          <Picker onEmojiClick={onEmojiClick} />
+        </div>
+      </Menu.Item>
+    </Menu>
   );
 
   const btnEmojiTooltip = (
@@ -373,18 +388,49 @@ export default function Groups({ theme, t }) {
             modifier: 'public',
           }}
         >
-          <Form.Item
-            name="title"
-            label="Nome da equipe"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the title of collection!',
-              },
-            ]}
+          {/* <Form.Item
+            style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}
+            label="emoji"
           >
-            <Input />
-          </Form.Item>
+            <Select
+              value={emojiSelectInput}
+              style={{ width: 80, margin: '0 8px' }}
+            >
+              <Option value="rmb">
+                <btnEmojiTooltip />
+              </Option>
+              <Option value="dollar">Dollar</Option>
+            </Select>
+
+
+          </Form.Item> */}
+          <Row>
+            <Col flex="100px">
+              <Form.Item label=".">
+                <Dropdown overlay={menu} trigger={['click']}>
+                  <Button onClick={e => e.preventDefault()}>
+                    {chosenEmoji ? chosenEmoji.emoji : <SmileOutlined />}
+                    <DownOutlined />
+                  </Button>
+                </Dropdown>
+              </Form.Item>
+            </Col>
+            <Col flex="auto">
+              <Form.Item
+                name="title"
+                label="Nome da equipe"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input the title of collection!',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Form.Item
             name="description"
             label="Descrição"
