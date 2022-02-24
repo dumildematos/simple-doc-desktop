@@ -221,7 +221,7 @@ function EditableDocPage({ theme }) {
   };
 
   const previewMenu = (
-    <Menu onClick={handleMenuClick}>
+    <Menu onClick={() => handleMenuClick() }>
       <Menu.Item key="1" icon={<UserOutlined />}>
         1st menu item
       </Menu.Item>
