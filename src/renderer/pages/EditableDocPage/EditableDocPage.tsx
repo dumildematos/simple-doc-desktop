@@ -271,13 +271,13 @@ function EditableDocPage({ theme }) {
               padding: 0,
             }}
           >
-            {React.createElement(
+            {/* {React.createElement(
               collapse.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
               {
                 className: 'trigger',
                 onClick: toggle,
               }
-            )}
+            )} */}
             <PageHeader
               className="site-page-header"
               onBack={() => {
@@ -288,6 +288,7 @@ function EditableDocPage({ theme }) {
               }}
               title="Documentalçao de acesso ao sistema"
               // subTitle="This is a subtitle"
+              style={{ marginLeft: '5rem' }}
             />
             <div
               className="document-header-buttons"

@@ -101,7 +101,7 @@ const GlobalStyle = createGlobalStyle`
 export default function App() {
   const { editorOpened, isRouted, theme } = useContext(MainContext);
   const [Apptheme, setTheme] = useState('light');
-  const hasValidToken = true;
+  const hasValidToken = false;
 
   // console.log(isRouted);
   if (!hasValidToken) {
@@ -112,7 +112,6 @@ export default function App() {
       {/* <Home /> */}
       <GlobalStyle theme={Apptheme} />
       <ThemeProvider theme={themes[Apptheme]}>
-        <div style={{height: '10px'}}></div>
         <Router>
           <Switch>
             <Route exact path={['/index.html', '/', '/group/:id']}>

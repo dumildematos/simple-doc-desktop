@@ -92,7 +92,7 @@ export default function Home({ theme, setTheme }) {
           />
           <Layout
             className="site-layout"
-            style={{ padding: 0 }}
+            style={{ padding: 0, background: 'cyan'}}
           >
             <Header
               className="site-layout-background nav"

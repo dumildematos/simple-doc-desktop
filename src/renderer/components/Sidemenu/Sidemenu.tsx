@@ -48,9 +48,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
           3rd menu item (disabled)
         </a>
       </Menu.Item>
-      <Menu.Item key="settings">
-        {t('home.settings.setting')}
-      </Menu.Item>
+      <Menu.Item key="settings">{t('home.settings.setting')}</Menu.Item>
       <Menu.Item key="logout">{t('home.user_dropdown_menu.profile')}</Menu.Item>
     </Menu>
   );
@@ -59,7 +57,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     // eslint-disable-next-line react/destructuring-assignment
     <>
       <Sider trigger={null} collapsible collapsed={collapse.collapsed}>
-        <div className="logo">
+        <div className="logo" style={{ marginTop: '1.9em' }}>
           <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" />
           {!collapse.collapsed ? (
             <Dropdown overlay={MenuDropDown}>

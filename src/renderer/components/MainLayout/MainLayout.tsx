@@ -3,11 +3,15 @@ import styled from 'styled-components';
 const MainLayout = styled.div`
   height: 100vh;
   padding: 0;
+  overflow: hidden;
+  background: black;
   .main-layout {
     height: 100vh;
     padding: 0;
     section.ant-layout.site-layout {
       background: ${(props) => props.theme.siteLayoutContainer} !important;
+      overflow: hidden;
+    background: black;
     }
   }
   .trigger {
