@@ -76,24 +76,24 @@ const themes: any = {
 
 const GlobalStyle = createGlobalStyle`
   .ant-select-dropdown {
-    background: ${(props) => themes[props.theme].modalBg} !important;
+    background: ${(props: { theme: string | number; }) => themes[props.theme].modalBg} !important;
     .ant-select-item{
       &.ant-select-active{
-        background: ${(props) => themes[props.theme].modalBg} !important;
+        background: ${(props: { theme: string | number; }) => themes[props.theme].modalBg} !important;
       }
-      color: ${(props) => themes[props.theme].modalInputColor};
-      background: ${(props) => themes[props.theme].modalBg} !important;
+      color: ${(props: { theme: string | number; }) => themes[props.theme].modalInputColor};
+      background: ${(props: { theme: string | number; }) => themes[props.theme].modalBg} !important;
 
     }
   }
   ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.ant-dropdown-menu-light {
-    background: ${(props) => themes[props.theme].modalBg} !important;
+    background: ${(props: { theme: string | number; }) => themes[props.theme].modalBg} !important;
     li{
       &.ant-select-active{
-        background: ${(props) => themes[props.theme].modalBg} !important;
+        background: ${(props: { theme: string | number; }) => themes[props.theme].modalBg} !important;
       }
-      color: ${(props) => themes[props.theme].modalInputColor};
-      background: ${(props) => themes[props.theme].modalBg} !important;
+      color: ${(props: { theme: string | number; }) => themes[props.theme].modalInputColor};
+      background: ${(props: { theme: string | number; }) => themes[props.theme].modalBg} !important;
     }
   }
 `;
@@ -112,6 +112,7 @@ export default function App() {
       {/* <Home /> */}
       <GlobalStyle theme={Apptheme} />
       <ThemeProvider theme={themes[Apptheme]}>
+        <div style={{height: '10px'}}></div>
         <Router>
           <Switch>
             <Route exact path={['/index.html', '/', '/group/:id']}>

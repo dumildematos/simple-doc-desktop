@@ -97,7 +97,7 @@ const text = `
 
 function Group(props: any) {
   // eslint-disable-next-line react/destructuring-assignment
-  const { definedEditorIsOpened } = useContext(MainContext);
+  const { definedEditorIsOpened, groupPage } = useContext(MainContext);
 
   const history = useHistory();
 
@@ -155,12 +155,7 @@ function Group(props: any) {
               <h4>Nome da eqiupe</h4>
             </Col>
             <Col span={24}>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                numquam minus incidunt molestias iusto repudiandae, a, est
-                architecto unde fuga omnis mollitia nemo exercitationem! Aperiam
-                ut suscipit aliquam optio necessitatibus.
-              </p>
+              <p>{groupPage.desc}</p>
             </Col>
           </Row>
           <Row style={{ height: 'auto' }}>
@@ -239,6 +234,9 @@ function Group(props: any) {
               </Button>
             </div>
             <Collapse bordered={false} defaultActiveKey={['1']}>
+              <Panel header="Default" key="2">
+                {text}
+              </Panel>
               <Panel header="Design" key="1">
                 <DirectoryTree
                   multiple
