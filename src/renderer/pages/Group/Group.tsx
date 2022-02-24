@@ -1,5 +1,15 @@
 import React, { useContext, useState } from 'react';
-import { Avatar, Button, Card, Col, Modal, Row, Tooltip } from 'antd';
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Modal,
+  Row,
+  Tooltip,
+  Collapse,
+  Tree,
+} from 'antd';
 import { Link, useHistory, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsPencil } from '@react-icons/all-files/bs/BsPencil';
@@ -8,6 +18,21 @@ import { AntDesignOutlined, FileFilled, UserOutlined } from '@ant-design/icons';
 import { MainContext } from 'renderer/contexts/MainContext';
 
 const { Meta } = Card;
+const { Panel } = Collapse;
+const { DirectoryTree } = Tree;
+
+const treeData = [
+  {
+    title: 'parent 0',
+    key: '0-0',
+    icon: '🍿',
+  },
+  {
+    title: 'parent 1',
+    key: '0-1',
+    icon: '🥊',
+  },
+];
 
 const GroupContainer = styled.div`
   /* background: red !important; */
@@ -20,7 +45,7 @@ const GroupContainer = styled.div`
     }
     .ant-col {
       border-radius: 3px;
-      background: ${(props) => props.theme.cardBg};
+      background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
       &.main {
         height: 100%;
       }
@@ -32,7 +57,8 @@ const GroupContainer = styled.div`
       h4,
       h3,
       p {
-        color: ${(props) => props.theme.cardTexColor} !important;
+        color: ${(props: { theme: { cardTexColor: any } }) =>
+          props.theme.cardTexColor} !important;
       }
       p {
         font-size: 0.8rem;
@@ -63,6 +89,12 @@ const GroupContainer = styled.div`
   }
 `;
 
+const text = `
+  A dog is a type of domesticated animal.
+  Known for its loyalty and faithfulness,
+  it can be found as a welcome guest in many households across the world.
+`;
+
 function Group(props: any) {
   // eslint-disable-next-line react/destructuring-assignment
   const { definedEditorIsOpened } = useContext(MainContext);
@@ -90,6 +122,20 @@ function Group(props: any) {
     history.push(urlDocPage);
   };
   // console.log(props.theme)
+
+  const onChangeCollapse = (key: any) => {
+    console.log(key);
+  };
+
+
+  const onSelect = (keys: React.Key[], info: any) => {
+    console.log('Trigger Select', keys, info);
+  };
+
+  const onExpand = () => {
+    console.log('Trigger Expand');
+  };
+
   return (
     <GroupContainer theme={props.theme}>
       <Row justify="space-between" className="main">
@@ -169,15 +215,48 @@ function Group(props: any) {
       </Row>
 
       <Modal
-        title="Basic Modal"
+        className="modal-new-doc"
+        title="Novo Documento"
         visible={isModalSelectTypeDoc}
         onOk={modalSelecTypeHandleOk}
         onCancel={modalSelecTypeHandleCancel}
         footer={null}
+        width={800}
+        bodyStyle={{
+          maxHeight: '400px',
+          height: '400px',
+          padding: '0',
+        }}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Row>
+          <Col flex="600" className="previewTemplate">
+            preview
+          </Col>
+          <Col flex="200px" className="collapseSelect">
+            <div className="useTemplateBx">
+              <Button type="primary" block>
+                Use Template
+              </Button>
+            </div>
+            <Collapse bordered={false} defaultActiveKey={['1']}>
+              <Panel header="Design" key="1">
+                <DirectoryTree
+                  multiple
+                  defaultExpandAll
+                  onSelect={onSelect}
+                  onExpand={onExpand}
+                  treeData={treeData}
+                />
+              </Panel>
+              <Panel header="Student" key="2">
+                {text}
+              </Panel>
+              <Panel header="Engineering" key="3">
+                {text}
+              </Panel>
+            </Collapse>
+          </Col>
+        </Row>
       </Modal>
     </GroupContainer>
   );

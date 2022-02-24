@@ -91,3 +91,32 @@ section.ant-layout.layout {
 .ant-pagination-item a {
   display: unset !important;
 }
+
+
+.modal-new-doc .ant-modal-header , .modal-new-doc .ant-modal-close-x{
+  display: none;
+}
+.modal-new-doc .ant-modal-body .ant-row {
+  height: 100%;
+}
+
+.modal-new-doc .ant-modal-body .ant-row .ant-col.collapseSelect{
+  background-color: var(--gray-1);
+}
+.modal-new-doc .ant-modal-body .collapseSelect{
+  background-color: red;
+  overflow-y: scroll;
+  height: 100%;
+}
+.modal-new-doc .ant-modal-body .collapseSelect .useTemplateBx{
+  padding: 9px;
+  display: flex;
+  justify-content: center;
+}
+.modal-new-doc .ant-modal-body .collapseSelect .ant-collapse-content-box{
+  padding: 0px;
+}
+.modal-new-doc .ant-modal-body .collapseSelect .ant-collapse-header{
+  background-color: var(--gray-1);
+  font-weight: bold;
+}
