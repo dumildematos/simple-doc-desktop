@@ -160,6 +160,10 @@ export default function Login(props: any) {
     console.log('Failed:', errorInfo);
   };
 
+  const socialLogin = (client: string) => {
+    console.log(client);
+  };
+
   return (
     <>
       <Layout className="layout">
@@ -248,7 +252,7 @@ export default function Login(props: any) {
                           <Button>
                             <FaFacebookF />
                           </Button>{' '}
-                          <Button>
+                          <Button onClick={socialLogin('google')}>
                             <FaGoogle />
                           </Button>
                         </div>
