@@ -10,11 +10,14 @@ import {
   Checkbox,
   Image,
 } from 'antd';
+import { useQuery } from 'react-query';
+
 import styled from '@xstyled/styled-components';
 import { FaLinkedinIn } from '@react-icons/all-files/fa/FaLinkedinIn';
 import { FaFacebookF } from '@react-icons/all-files/fa/FaFacebookF';
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
 import { useHistory, Redirect } from 'react-router-dom';
+import axios from 'axios';
 import folder1 from './undraw_Add_notes_re_ln36.svg';
 
 const { Content } = Layout;
@@ -161,7 +164,14 @@ export default function Login(props: any) {
   };
 
   const socialLogin = (client: string) => {
+    // console.log(process.env);
     console.log(client);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { isLoading, error, data, isFetching } = useQuery('repoData', () =>
+      axios
+        .get('https://api.github.com/repos/tannerlinsley/react-query')
+        .then((res) => res.data)
+    );
   };
 
   return (
@@ -252,7 +262,7 @@ export default function Login(props: any) {
                           <Button>
                             <FaFacebookF />
                           </Button>{' '}
-                          <Button onClick={socialLogin('google')}>
+                          <Button onClick={() => socialLogin('google')}>
                             <FaGoogle />
                           </Button>
                         </div>

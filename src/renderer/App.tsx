@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query'
+
 import './App.global.css';
 import {
   BrowserRouter as Router,
@@ -101,34 +103,43 @@ const GlobalStyle = createGlobalStyle`
 export default function App() {
   const { editorOpened, isRouted, theme } = useContext(MainContext);
   const [Apptheme, setTheme] = useState('light');
-  const hasValidToken = false;
+  const hasValidToken = true;
+  const queryClient = new QueryClient();
 
   // console.log(isRouted);
   if (!hasValidToken) {
-    return <Login />;
+    return (
+      <>
+        <QueryClientProvider client={queryClient}>
+          <Login />;
+        </QueryClientProvider>
+      </>
+    )
   }
   return (
-    <MainContextProvider>
-      {/* <Home /> */}
-      <GlobalStyle theme={Apptheme} />
-      <ThemeProvider theme={themes[Apptheme]}>
-        <Router>
-          <Switch>
-            <Route exact path={['/index.html', '/', '/group/:id']}>
-              {!isRouted && !editorOpened ? (
-                <Home theme={theme} setTheme={setTheme} />
-              ) : (
-                <Redirect to="/page-doc/:id" />
-              )}
-            </Route>
-            {/* {editorOpened && (
-            )} */}
-            <Route path="/page-doc/:id">
-              <EditableDocPage theme={theme} />
-            </Route>
-          </Switch>
-        </Router>
-      </ThemeProvider>
-    </MainContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <MainContextProvider>
+        {/* <Home /> */}
+        <GlobalStyle theme={Apptheme} />
+        <ThemeProvider theme={themes[Apptheme]}>
+          <Router>
+            <Switch>
+              <Route exact path={['/index.html', '/', '/group/:id']}>
+                {!isRouted && !editorOpened ? (
+                  <Home theme={theme} setTheme={setTheme} />
+                ) : (
+                  <Redirect to="/page-doc/:id" />
+                )}
+              </Route>
+              {/* {editorOpened && (
+              )} */}
+              <Route path="/page-doc/:id">
+                <EditableDocPage theme={theme} />
+              </Route>
+            </Switch>
+          </Router>
+        </ThemeProvider>
+      </MainContextProvider>
+    </QueryClientProvider>
   );
 }
