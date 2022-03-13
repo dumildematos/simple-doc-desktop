@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Avatar, Divider, Dropdown, Layout, Menu } from 'antd';
 import {
   AppstoreOutlined,
@@ -11,16 +12,20 @@ import {
 } from '@ant-design/icons';
 import styled from 'styled-components';
 import ModalSettings from './ModalSettings';
-import { color, gap } from '@xstyled/styled-components';
+import { MainContext } from 'renderer/contexts/MainContext';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 export default function Sidemenu({ collapse, t, setTheme, theme }) {
+  const { user } = useContext(MainContext);
   const [settingModal, setSettingModal] = useState({
     loading: false,
     visible: false,
   });
+
+  const history = useHistory();
+
   const userMenu = (e: any) => {
     console.log(e);
     if (e.key === 'settings') {
@@ -28,7 +33,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     }
     if (e.key === 'logout') {
       localStorage.clear();
-      window.location.reload();
+      setTimeout(() => history.push('/'), 10);
     }
   };
 
@@ -77,7 +82,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
                 className="ant-dropdown-link"
                 onClick={(e) => e.preventDefault()}
               >
-                Dumilde Matos <DownOutlined />
+                {`${user?.firstname} ${user?.lastname}`} <DownOutlined />
               </a>
             </Dropdown>
           ) : (

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import {
   Affix,
@@ -284,7 +284,7 @@ function EditableDocPage({ theme }) {
                 // window.history.back();
                 defineRoutedState(false);
                 definedEditorIsOpened(false);
-                history.push('/');
+                history.push('/home');
               }}
               title="Documentalçao de acesso ao sistema"
               // subTitle="This is a subtitle"

@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import Groups from '../Groups/Groups';
 import Group from '../Group/Group';
 import MainLayout from '../../components/MainLayout/MainLayout';
+import { getUserData } from 'renderer/services/UserService';
 
 const { Header, Content } = Layout;
 let inPage = false;
@@ -21,6 +22,7 @@ const DescriptionItem = ({ title, content }) => (
 
 
 export default function Home({ theme, setTheme }) {
+  console.log('home-page')
   const {
     isRouted,
     defineRoutedState,
@@ -28,20 +30,32 @@ export default function Home({ theme, setTheme }) {
     editorOpened,
     defineDocSideBar,
     definedEditorIsOpened,
+    defineUser
   } = useContext(MainContext);
+
+  const onSuccess = () => {
+    console.log(data?.data)
+    localStorage.setItem('user', JSON.stringify(data?.data));
+    const user: LoginForm = data?.data;
+    defineUser(user);
+  };
+
+  const onError = () => {
+
+  };
+
+  const { isLoading , data, isError , error } = getUserData(onSuccess , onError);
+
   const { t, i18n } = useTranslation();
-  const [count, setCounter] = useState(0);
-  // i18n.changeLanguage('en');
+
   useEffect(() => {
     inPage = isRouted;
-    // console.log(inPage);
   }, [inPage, isRouted, MainLayout]);
+
   const history = useHistory();
   const [collapse, setCollapse] = useState({
     collapsed: false,
   });
-
-  const [detailGroup, setDatailGroup] = useState(false);
 
   const [hashes, setHash] = useState({
     tags: ['Tag 1', 'Tag 2', 'Tag 3'],
@@ -89,6 +103,7 @@ export default function Home({ theme, setTheme }) {
             theme={theme}
             setTheme={setTheme}
             collapse={collapse}
+
           />
           <Layout
             className="site-layout"
@@ -117,7 +132,7 @@ export default function Home({ theme, setTheme }) {
                     // window.history.back();
                     defineRoutedState(false);
                     definedEditorIsOpened(false);
-                    history.push('/');
+                    history.push('/home');
                   }}
                   title={groupPage.title}
                   // subTitle="This is a subtitle"

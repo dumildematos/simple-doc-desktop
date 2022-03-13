@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import './App.global.css';
@@ -101,39 +101,34 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default function App() {
-  const { editorOpened, isRouted, theme } = useContext(MainContext);
+  const { editorOpened, isRouted, theme , accessToken } = useContext(MainContext);
   const [Apptheme, setTheme] = useState('light');
   const hasToken = localStorage.getItem('access_token');
   const queryClient = new QueryClient();
 
 
+  console.log({'App.tsx': accessToken})
   // console.log(isRouted);
-  if (!hasToken) {
-    return (
-      <>
-        <QueryClientProvider client={queryClient}>
-          <Login />;
-        </QueryClientProvider>
-      </>
-    )
-  }
+  // if (!accessToken) {
+  //   return <Redirect to="/" />
+  // }
   return (
     <QueryClientProvider client={queryClient}>
       <MainContextProvider>
-        {/* <Home /> */}
         <GlobalStyle theme={Apptheme} />
         <ThemeProvider theme={themes[Apptheme]}>
           <Router>
             <Switch>
-              <Route exact path={['/index.html', '/', '/group/:id']}>
-                {!isRouted && !editorOpened ? (
-                  <Home theme={theme} setTheme={setTheme} />
-                ) : (
-                  <Redirect to="/page-doc/:id" />
-                )}
+              <Route exact path="/">
+                { !accessToken ? (
+                  <Login />
+                ) : (<Redirect to="/home" />) }
               </Route>
-              {/* {editorOpened && (
-              )} */}
+              <Route exact path={[ '/home', '/group/:id']}>
+    
+                <Home theme={theme} setTheme={setTheme} />
+        
+              </Route>
               <Route path="/page-doc/:id">
                 <EditableDocPage theme={theme} />
               </Route>

@@ -1,4 +1,5 @@
-import React, { useState, createContext, ReactNode, useEffect } from 'react';
+import  { useState, createContext, ReactNode, useEffect } from 'react';
+import { LoginResponse } from 'renderer/models/UserModels';
 
 type GroupPage = {
   id: number;
@@ -12,8 +13,9 @@ type Page = {
   visibleDocSidebar: boolean;
   currentPath: string;
   theme: string;
-  accessToken: string;
-  refreshToken: string;
+  accessToken: string  | undefined;
+  refreshToken: string |  undefined;
+  user: LoginResponse  | undefined;
   defineRoutedState: (state: boolean) => void;
   definePageInfo: (data: any) => void;
   definedEditorIsOpened: (state: boolean) => void;
@@ -22,6 +24,7 @@ type Page = {
   defineTheme: (name: string) => void;
   defineAcesstoken: (token: string) => void;
   defineRefreshtoken: (token: string) => void;
+  defineUser: (user: LoginResponse) => void;
 };
 
 type Node = {
@@ -37,12 +40,13 @@ export function MainContextProvider({ children }: Node) {
   const [visibleDocSidebar, setVisibleDocSidebar] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
   const [theme, setTheme] = useState('light');
-  const [accessToken, setAccessToken] = useState('');
-  const [refreshToken, setRefreshToken] = useState('');
+  const [accessToken, setAccessToken] = useState(undefined);
+  const [refreshToken, setRefreshToken] = useState(undefined);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     console.log({ editorOpened, isRouted });
-  }, [editorOpened, isRouted, theme]);
+  }, [editorOpened, isRouted, theme, accessToken]);
 
   const defineRoutedState = (state: boolean) => {
     setRouted(state);
@@ -76,6 +80,10 @@ export function MainContextProvider({ children }: Node) {
     setRefreshToken(token);
   };
 
+  const defineUser = (user: LoginResponse) => {
+    setUser(user);
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -93,8 +101,10 @@ export function MainContextProvider({ children }: Node) {
         defineTheme,
         accessToken,
         refreshToken,
+        defineUser,
         defineAcesstoken,
         defineRefreshtoken,
+        user,
       }}
     >
       {children}

@@ -1,4 +1,3 @@
-import React, { useContext, useState } from 'react';
 import {
   Layout,
   Carousel,
@@ -11,16 +10,15 @@ import {
   Image,
   Alert,
 } from 'antd';
-import { useQuery } from 'react-query';
-
 import styled from '@xstyled/styled-components';
 import { FaLinkedinIn } from '@react-icons/all-files/fa/FaLinkedinIn';
 import { FaFacebookF } from '@react-icons/all-files/fa/FaFacebookF';
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
-import { useHistory, Redirect } from 'react-router-dom';
-import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import { UserLoginService } from 'renderer/services/UserService';
+import { messageIsloading } from 'renderer/utils/messages/Messages';
 import folder1 from './undraw_Add_notes_re_ln36.svg';
+import { useContext } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
 
 const { Content } = Layout;
@@ -153,21 +151,22 @@ const FooterBox = styled.footerBox`
 
 type RequiredMark = boolean | 'optional';
 
-export default function Login(props: any) {
-
+const Login = (props: any) => {
   const [form] = Form.useForm();
-  const history = useHistory();
-  // const { defineRoutedState, setOpenedEditor } = useContext(MainContext);
+  let history = useHistory();
+  const { defineRoutedState, defineAcesstoken } = useContext(MainContext);
 
   const onSuccess = (data: any) => {
-    const access_token = data?.data.access_token;
-    const refresh_token = data?.data.refresh_token;
+    const access_token = data?.data?.access_token;
+    const refresh_token = data?.data?.refresh_token;
 
     localStorage.setItem('access_token', access_token);
     localStorage.setItem('refresh_token', refresh_token);
-    window.location.reload();
+    console.log('login success');
+    // window.location.reload();
+    defineAcesstoken(access_token);
     // defineRoutedState(false);
-    // history.push('/');
+    history.push('/home');
   };
 
   const onError = (error: any) => {
@@ -177,17 +176,21 @@ export default function Login(props: any) {
     mutate: onUserLogin,
     data,
     isError,
+    isLoading,
   } = UserLoginService(onSuccess, onError);
 
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  if (isLoading) {
+    messageIsloading('Action in progress');
+    console.log('isLoading...');
+  }
 
+  const onFinish = (values: any) => {
+    // console.log('Success:', values);
     const loginForm: LoginForm = {
       username: values.username,
       password: values.password,
     };
     onUserLogin(loginForm);
-    return <Redirect push to="/" />;
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -195,16 +198,14 @@ export default function Login(props: any) {
   };
 
   const socialLogin = (client: string) => {
-    // console.log(process.env);
     console.log(client);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
   };
 
   return (
     <>
       <Layout
         className="layout"
-        style={{  height: '100vh', overflowY: 'hidden' }}
+        style={{ height: '100vh', overflowY: 'hidden' }}
       >
         <Content style={{ padding: '0 0 0 50px' }}>
           <div className="site-layout-content style={{ height: '100%' }}">
@@ -366,7 +367,6 @@ export default function Login(props: any) {
       </Layout>
     </>
   );
-}
-function onLoginError(onLoginError: any): { mutate: any } {
-  throw new Error('Function not implemented.');
-}
+};
+
+export default Login;

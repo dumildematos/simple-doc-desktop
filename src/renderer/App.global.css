@@ -57,6 +57,9 @@ a {
   width: fit-content;
   margin: 10px;
 }
+#root {
+  overflow: hidden;
+}
 #root,
 section.ant-layout.layout {
   height: 100vh;
