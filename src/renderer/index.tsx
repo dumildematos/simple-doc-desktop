@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { render } from 'react-dom';
 import App from './App';
 import './locales/i18n';

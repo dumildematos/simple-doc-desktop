@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import './App.global.css';
@@ -103,11 +103,12 @@ const GlobalStyle = createGlobalStyle`
 export default function App() {
   const { editorOpened, isRouted, theme } = useContext(MainContext);
   const [Apptheme, setTheme] = useState('light');
-  const hasValidToken = true;
+  const hasToken = localStorage.getItem('access_token');
   const queryClient = new QueryClient();
 
+
   // console.log(isRouted);
-  if (!hasValidToken) {
+  if (!hasToken) {
     return (
       <>
         <QueryClientProvider client={queryClient}>

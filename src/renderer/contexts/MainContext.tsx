@@ -12,12 +12,16 @@ type Page = {
   visibleDocSidebar: boolean;
   currentPath: string;
   theme: string;
+  accessToken: string;
+  refreshToken: string;
   defineRoutedState: (state: boolean) => void;
   definePageInfo: (data: any) => void;
   definedEditorIsOpened: (state: boolean) => void;
   defineDocSideBar: (state: boolean) => void;
   defineCurrentPath: (path: string) => void;
   defineTheme: (name: string) => void;
+  defineAcesstoken: (token: string) => void;
+  defineRefreshtoken: (token: string) => void;
 };
 
 type Node = {
@@ -33,6 +37,8 @@ export function MainContextProvider({ children }: Node) {
   const [visibleDocSidebar, setVisibleDocSidebar] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
   const [theme, setTheme] = useState('light');
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
 
   useEffect(() => {
     console.log({ editorOpened, isRouted });
@@ -62,6 +68,14 @@ export function MainContextProvider({ children }: Node) {
     setTheme(name);
   };
 
+  const defineAcesstoken = (token: string) => {
+    setAccessToken(token);
+  };
+
+  const defineRefreshtoken = (token: string) => {
+    setRefreshToken(token);
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -77,6 +91,10 @@ export function MainContextProvider({ children }: Node) {
         defineCurrentPath,
         theme,
         defineTheme,
+        accessToken,
+        refreshToken,
+        defineAcesstoken,
+        defineRefreshtoken,
       }}
     >
       {children}

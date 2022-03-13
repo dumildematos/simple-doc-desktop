@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Layout,
   Carousel,
@@ -9,6 +9,7 @@ import {
   Input,
   Checkbox,
   Image,
+  Alert,
 } from 'antd';
 import { useQuery } from 'react-query';
 
@@ -18,7 +19,9 @@ import { FaFacebookF } from '@react-icons/all-files/fa/FaFacebookF';
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
 import { useHistory, Redirect } from 'react-router-dom';
 import axios from 'axios';
+import { UserLoginService } from 'renderer/services/UserService';
 import folder1 from './undraw_Add_notes_re_ln36.svg';
+import { MainContext } from 'renderer/contexts/MainContext';
 
 const { Content } = Layout;
 
@@ -151,11 +154,39 @@ const FooterBox = styled.footerBox`
 type RequiredMark = boolean | 'optional';
 
 export default function Login(props: any) {
+
   const [form] = Form.useForm();
   const history = useHistory();
+  // const { defineRoutedState, setOpenedEditor } = useContext(MainContext);
+
+  const onSuccess = (data: any) => {
+    const access_token = data?.data.access_token;
+    const refresh_token = data?.data.refresh_token;
+
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('refresh_token', refresh_token);
+    window.location.reload();
+    // defineRoutedState(false);
+    // history.push('/');
+  };
+
+  const onError = (error: any) => {
+    console.log(error.message);
+  };
+  const {
+    mutate: onUserLogin,
+    data,
+    isError,
+  } = UserLoginService(onSuccess, onError);
 
   const onFinish = (values: any) => {
     console.log('Success:', values);
+
+    const loginForm: LoginForm = {
+      username: values.username,
+      password: values.password,
+    };
+    onUserLogin(loginForm);
     return <Redirect push to="/" />;
   };
 
@@ -167,16 +198,14 @@ export default function Login(props: any) {
     // console.log(process.env);
     console.log(client);
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { isLoading, error, data, isFetching } = useQuery('repoData', () =>
-      axios
-        .get('https://api.github.com/repos/tannerlinsley/react-query')
-        .then((res) => res.data)
-    );
   };
 
   return (
     <>
-      <Layout className="layout">
+      <Layout
+        className="layout"
+        style={{  height: '100vh', overflowY: 'hidden' }}
+      >
         <Content style={{ padding: '0 0 0 50px' }}>
           <div className="site-layout-content style={{ height: '100%' }}">
             <Row style={{ height: '100%' }}>
@@ -246,6 +275,18 @@ export default function Login(props: any) {
                             </Button>
                           </Form.Item>
                         </Form>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={16}>
+                        {isError && (
+                          <Alert
+                            message="Error"
+                            description="This is an error message about copywriting."
+                            type="error"
+                            showIcon
+                          />
+                        )}
                       </Col>
                     </Row>
                     <Row>
@@ -325,4 +366,7 @@ export default function Login(props: any) {
       </Layout>
     </>
   );
+}
+function onLoginError(onLoginError: any): { mutate: any } {
+  throw new Error('Function not implemented.');
 }
