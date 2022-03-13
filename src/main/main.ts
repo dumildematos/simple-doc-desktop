@@ -85,6 +85,7 @@ const createWindow = async () => {
     titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      allowFileAccess: false
     },
   });
 
