@@ -9,6 +9,7 @@ import Groups from '../Groups/Groups';
 import Group from '../Group/Group';
 import MainLayout from '../../components/MainLayout/MainLayout';
 import { getUserData } from 'renderer/services/UserService';
+import { LoginForm } from 'renderer/models/UserModels';
 
 const { Header, Content } = Layout;
 let inPage = false;
@@ -30,8 +31,11 @@ export default function Home({ theme, setTheme }) {
     editorOpened,
     defineDocSideBar,
     definedEditorIsOpened,
-    defineUser
+    defineUser,
+    accessToken
   } = useContext(MainContext);
+
+  console.log(accessToken)
 
   const onSuccess = () => {
     console.log(data?.data)
@@ -44,9 +48,11 @@ export default function Home({ theme, setTheme }) {
 
   };
 
-  const { isLoading , data, isError , error } = getUserData(onSuccess , onError);
+  
+  const { isLoading , data, isError , error } = getUserData(onSuccess , onError , accessToken);
 
   const { t, i18n } = useTranslation();
+
 
   useEffect(() => {
     inPage = isRouted;
@@ -93,7 +99,6 @@ export default function Home({ theme, setTheme }) {
   const onCloseDrawer = () => {
     defineDocSideBar(false);
   };
-  console.log(theme);
   return (
     <>
       <MainLayout theme={theme} isRouted={isRouted}>

@@ -125,9 +125,7 @@ export default function App() {
                 ) : (<Redirect to="/home" />) }
               </Route>
               <Route exact path={[ '/home', '/group/:id']}>
-    
                 <Home theme={theme} setTheme={setTheme} />
-        
               </Route>
               <Route path="/page-doc/:id">
                 <EditableDocPage theme={theme} />

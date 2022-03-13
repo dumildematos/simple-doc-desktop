@@ -17,9 +17,10 @@ import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
 import { useHistory } from 'react-router-dom';
 import { UserLoginService } from 'renderer/services/UserService';
 import { messageIsloading } from 'renderer/utils/messages/Messages';
-import folder1 from './undraw_Add_notes_re_ln36.svg';
 import { useContext } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
+import { LoginForm } from 'renderer/models/UserModels';
+import folder1 from './undraw_Add_notes_re_ln36.svg';
 
 const { Content } = Layout;
 
@@ -153,20 +154,26 @@ type RequiredMark = boolean | 'optional';
 
 const Login = (props: any) => {
   const [form] = Form.useForm();
-  let history = useHistory();
+  const history = useHistory();
   const { defineRoutedState, defineAcesstoken } = useContext(MainContext);
 
   const onSuccess = (data: any) => {
-    const access_token = data?.data?.access_token;
-    const refresh_token = data?.data?.refresh_token;
+    const accessToken = data?.data?.access_token;
+    const refreshToken = data?.data?.refresh_token;
 
-    localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', refresh_token);
-    console.log('login success');
-    // window.location.reload();
-    defineAcesstoken(access_token);
-    // defineRoutedState(false);
-    history.push('/home');
+    if (accessToken && refreshToken) {
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
+      console.log('login success');
+      defineAcesstoken(accessToken);
+
+      // queryClient.setQueryData('detail-user', (old) => {
+      //   console.log(old)
+      //   return null
+      // })
+
+      history.push('/home');
+    }
   };
 
   const onError = (error: any) => {

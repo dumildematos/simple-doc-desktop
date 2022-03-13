@@ -18,7 +18,17 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 
 export default function Sidemenu({ collapse, t, setTheme, theme }) {
-  const { user } = useContext(MainContext);
+  const {
+    user,
+    defineRoutedState,
+    definePageInfo,
+    definedEditorIsOpened,
+    defineDocSideBar,
+    defineCurrentPath,
+    defineUser,
+    defineAcesstoken,
+    defineRefreshtoken
+  } = useContext(MainContext);
   const [settingModal, setSettingModal] = useState({
     loading: false,
     visible: false,
@@ -33,6 +43,14 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     }
     if (e.key === 'logout') {
       localStorage.clear();
+      defineRoutedState(false);
+      definePageInfo({});
+      definedEditorIsOpened(false);
+      defineDocSideBar(false);
+      defineCurrentPath('');
+      defineUser({});
+      defineAcesstoken(undefined);
+      defineRefreshtoken(undefined);
       setTimeout(() => history.push('/'), 10);
     }
   };

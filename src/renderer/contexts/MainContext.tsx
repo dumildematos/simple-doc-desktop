@@ -1,4 +1,4 @@
-import  { useState, createContext, ReactNode, useEffect } from 'react';
+import { useState, createContext, ReactNode, useEffect } from 'react';
 import { LoginResponse } from 'renderer/models/UserModels';
 
 type GroupPage = {
@@ -13,9 +13,9 @@ type Page = {
   visibleDocSidebar: boolean;
   currentPath: string;
   theme: string;
-  accessToken: string  | undefined;
-  refreshToken: string |  undefined;
-  user: LoginResponse  | undefined;
+  accessToken: string | undefined;
+  refreshToken: string | undefined;
+  user: LoginResponse | undefined;
   defineRoutedState: (state: boolean) => void;
   definePageInfo: (data: any) => void;
   definedEditorIsOpened: (state: boolean) => void;
@@ -72,15 +72,15 @@ export function MainContextProvider({ children }: Node) {
     setTheme(name);
   };
 
-  const defineAcesstoken = (token: string) => {
+  const defineAcesstoken = (token: string | undefined) => {
     setAccessToken(token);
   };
 
-  const defineRefreshtoken = (token: string) => {
+  const defineRefreshtoken = (token: string | undefined) => {
     setRefreshToken(token);
   };
 
-  const defineUser = (user: LoginResponse) => {
+  const defineUser = (user: LoginResponse | {}) => {
     setUser(user);
   };
 
