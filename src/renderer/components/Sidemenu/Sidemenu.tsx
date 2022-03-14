@@ -1,23 +1,28 @@
 import React, { useContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Avatar, Divider, Dropdown, Layout, Menu } from 'antd';
 import {
+  AppstoreAddOutlined,
   AppstoreOutlined,
   ContainerOutlined,
   DesktopOutlined,
   DownOutlined,
   MailOutlined,
   PieChartOutlined,
+  SearchOutlined,
   SettingFilled,
+  ShopOutlined,
+  TeamOutlined,
+  UserSwitchOutlined,
 } from '@ant-design/icons';
 import styled from 'styled-components';
-import ModalSettings from './ModalSettings';
 import { MainContext } from 'renderer/contexts/MainContext';
+import ModalSettings from './ModalSettings';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
-export default function Sidemenu({ collapse, t, setTheme, theme }) {
+export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
   const {
     user,
     defineRoutedState,
@@ -27,7 +32,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     defineCurrentPath,
     defineUser,
     defineAcesstoken,
-    defineRefreshtoken
+    defineRefreshtoken,
   } = useContext(MainContext);
   const [settingModal, setSettingModal] = useState({
     loading: false,
@@ -35,6 +40,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
   });
 
   const history = useHistory();
+  history.push('/');
 
   const userMenu = (e: any) => {
     console.log(e);
@@ -51,14 +57,17 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
       defineUser({});
       defineAcesstoken(undefined);
       defineRefreshtoken(undefined);
-      setTimeout(() => history.push('/'), 10);
+      document.location.reload();
+      document.location.replace(document.location.origin);
+      //setTimeout(() => history.push('/'), 10);
     }
   };
 
   const MenuDropDown = (
     <Menu onClick={userMenu}>
       <Menu.Item key="1">{t('home.user_dropdown_menu.profile')}</Menu.Item>
-      <Menu.Item key="2" icon={<DownOutlined />} disabled>
+      <Menu.Item key="2">Notificações</Menu.Item>
+      {/* <Menu.Item key="2" icon={<DownOutlined />} disabled>
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -66,8 +75,8 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
         >
           2nd menu item (disabled)
         </a>
-      </Menu.Item>
-      <Menu.Item key="3" disabled>
+      </Menu.Item> */}
+      {/* <Menu.Item key="3" disabled>
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -75,7 +84,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
         >
           3rd menu item (disabled)
         </a>
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item key="settings">{t('home.settings.setting')}</Menu.Item>
       <Menu.Item key="logout">{t('home.user_dropdown_menu.logout')}</Menu.Item>
     </Menu>
@@ -86,14 +95,14 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     <>
       <Sider trigger={null} collapsible collapsed={collapse.collapsed}>
         <div className="logo" style={{ marginTop: '1.9em' }}>
-          {/* <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" /> */}
-          <Avatar
+          <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" />
+          {/* <Avatar
             style={{ backgroundColor: '#f56a00', verticalAlign: 'middle' }}
             size={32}
             gap={4}
           >
             D M
-          </Avatar>
+          </Avatar> */}
           {!collapse.collapsed ? (
             <Dropdown overlay={MenuDropDown}>
               <a
@@ -113,16 +122,24 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
           mode="inline"
           theme="light"
         >
-          <Menu.Item key="1" icon={<PieChartOutlined />}>
-            Option 1
+          <Menu.Item key="1" icon={<TeamOutlined />} >
+            
+            <Link to="/">My Teams</Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<DesktopOutlined />}>
-            Option 2
+          <Menu.Item key="2" icon={<UserSwitchOutlined />}>
+            <Link to="/invited-teams">Invited Teams</Link>
           </Menu.Item>
-          <Menu.Item key="3" icon={<ContainerOutlined />}>
-            Option 3
+          <Menu.Item key="3" icon={<SearchOutlined />}>
+            <Link to="/explorer">Explorer</Link>
           </Menu.Item>
-          <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
+          <Menu.Item key="4" icon={<ShopOutlined />}>
+          <Link to="/marketplace">Marketplace</Link>
+          </Menu.Item>
+          <Menu.Item key="5" icon={<AppstoreAddOutlined />}>
+
+            <Link to="/template-builder">Template Builder</Link>
+          </Menu.Item>
+          {/* <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
             <Menu.Item key="5">Option 5</Menu.Item>
             <Menu.Item key="6">Option 6</Menu.Item>
             <Menu.Item key="7">Option 7</Menu.Item>
@@ -139,7 +156,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
               <Menu.Item key="11">Option 11</Menu.Item>
               <Menu.Item key="12">Option 12</Menu.Item>
             </SubMenu>
-          </SubMenu>
+          </SubMenu> */}
         </Menu>
       </Sider>
       <ModalSettings

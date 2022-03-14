@@ -95,7 +95,7 @@ const text = `
   it can be found as a welcome guest in many households across the world.
 `;
 
-function Group(props: any) {
+export default function Group(props: any) {
   // eslint-disable-next-line react/destructuring-assignment
   const { definedEditorIsOpened, groupPage } = useContext(MainContext);
 
@@ -260,4 +260,4 @@ function Group(props: any) {
   );
 }
 
-export default withRouter(Group);
+

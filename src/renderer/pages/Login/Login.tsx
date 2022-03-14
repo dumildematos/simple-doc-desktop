@@ -171,8 +171,8 @@ const Login = (props: any) => {
       //   console.log(old)
       //   return null
       // })
-
-      history.push('/home');
+      document.location.reload();
+      // history.push('/home');
     }
   };
 

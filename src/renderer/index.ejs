@@ -1,18 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Simple Doc</title>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-  <script>
-    window.electron.ipcRenderer.once('ipc-example', (arg) => {
-      // eslint-disable-next-line no-console
-      console.log(arg);
-    });
-
-    window.electron.ipcRenderer.myPing();
-  </script>
-</html>
+<head>
+  <meta charset="utf-8" />
+  <title>Simple Doc</title>
+</head>
+<body>
+  <div id="root"></div>
+  <div class="loader"></div>
+  
+</body>
+<script>
+  
+  const checkLoaded = () => {
+    return document.readyState === "complete" || document.readyState === "interactive";
+  }
+  
+  const loader = document.querySelector('.loader');
+  const showLoader = () => loader.classList.remove('loader--hide');
+  const hideLoader = () => loader.classList.add('loader--hide');
+  
+  // if(!checkLoaded()){
+    //   hideLoader()
+    //   console.log('mostrar')
+    //   alert('carreganto...')
+    // }else {
+      //   console.log('fechar')
+      //   showLoader()
+      // }
+      
+      window.electron.ipcRenderer.once('ipc-example', (arg) => {
+        // eslint-disable-next-line no-console
+        console.log(arg);
+        if(!checkLoaded()){
+          showLoader()
+          console.log('mostrar')
+          // alert('carregando...')
+        }
+        hideLoader()
+      });
+      
+      window.electron.ipcRenderer.myPing();
+    </script>
+    </html>

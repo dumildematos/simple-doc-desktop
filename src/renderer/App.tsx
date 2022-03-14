@@ -101,13 +101,18 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default function App() {
-  const { editorOpened, isRouted, theme , accessToken } = useContext(MainContext);
+  const { editorOpened, isRouted, theme  } = useContext(MainContext);
   const [Apptheme, setTheme] = useState('light');
-  const hasToken = localStorage.getItem('access_token');
+  const accessToken = localStorage.getItem('access_token');
   const queryClient = new QueryClient();
 
 
-  console.log({'App.tsx': accessToken})
+
+
+ 
+
+
+  // console.log({'App.tsx': accessToken})
   // console.log(isRouted);
   // if (!accessToken) {
   //   return <Redirect to="/" />
@@ -119,13 +124,13 @@ export default function App() {
         <ThemeProvider theme={themes[Apptheme]}>
           <Router>
             <Switch>
-              <Route exact path="/">
+              <Route exact path={['/', '/index.html', '/login']}>
                 { !accessToken ? (
                   <Login />
                 ) : (<Redirect to="/home" />) }
               </Route>
-              <Route exact path={[ '/home', '/group/:id']}>
-                <Home theme={theme} setTheme={setTheme} />
+              <Route exact path={['/home', '/index.html']}>
+                { accessToken && (<Home theme={theme} setTheme={setTheme} />)}
               </Route>
               <Route path="/page-doc/:id">
                 <EditableDocPage theme={theme} />
