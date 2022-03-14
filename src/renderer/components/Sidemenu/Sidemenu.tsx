@@ -123,7 +123,6 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
           theme="light"
         >
           <Menu.Item key="1" icon={<TeamOutlined />} >
-            
             <Link to="/">My Teams</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserSwitchOutlined />}>

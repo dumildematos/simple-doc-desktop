@@ -41,6 +41,9 @@ const LightTheme = {
   textColor: '#000',
   boxBorder: 'none',
   secundaryColor: '#fff',
+
+  mainHomeBG: '#fff'
+
 };
 const DarkTheme = {
   boxBg: '#15181D',
@@ -69,6 +72,7 @@ const DarkTheme = {
   boxBorder: '1px solid #D81D99',
   textColor: '#D81D99',
   secundaryColor: '#D81D99',
+  mainHomeBG: '#2a2828'
 };
 
 const themes: any = {
@@ -109,7 +113,7 @@ export default function App() {
 
 
 
- 
+
 
 
   // console.log({'App.tsx': accessToken})
@@ -142,3 +146,4 @@ export default function App() {
     </QueryClientProvider>
   );
 }
+

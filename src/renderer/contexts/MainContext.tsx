@@ -16,6 +16,7 @@ type Page = {
   accessToken: string | undefined;
   refreshToken: string | undefined;
   user: LoginResponse | undefined;
+  navigateTo: string;
   defineRoutedState: (state: boolean) => void;
   definePageInfo: (data: any) => void;
   definedEditorIsOpened: (state: boolean) => void;
@@ -25,6 +26,7 @@ type Page = {
   defineAcesstoken: (token: string) => void;
   defineRefreshtoken: (token: string) => void;
   defineUser: (user: LoginResponse) => void;
+  defineNavigatedUrl: (path: string) => void;
 };
 
 type Node = {
@@ -43,10 +45,11 @@ export function MainContextProvider({ children }: Node) {
   const [accessToken, setAccessToken] = useState(undefined);
   const [refreshToken, setRefreshToken] = useState(undefined);
   const [user, setUser] = useState({});
+  const [navigateTo, setNavigateTo] = useState('/');
 
   useEffect(() => {
     console.log({ editorOpened, isRouted });
-  }, [editorOpened, isRouted, theme, accessToken]);
+  }, [editorOpened, isRouted, theme, accessToken, navigateTo]);
 
   const defineRoutedState = (state: boolean) => {
     setRouted(state);
@@ -84,6 +87,10 @@ export function MainContextProvider({ children }: Node) {
     setUser(user);
   };
 
+  const defineNavigatedUrl = (path: string) => {
+    setNavigateTo(path);
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -104,6 +111,8 @@ export function MainContextProvider({ children }: Node) {
         defineUser,
         defineAcesstoken,
         defineRefreshtoken,
+        navigateTo,
+        defineNavigatedUrl,
         user,
       }}
     >

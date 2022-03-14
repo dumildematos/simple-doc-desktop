@@ -5,11 +5,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  useParams,
   useRouteMatch,
   useHistory,
-  Redirect, 
+  useLocation
 } from "react-router-dom";
 import Sidemenu from 'renderer/components/Sidemenu/Sidemenu';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -19,22 +17,16 @@ import Group from '../Group/Group';
 import MainLayout from '../../components/MainLayout/MainLayout';
 import { getUserData } from 'renderer/services/UserService';
 import { LoginForm } from 'renderer/models/UserModels';
-import { Explorer } from '../Explorer/Explorer';
-import { InvitedGroups } from '../InvitedGroups/InvitedGroups';
-import { Marketplace } from '../Marketplace/Marketplace';
-import { TemplateBuilder } from '../TemplateBuilder/TemplateBuilder';
+
+import Explorer from '../Explorer/Explorer';
+import Marketplace from '../Marketplace/Marketplace';
+import InvitedGroups from '../InvitedGroups/InvitedGroups';
+import TemplateBuilder from '../TemplateBuilder/TemplateBuilder';
 
 const { Header, Content } = Layout;
-let inPage = false;
-
-const DescriptionItem = ({ title, content }) => (
-  <div className="site-description-item-profile-wrapper">
-    <p className="site-description-item-profile-p-label">{title}:</p>
-    {content}
-  </div>
-);
-
 const localtoken = localStorage.getItem('access_token');
+
+
 
 export default function Home({ theme, setTheme }) {
   console.log(localtoken);
@@ -43,9 +35,16 @@ export default function Home({ theme, setTheme }) {
     document.location.replace(document.location.origin);
     // history.push('/')
   }
+
+
+
+
+
   const history = useHistory();
+  const location = useLocation();
 
   const { path, url } = useRouteMatch();
+  console.log(url)
   const {
     isRouted,
     defineRoutedState,
@@ -54,10 +53,17 @@ export default function Home({ theme, setTheme }) {
     defineDocSideBar,
     definedEditorIsOpened,
     defineUser,
-    accessToken
+    accessToken,
   } = useContext(MainContext);
 
-  console.log(accessToken)
+  const [currentPath, setCurrentPath] = useState('/');
+
+
+  useEffect(() => {
+    console.log('Location changed');
+  }, location)
+
+  // console.log(accessToken)
 
   const onSuccess = () => {
     console.log(data?.data)
@@ -78,7 +84,7 @@ export default function Home({ theme, setTheme }) {
   //   inPage = isRouted;
   // }, [inPage, isRouted, MainLayout]);
 
- 
+
 
   const [collapse, setCollapse] = useState({
     collapsed: false,
@@ -136,7 +142,7 @@ export default function Home({ theme, setTheme }) {
 
         />
         <Layout
-            className="site-layout"
+            className="site-layout home-layout"
             style={{ padding: 0, background: 'cyan'}}
           >
            <Header
@@ -185,35 +191,34 @@ export default function Home({ theme, setTheme }) {
             <Content
               className="site-layout-background"
               style={{
-                margin: '60px 16px 15px 16px',
-                padding: !isRouted ? 24 : 0,
+                margin: 0,
                 minHeight: 280,
-                // background: !isRouted ? 'theme.boxBg' : 'transparent',
+                background: !isRouted ? 'theme.boxBg' : 'transparent',
               }}
             >
         <div>
-
+              { location.pathname }
           <Switch>
               {/* { localtoken &&  (<Redirect to='/'/> ) } */}
             {/* <Route>
             </Route> */}
             <Route exact path="/">
-              {!isRouted && <Groups t={t} theme={theme} />}
+              {!isRouted && <Groups t={t} theme={theme} setPath={setCurrentPath}  />}
             </Route>
             <Route path={`/group/:id`}>
-              {isRouted && !editorOpened && <Group />}
+              {isRouted && !editorOpened && <Group t={t} theme={theme}  />}
             </Route>
             <Route exact path="/explorer">
-              <Explorer />
+              <Explorer t={t} theme={theme} setPath={setCurrentPath}  />
             </Route>
             <Route exact path="/invited-teams">
-              <InvitedGroups />
+              <InvitedGroups setPath={setCurrentPath}  />
             </Route>
             <Route exact path={`/marketplace`}>
-              <Marketplace />
+              <Marketplace t={t} theme={theme} setPath={setCurrentPath}  />
             </Route>
             <Route exact path="/template-builder">
-              <TemplateBuilder />
+              <TemplateBuilder setPath={setCurrentPath}  />
             </Route>
           </Switch>
         </div>

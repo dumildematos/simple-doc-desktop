@@ -1,10 +1,13 @@
 import { message } from 'antd';
 
-const isLoading = (text: string) => {
-  const hide = message.loading(text, 0);
-  setTimeout(hide, 2500);
+const meessage = (type: string, text: string) => {
+  const hide = message[type](text, 0);
+  if (type === 'loading') {
+    setTimeout(hide, 2500);
+  }
 };
 
-export const messageIsloading = (text: string) => {
-  isLoading(text);
+// eslint-disable-next-line import/prefer-default-export
+export const MessageShow = (type: string, text: string) => {
+  meessage(type, text);
 };

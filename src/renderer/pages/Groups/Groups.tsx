@@ -148,8 +148,8 @@ const tableColumns = [
   },
 ];
 
-export default function Groups({ theme, t }) {
-  const { isRouted, defineRoutedState, definePageInfo } =
+export default function Groups({ theme, t , setPath }) {
+  const { isRouted, defineRoutedState, definePageInfo , defineNavigatedUrl } =
     useContext(MainContext);
   const [form] = Form.useForm();
   const teamArray = [
@@ -292,11 +292,14 @@ export default function Groups({ theme, t }) {
 
   return (
     <>
+      <div style={{padding: 50}}>
+
       <Row justify="end">
         <Col span={4}>
           <Button
             icon={<TeamOutlined />}
             className="btn-action"
+            style={{ marginTop: '15px' }}
             onClick={showModal}
           >
             {t('home.new_team')}
@@ -477,6 +480,7 @@ export default function Groups({ theme, t }) {
   </Form.Item> */}
         </Form>
       </ModalLayout>
+      </div>
     </>
   );
 }

@@ -83,6 +83,8 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     frame: false,
     titleBarStyle: 'hidden',
+    backgroundColor: '#4c5fe1',
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -92,6 +94,11 @@ const createWindow = async () => {
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/main/docs/api/browser-window.md#using-ready-to-show-event
+
+  mainWindow.once('ready-to-show', () => {
+      mainWindow.show()
+  })
+
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');

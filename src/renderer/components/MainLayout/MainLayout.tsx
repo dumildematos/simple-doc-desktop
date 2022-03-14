@@ -11,9 +11,15 @@ const MainLayout = styled.div`
     section.ant-layout.site-layout {
       background: ${(props) => props.theme.siteLayoutContainer} !important;
       overflow: hidden;
-    background: black;
+      background: black;
+    }
+    .home-layout {
+      main.ant-layout-content.site-layout-background {
+        background: ${(props) => props.theme.mainHomeBG} !important;
+      }
     }
   }
+
   .trigger {
     padding: 0 24px;
     font-size: 18px;

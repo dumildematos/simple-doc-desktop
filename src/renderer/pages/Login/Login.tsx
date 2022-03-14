@@ -16,7 +16,7 @@ import { FaFacebookF } from '@react-icons/all-files/fa/FaFacebookF';
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
 import { useHistory } from 'react-router-dom';
 import { UserLoginService } from 'renderer/services/UserService';
-import { messageIsloading } from 'renderer/utils/messages/Messages';
+import { messageIsloading, MessageShow } from 'renderer/utils/messages/Messages';
 import { useContext } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { LoginForm } from 'renderer/models/UserModels';
@@ -187,8 +187,14 @@ const Login = (props: any) => {
   } = UserLoginService(onSuccess, onError);
 
   if (isLoading) {
-    messageIsloading('Action in progress');
+    MessageShow('loading','Action in progress');
     console.log('isLoading...');
+    // if(!data){
+    //   MessageShow('error','Action in progress');
+    // }
+  }
+
+  if(isError){
   }
 
   const onFinish = (values: any) => {
