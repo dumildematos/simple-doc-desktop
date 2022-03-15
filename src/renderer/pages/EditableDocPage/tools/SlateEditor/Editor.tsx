@@ -52,6 +52,12 @@ const EditorContainer = styled.div`
     .editableBlock {
       height: 100%;
       width: 82vw;
+
+      p[data-username='${(props: { element: { username: any } }) =>
+          props.element.username}'] {
+        border: 1px solid red;
+        background: red;
+      }
     }
   }
   table {
@@ -81,49 +87,51 @@ const EditorContainer = styled.div`
 
 const Element = (props) => {
   const { attributes, children, element } = props;
-
+  console.log({ attributes, children, element } )
+  attributes['data-username'] = 'dumilde@email.com';
   switch (element.type) {
-        case 'headingOne':
-            return <h1 {...attributes}>{children}</h1>
-        case 'headingTwo':
-            return <h2 {...attributes}>{children}</h2>
-        case 'headingThree':
-            return <h3 {...attributes}>{children}</h3>
-        case 'blockquote':
-            return <blockquote {...attributes}>{children}</blockquote>
-        case 'alignLeft':
-            return <div style={{textAlign:'left',listStylePosition:'inside'}} {...attributes}>{children}</div>
-        case 'alignCenter':
-            return <div style={{textAlign:'center',listStylePosition:'inside'}} {...attributes}>{children}</div>
-        case 'alignRight':
-            return <div style={{textAlign:'right',listStylePosition:'inside'}} {...attributes}>{children}</div>
-        case 'list-item':
-            return  <li {...attributes}>{children}</li>
-        case 'orderedList':
-            return <ol type='1' {...attributes}>{children}</ol>
-        case 'unorderedList':
-            return <ul {...attributes}>{children}</ul>
-        case 'link':
-            return <Link {...props}/>
+    case 'headingOne':
+        return <h1 {...attributes}>{children}</h1>
+    case 'headingTwo':
+        return <h2 {...attributes}>{children}</h2>
+    case 'headingThree':
+        return <h3 {...attributes}>{children}</h3>
+    case 'blockquote':
+        return <blockquote {...attributes}>{children}</blockquote>
+    case 'alignLeft':
+        return <div style={{textAlign:'left',listStylePosition:'inside'}} {...attributes}>{children}</div>
+    case 'alignCenter':
+        return <div style={{textAlign:'center',listStylePosition:'inside'}} {...attributes}>{children}</div>
+    case 'alignRight':
+      return <div style={{textAlign:'right',listStylePosition:'inside'}} {...attributes}>{children}</div>
+    case 'list-item':
+      return  <li {...attributes}>{children}</li>
+    case 'orderedList':
+      return <ol type='1' {...attributes}>{children}</ol>
+    case 'unorderedList':
+      return <ul {...attributes}>{children}</ul>
+    case 'link':
+      return <Link {...props}/>
 
-        case 'table':
-            return <table>
-                <tbody {...attributes}>{children}</tbody>
-            </table>
-        case 'table-row':
-            return <tr {...attributes}>{children}</tr>
-        case 'table-cell':
-            return <td {...attributes}>{children}</td>
-        case 'image':
-            return <Image {...props}/>
-        case 'video':
-            return <Video {...props}/>
-        default :
-            return <p {...attributes}>{children}</p>
+    case 'table':
+      return <table>
+          <tbody {...attributes}>{children}</tbody>
+      </table>
+    case 'table-row':
+      return <tr {...attributes}>{children}</tr>
+    case 'table-cell':
+      return <td {...attributes}>{children}</td>
+    case 'image':
+      return <Image {...props}/>
+    case 'video':
+      return <Video {...props}/>
+    default:
+      return <p {...attributes}>{children}</p>;
   }
 };
 
 const Leaf = ({ attributes, children, leaf }) => {
+  console.log('leaf')
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
@@ -174,6 +182,7 @@ const SlateEditor = () => {
     {
       type: 'paragaph',
       children: [{ text: 'First line of text in Slate JS. ' }],
+      username: 'dumilde@email.com',
     },
   ]);
 
@@ -184,11 +193,14 @@ const SlateEditor = () => {
   }, []);
 
   return (
-    <EditorContainer>
+    <EditorContainer element={value}>
       <Slate
         editor={editor}
         value={value}
-        onChange={(newValue) => setValue(newValue)}
+        onChange={(newValue) => {
+          setValue(newValue);
+          console.log(newValue);
+        }}
       >
         <Toolbar />
         <div className="editor-wrapper" style={{ padding: '0 10px' }}>

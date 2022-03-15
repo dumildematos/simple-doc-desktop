@@ -22,7 +22,7 @@ const ChatEditor = ({ onChange, onSubmit, submitting, value }) => (
         htmlType="submit"
         loading={submitting}
         onClick={onSubmit}
-        type="primary"
+        className="btn-action"
       >
         Add Comment
       </Button>

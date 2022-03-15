@@ -20,6 +20,7 @@ import {
   UserOutlined,
   DownloadOutlined,
   EyeOutlined,
+  SendOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -331,9 +332,14 @@ export default function EditableDocPage({ theme }) {
           {/* <QuillEditor /> */}
           <SlateEditor />
 
-          <Affix style={{ position: 'fixed', top: '50%', right: '0' }}>
-            <Button type="primary" size="small" onClick={showDrawer}>
-              <LeftOutlined />
+          <Affix style={{ position: 'fixed', top: '90%', right: '3%' }}>
+            <Button
+              className="btn-action"
+              size="middle"
+              shape="circle"
+              onClick={showDrawer}
+            >
+              <SendOutlined />
             </Button>
           </Affix>
 

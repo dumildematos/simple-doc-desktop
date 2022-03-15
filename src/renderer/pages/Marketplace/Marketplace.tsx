@@ -1,4 +1,4 @@
-import { Row, Col, Input } from 'antd';
+import { Row, Col, Input, Tabs, Card } from 'antd';
 import styled from 'styled-components';
 import imgBanner from './marketplace1.jpg';
 const { Search } = Input;
@@ -74,6 +74,8 @@ const MarketPlaceContainer = styled.div`
     }
   }
 `;
+const { TabPane } = Tabs;
+const { Meta } = Card;
 
 export default function Marketplace(props: any) {
   const onSearch = (value) => console.log(value);
@@ -89,6 +91,42 @@ export default function Marketplace(props: any) {
             style={{ width: 200 }}
           />
         </div>
+        <Row>
+          <Col span={24}>
+            <Tabs tabPosition="left">
+              <TabPane tab="Tab 1" key="1">
+                <Row>
+                  <Col>
+                    <Card
+                      hoverable
+                      style={{ width: 240 }}
+                      cover={
+                        <img
+                          alt="example"
+                          src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+                        />
+                      }
+                    >
+                      <Meta title="Europe Street beat" description="All - 5$" />
+                    </Card>
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane tab="Tab 2" key="2">
+                Content of Tab 2
+              </TabPane>
+              <TabPane tab="Tab 3" key="3">
+                Content of Tab 3
+              </TabPane>
+              <TabPane tab="Tab 4" key="4">
+                Content of Tab 4
+              </TabPane>
+              <TabPane tab="Tab 5" key="5">
+                Content of Tab 5
+              </TabPane>
+            </Tabs>
+          </Col>
+        </Row>
       </MarketPlaceContainer>
     </>
   );

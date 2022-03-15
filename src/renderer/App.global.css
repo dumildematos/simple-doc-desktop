@@ -149,3 +149,8 @@ section.ant-layout.layout {
   background-color: var(--gray-1);
   font-weight: bold;
 }
+.btn-action {
+  background: var(--purple-1);
+  border: none;
+  color: #fff;
+}
