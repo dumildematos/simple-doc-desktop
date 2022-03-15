@@ -48,7 +48,7 @@
   margin: 0;
   padding: 0;
 }
-body {
+header.ant-layout-header.site-layout-background.nav, .ant-layout-sider-children {
   -webkit-app-region: drag;
 }
 a {

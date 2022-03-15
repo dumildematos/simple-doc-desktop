@@ -325,7 +325,6 @@ export default function EditableDocPage({ theme }) {
             height: '100%',
             background: !isRouted ? 'inherit' : 'transparent',
             marginTop: '48px',
-            overflow: 'scroll',
           }}
         >
 
