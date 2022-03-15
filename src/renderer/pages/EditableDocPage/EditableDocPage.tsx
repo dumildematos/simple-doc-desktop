@@ -44,6 +44,7 @@ import StateToPdfMake from 'draft-js-export-pdfmake';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import QuillEditor from './tools/quill/QuillEditor';
+import SlateEditor from './tools/SlateEditor/Editor';
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs;
 // import robotoItalic from '../../../../assets/fonts/Roboto/Roboto-Italic.ttf';
@@ -328,7 +329,8 @@ export default function EditableDocPage({ theme }) {
           }}
         >
 
-          <QuillEditor />
+          {/* <QuillEditor /> */}
+          <SlateEditor />
 
           <Affix style={{ position: 'fixed', top: '50%', right: '0' }}>
             <Button type="primary" size="small" onClick={showDrawer}>
