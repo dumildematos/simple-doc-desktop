@@ -15,7 +15,7 @@ import { MainContext, MainContextProvider } from './contexts/MainContext';
 import EditableDocPage from './pages/EditableDocPage/EditableDocPage';
 
 const LightTheme = {
-  boxBg: '#D9E6F6',
+  boxBg: '#dee3ed',
   bgContent: 'red',
   navBg: '#fff',
   navInputColor: '#000',
@@ -136,9 +136,7 @@ export default function App() {
               <Route exact path={['/home', '/index.html']}>
                 { accessToken && (<Home theme={theme} setTheme={setTheme} />)}
               </Route>
-              <Route path="/page-doc/:id">
-                <EditableDocPage theme={theme} />
-              </Route>
+
             </Switch>
           </Router>
         </ThemeProvider>

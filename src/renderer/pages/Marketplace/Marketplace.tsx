@@ -1,5 +1,7 @@
+import { Row, Col, Input } from 'antd';
 import styled from 'styled-components';
 import imgBanner from './marketplace1.jpg';
+const { Search } = Input;
 
 const MarketPlaceContainer = styled.div`
   /* background: red !important; */
@@ -8,12 +10,20 @@ const MarketPlaceContainer = styled.div`
   margin: 0;
   padding: 0;
   main.ant-layout-content.site-layout-background {
-    padding: 0!important;
+    padding: 0 !important;
   }
   .banner {
     background-image: url(${imgBanner});
     background-size: cover;
+    background-attachment: scroll;
     height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    span.ant-input-group-wrapper.ant-input-search {
+      width: 300px;
+      background: transparent;
+    }
   }
   .ant-row {
     &.main {
@@ -66,11 +76,19 @@ const MarketPlaceContainer = styled.div`
 `;
 
 export default function Marketplace(props: any) {
+  const onSearch = (value) => console.log(value);
 
   return (
     <>
       <MarketPlaceContainer theme={props.theme}>
-        <div className="banner"></div>
+        <div className="banner">
+          <Search
+            placeholder="input search text"
+            allowClear
+            onSearch={onSearch}
+            style={{ width: 200 }}
+          />
+        </div>
       </MarketPlaceContainer>
     </>
   );

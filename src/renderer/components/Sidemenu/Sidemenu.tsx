@@ -40,7 +40,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
   });
 
   const history = useHistory();
-  history.push('/');
+  // history.push('/');
 
   const userMenu = (e: any) => {
     console.log(e);

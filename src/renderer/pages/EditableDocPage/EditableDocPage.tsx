@@ -29,6 +29,7 @@ import Editor, {
   createEditorStateWithText,
   composeDecorators,
 } from '@draft-js-plugins/editor';
+import styled from 'styled-components';
 import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
 import createSideToolbarPlugin from '@draft-js-plugins/side-toolbar';
@@ -62,9 +63,69 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 //   'Roboto-MediumItalic.ttf': fonts.Roboto.italics,
 //   'Roboto-Regular.ttf': fonts.Roboto.italics,
 // };
-console.log(pdfMake);
-console.log(pdfFonts);
+
+const EditorContainer = styled.div`
+  /* background: red !important; */
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+  background: ${(props: { theme: { cardBg: any } }) => props.theme.boxBg};
+  margin: 0;
+  .ant-row {
+    &.main {
+      height: 100%;
+    }
+    .ant-col {
+      border-radius: 3px;
+      background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
+      &.main {
+        height: 100%;
+      }
+      padding: 12px;
+      .btn-action-pmd {
+        font-size: 1rem;
+        color: var(--purple-1);
+      }
+      h4,
+      h3,
+      p {
+        color: ${(props: { theme: { cardTexColor: any } }) =>
+          props.theme.cardTexColor} !important;
+      }
+      p {
+        font-size: 0.8rem;
+      }
+      .ant-avatar-group {
+      }
+      &.doc-ls {
+        padding: 0;
+        .ant-card {
+          border: 1px solid var(--purple-1);
+        }
+        .doc-item {
+          background-color: blue;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .square {
+            width: 70px;
+            height: 70px !important;
+            background: green;
+            svg {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 const { Header, Content } = Layout;
+
+
+
+
 let inPage = false;
 
 const inlineToolbarPlugin = createInlineToolbarPlugin();
@@ -157,7 +218,7 @@ const DescriptionItem = ({ title, content }) => (
     {content}
   </div>
 );
-function EditableDocPage({ theme }) {
+export default function EditableDocPage({ theme }) {
   const {
     isRouted,
     defineRoutedState,
@@ -221,7 +282,7 @@ function EditableDocPage({ theme }) {
   };
 
   const previewMenu = (
-    <Menu onClick={() => handleMenuClick() }>
+    <Menu onClick={() => handleMenuClick()}>
       <Menu.Item key="1" icon={<UserOutlined />}>
         1st menu item
       </Menu.Item>
@@ -257,155 +318,93 @@ function EditableDocPage({ theme }) {
 
   return (
     <>
-      <MainLayout>
-        <Layout
-          className="site-layout"
-          style={{ padding: 0, background: 'white', height: '100%' }}
+      <EditorContainer>
+        <Content
+          className="site-layout-background"
+          style={{
+            margin: '0px',
+            height: '100%',
+            background: !isRouted ? 'inherit' : 'transparent',
+            marginTop: '48px',
+            overflow: 'scroll',
+          }}
         >
-          <Header
-            className="site-layout-background nav"
-            style={{
-              position: 'fixed',
-              zIndex: 100,
-              width: '100%',
-              padding: 0,
-            }}
+          <Editor
+            editorState={editor.editorState}
+            onChange={onChangeText}
+            placeholder="Tell your story..."
+            plugins={plugins}
+          />
+          <SideToolbar />
+          <InlineToolbar />
+          <AlignmentTool />
+
+
+          <Affix style={{ position: 'fixed', top: '50%', right: '0' }}>
+            <Button type="primary" size="small" onClick={showDrawer}>
+              <LeftOutlined />
+            </Button>
+          </Affix>
+
+          <Drawer
+            title="Basic Drawer"
+            placement="right"
+            width={440}
+            onClose={onCloseDrawer}
+            visible={visibleDocSidebar}
           >
-            {/* {React.createElement(
-              collapse.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: 'trigger',
-                onClick: toggle,
-              }
-            )} */}
-            <PageHeader
-              className="site-page-header"
-              onBack={() => {
-                // window.history.back();
-                defineRoutedState(false);
-                definedEditorIsOpened(false);
-                history.push('/home');
-              }}
-              title="Documentalçao de acesso ao sistema"
-              // subTitle="This is a subtitle"
-              style={{ marginLeft: '5rem' }}
-            />
-            <div
-              className="document-header-buttons"
-              style={{ float: 'right', width: '100%' }}
+            <p
+              className="site-description-item-profile-p"
+              style={{ marginBottom: 24 }}
             >
-              <Dropdown overlay={previewMenu} trigger={['click']}>
-                <a
-                  className="ant-dropdown-link"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Preview as <DownOutlined />
-                </a>
-              </Dropdown>
-              <Dropdown overlay={exportMenu} trigger={['click']}>
-                <a
-                  className="ant-dropdown-link"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Export as <DownOutlined />
-                </a>
-              </Dropdown>
-              <a>
-                <Button
-                  type="link"
-                  icon={<EyeOutlined />}
-                  size="small"
-                  onClick={handleGeneratePDF}
+              Membros
+            </p>
+            <p className="site-description-item-profile-p">Personal</p>
+            <Row>
+              <Col span={12}>
+                <DescriptionItem title="Full Name" content="Lily" />
+              </Col>
+              <Col span={12}>
+                <DescriptionItem
+                  title="Account"
+                  content="AntDesign@example.com"
                 />
-              </a>
-            </div>
-          </Header>
-          <Content
-            className="site-layout-background"
-            style={{
-              margin: '60px 16px 15px 16px',
-              height: '100%',
-              background: !isRouted ? 'inherit' : 'transparent',
-            }}
-          >
-            <Editor
-              editorState={editor.editorState}
-              onChange={onChangeText}
-              placeholder="Tell your story..."
-              plugins={plugins}
-            />
-            <SideToolbar />
-            <InlineToolbar />
-            <AlignmentTool />
-
-            <Affix style={{ position: 'fixed', top: '50%', right: '0' }}>
-              <Button type="primary" size="small" onClick={showDrawer}>
-                <LeftOutlined />
-              </Button>
-            </Affix>
-
-            <Drawer
-              title="Basic Drawer"
-              placement="right"
-              width={440}
-              onClose={onCloseDrawer}
-              visible={visibleDocSidebar}
-            >
-              <p
-                className="site-description-item-profile-p"
-                style={{ marginBottom: 24 }}
-              >
-                Membros
-              </p>
-              <p className="site-description-item-profile-p">Personal</p>
-              <Row>
-                <Col span={12}>
-                  <DescriptionItem title="Full Name" content="Lily" />
-                </Col>
-                <Col span={12}>
-                  <DescriptionItem
-                    title="Account"
-                    content="AntDesign@example.com"
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={12}>
-                  <DescriptionItem title="City" content="HangZhou" />
-                </Col>
-                <Col span={12}>
-                  <DescriptionItem title="Country" content="China🇨🇳" />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={12}>
-                  <DescriptionItem title="Birthday" content="February 2,1900" />
-                </Col>
-                <Col span={12}>
-                  <DescriptionItem title="Website" content="-" />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <DescriptionItem
-                    title="Message"
-                    content="Make things as simple as possible but no simpler."
-                  />
-                </Col>
-              </Row>
-              <Divider />
-              <p className="site-description-item-profile-p">Chat</p>
-              <Row>
-                <Col span={24}>
-                  <Chat />
-                </Col>
-              </Row>
-            </Drawer>
-          </Content>
-        </Layout>
-      </MainLayout>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <DescriptionItem title="City" content="HangZhou" />
+              </Col>
+              <Col span={12}>
+                <DescriptionItem title="Country" content="China🇨🇳" />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <DescriptionItem title="Birthday" content="February 2,1900" />
+              </Col>
+              <Col span={12}>
+                <DescriptionItem title="Website" content="-" />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <DescriptionItem
+                  title="Message"
+                  content="Make things as simple as possible but no simpler."
+                />
+              </Col>
+            </Row>
+            <Divider />
+            <p className="site-description-item-profile-p">Chat</p>
+            <Row>
+              <Col span={24}>
+                <Chat />
+              </Col>
+            </Row>
+          </Drawer>
+        </Content>
+      </EditorContainer>
     </>
   );
 }
-
-export default withRouter(EditableDocPage);

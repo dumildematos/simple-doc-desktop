@@ -37,7 +37,9 @@ const treeData = [
 const GroupContainer = styled.div`
   /* background: red !important; */
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  padding: 50px 25px;
+  background: ${(props: { theme: { cardBg: any } }) => props.theme.boxBg};
   margin: 0;
   .ant-row {
     &.main {
@@ -127,7 +129,6 @@ export default function Group(props: any) {
     console.log(key);
   };
 
-
   const onSelect = (keys: React.Key[], info: any) => {
     console.log('Trigger Select', keys, info);
   };
@@ -190,7 +191,10 @@ export default function Group(props: any) {
                 className="btn-action-pmd"
                 onClick={modalSelecTypeShowModal}
               >
-                <HiOutlineDocumentAdd />
+                <p>
+                  New Document &nbsp;
+                  <HiOutlineDocumentAdd />
+                </p>
               </Button>
             </Col>
           </Row>
@@ -259,5 +263,3 @@ export default function Group(props: any) {
     </GroupContainer>
   );
 }
-
-

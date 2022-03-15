@@ -22,6 +22,7 @@ import Explorer from '../Explorer/Explorer';
 import Marketplace from '../Marketplace/Marketplace';
 import InvitedGroups from '../InvitedGroups/InvitedGroups';
 import TemplateBuilder from '../TemplateBuilder/TemplateBuilder';
+import EditableDocPage from '../EditableDocPage/EditableDocPage';
 
 const { Header, Content } = Layout;
 const localtoken = localStorage.getItem('access_token');
@@ -220,6 +221,9 @@ export default function Home({ theme, setTheme }) {
             <Route exact path="/template-builder">
               <TemplateBuilder setPath={setCurrentPath}  />
             </Route>
+            <Route path="/page-doc/:id">
+                <EditableDocPage theme={theme} />
+              </Route>
           </Switch>
         </div>
             </Content>
