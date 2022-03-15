@@ -43,7 +43,6 @@ import createDragNDropUploadPlugin from '@draft-js-plugins/drag-n-drop-upload';
 import StateToPdfMake from 'draft-js-export-pdfmake';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts.js';
-import QuillEditor from './tools/quill/QuillEditor';
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs;
 // import robotoItalic from '../../../../assets/fonts/Roboto/Roboto-Italic.ttf';
@@ -216,7 +215,7 @@ const DescriptionItem = ({ title, content }) => (
     {content}
   </div>
 );
-export default function EditableDocPage({ theme }) {
+export default function DraftEditor({ theme }) {
   const {
     isRouted,
     defineRoutedState,
@@ -328,7 +327,15 @@ export default function EditableDocPage({ theme }) {
           }}
         >
 
-          <QuillEditor />
+          <Editor
+            editorState={editor.editorState}
+            onChange={onChangeText}
+            placeholder="Tell your story..."
+            plugins={plugins}
+          />
+          <SideToolbar />
+          <InlineToolbar />
+          <AlignmentTool />
 
           <Affix style={{ position: 'fixed', top: '50%', right: '0' }}>
             <Button type="primary" size="small" onClick={showDrawer}>
