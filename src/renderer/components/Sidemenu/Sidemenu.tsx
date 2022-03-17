@@ -21,8 +21,18 @@ import ModalSettings from './ModalSettings';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
+const hasLogin = localStorage.getItem('hasLogin');
 
 export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
+
+  const history = useHistory();
+
+  if(hasLogin === 'true'){
+    console.log('show my teams');
+    history.push('/');
+  }
+
+
   const {
     defineRoutedState,
     definePageInfo,
@@ -39,14 +49,15 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     visible: false,
   });
 
-  const history = useHistory();
   // history.push('/');
 
   const userMenu = (e: any) => {
     console.log(e);
+
     if (e.key === 'settings') {
       setSettingModal({ visible: true });
     }
+
     if (e.key === 'logout') {
       localStorage.clear();
       defineRoutedState(false);

@@ -29,9 +29,17 @@ const { Header, Content } = Layout;
 const localtoken = localStorage.getItem('access_token');
 
 
-
 export default function Home({ theme, setTheme }) {
-  console.log(localtoken);
+
+  const history = useHistory();
+  const location = useLocation();
+
+
+
+  // if(JSON.parse(hasLogin)){
+  //   history.push('/my-teams');
+  // }
+
   if(!localtoken){
     console.log('No access')
     document.location.replace(document.location.origin);
@@ -42,8 +50,7 @@ export default function Home({ theme, setTheme }) {
 
 
 
-  const history = useHistory();
-  const location = useLocation();
+
 
   const { path, url } = useRouteMatch();
   console.log(url)
@@ -190,8 +197,9 @@ export default function Home({ theme, setTheme }) {
               {/* { localtoken &&  (<Redirect to='/'/> ) } */}
             {/* <Route>
             </Route> */}
-            <Redirect exact from="/" to="/my-teams" />
-            <Route exact path={["/", "my-teams"]}>
+            {/* <Redirect exact from="/" to="/my-teams" /> */}
+            {/* { JSON.parse(hasLogin) && (<Redirect exact to="/my-teams" />)  } */}
+            <Route exact path={["/", "/my-teams"]}>
               {!isRouted && <Groups t={t} theme={theme} setPath={setCurrentPath}  />}
             </Route>
             <Route path={`/group/:id`}>

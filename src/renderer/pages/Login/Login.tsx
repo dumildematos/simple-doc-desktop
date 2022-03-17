@@ -168,6 +168,7 @@ const Login = (props: any) => {
     const userResp = userDetail?.data;
     if (userDetail) {
       localStorage.setItem('user', JSON.stringify(userResp));
+      localStorage.setItem('hasLogin', JSON.stringify(true));
       history.push('/home');
     }
   };
