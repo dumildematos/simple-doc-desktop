@@ -15,8 +15,14 @@ import { FaLinkedinIn } from '@react-icons/all-files/fa/FaLinkedinIn';
 import { FaFacebookF } from '@react-icons/all-files/fa/FaFacebookF';
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
 import { useHistory } from 'react-router-dom';
-import { UserLoginService } from 'renderer/services/UserService';
-import { messageIsloading, MessageShow } from 'renderer/utils/messages/Messages';
+import {
+  getUserDataService,
+  UserLoginService,
+} from 'renderer/services/UserService';
+import {
+  messageIsloading,
+  MessageShow,
+} from 'renderer/utils/messages/Messages';
 import { useContext } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { LoginForm } from 'renderer/models/UserModels';
@@ -156,6 +162,16 @@ const Login = (props: any) => {
   const [form] = Form.useForm();
   const history = useHistory();
   const { defineRoutedState, defineAcesstoken } = useContext(MainContext);
+  const hasAcessToken = localStorage.getItem('access_token');
+
+  const onDetailSuccess = () => {
+    const userResp = userDetail?.data;
+    if (userDetail) {
+      localStorage.setItem('user', JSON.stringify(userResp));
+      history.push('/home');
+    }
+  };
+  const onDetailError = () => {};
 
   const onSuccess = (data: any) => {
     const accessToken = data?.data?.access_token;
@@ -171,7 +187,7 @@ const Login = (props: any) => {
       //   console.log(old)
       //   return null
       // })
-      document.location.reload();
+      // document.location.reload();
       // history.push('/home');
     }
   };
@@ -186,15 +202,22 @@ const Login = (props: any) => {
     isLoading,
   } = UserLoginService(onSuccess, onError);
 
-  if (isLoading) {
-    MessageShow('loading','Action in progress');
+  const { data: userDetail, isLoading: isLoadingDetails } = getUserDataService(
+    onDetailSuccess,
+    onDetailError,
+    hasAcessToken,
+    data
+  );
+
+  if (isLoading || isLoadingDetails) {
+    MessageShow('loading', 'Action in progress');
     console.log('isLoading...');
     // if(!data){
     //   MessageShow('error','Action in progress');
     // }
   }
 
-  if(isError){
+  if (isError) {
   }
 
   const onFinish = (values: any) => {

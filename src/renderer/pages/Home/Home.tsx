@@ -7,7 +7,8 @@ import {
   Route,
   useRouteMatch,
   useHistory,
-  useLocation
+  useLocation,
+  Redirect
 } from "react-router-dom";
 import Sidemenu from 'renderer/components/Sidemenu/Sidemenu';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -64,20 +65,6 @@ export default function Home({ theme, setTheme }) {
     console.log('Location changed');
   }, location)
 
-  // console.log(accessToken)
-
-  const onSuccess = () => {
-    console.log(data?.data)
-    localStorage.setItem('user', JSON.stringify(data?.data));
-    const user: LoginForm = data?.data;
-    defineUser(user);
-  };
-
-  const onError = () => {
-
-  };
-
-  const { isLoading , data, isError , error } = getUserData(onSuccess , onError , localtoken);
 
   const { t, i18n } = useTranslation();
 
@@ -203,7 +190,8 @@ export default function Home({ theme, setTheme }) {
               {/* { localtoken &&  (<Redirect to='/'/> ) } */}
             {/* <Route>
             </Route> */}
-            <Route exact path="/">
+            <Redirect exact from="/" to="/my-teams" />
+            <Route exact path={["/", "my-teams"]}>
               {!isRouted && <Groups t={t} theme={theme} setPath={setCurrentPath}  />}
             </Route>
             <Route path={`/group/:id`}>

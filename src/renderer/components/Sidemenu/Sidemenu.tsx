@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Avatar, Divider, Dropdown, Layout, Menu } from 'antd';
+import { Avatar, Badge, Divider, Dropdown, Layout, Menu } from 'antd';
 import {
   AppstoreAddOutlined,
   AppstoreOutlined,
@@ -24,7 +24,6 @@ const { SubMenu } = Menu;
 
 export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
   const {
-    user,
     defineRoutedState,
     definePageInfo,
     definedEditorIsOpened,
@@ -34,6 +33,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     defineAcesstoken,
     defineRefreshtoken,
   } = useContext(MainContext);
+  const user = JSON.parse(localStorage.getItem('user'));
   const [settingModal, setSettingModal] = useState({
     loading: false,
     visible: false,
@@ -58,7 +58,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
       defineAcesstoken(undefined);
       defineRefreshtoken(undefined);
       document.location.reload();
-      document.location.replace(document.location.origin);
+      // document.location.replace(document.location.origin);
       //setTimeout(() => history.push('/'), 10);
     }
   };
@@ -95,7 +95,9 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     <>
       <Sider trigger={null} collapsible collapsed={collapse.collapsed}>
         <div className="logo" style={{ marginTop: '1.9em' }}>
-          <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" />
+          <Badge status="success" dot="true" offset={[-6, 28]}>
+            <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" />
+          </Badge>
           {/* <Avatar
             style={{ backgroundColor: '#f56a00', verticalAlign: 'middle' }}
             size={32}

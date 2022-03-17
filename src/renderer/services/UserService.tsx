@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Request } from 'renderer/utils/request/request';
 
 const loginUserRequest = (loginForm: LoginForm) => {
@@ -8,7 +8,7 @@ const loginUserRequest = (loginForm: LoginForm) => {
 const version = 'v1';
 
 const getCurrentUser = (token) => {
-  console.log(token)
+  console.log(token);
   return Request({
     url: `/${version}/user/me`,
     method: 'GET',
@@ -28,15 +28,20 @@ export const UserLoginService = (
   return useMutation(loginUserRequest, {
     onSuccess,
     onError,
-
   });
 };
 
-export const getUserData = (onSuccess, onError, token) => {
+export const getUserDataService = (
+  onDetailSuccess: () => void,
+  onError: () => void,
+  token: string | null,
+  login: any
+) => {
   // console.log(token)
-  return useQuery('detail-user', () => getCurrentUser(token), {
-    onSuccess,
+  return useQuery(['detail-user', login], () => getCurrentUser(token), {
+    onSuccess: onDetailSuccess,
     onError,
-    // refetchInterval: 2000,
+    enabled: !!login,
+    refetchInterval: 1000,
   });
 };

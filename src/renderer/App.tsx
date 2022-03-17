@@ -134,7 +134,7 @@ export default function App() {
                 ) : (<Redirect to="/home" />) }
               </Route>
               <Route exact path={['/home', '/index.html']}>
-                { accessToken && (<Home theme={theme} setTheme={setTheme} />)}
+              <Home theme={theme} setTheme={setTheme} />
               </Route>
 
             </Switch>
