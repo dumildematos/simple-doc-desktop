@@ -32,6 +32,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { MainContext } from 'renderer/contexts/MainContext';
 import Picker from 'emoji-picker-react';
+import { getUserTeams } from 'renderer/services/TeamsService';
 
 const { Meta } = Card;
 const { TextArea } = Input;
@@ -148,8 +149,9 @@ const tableColumns = [
   },
 ];
 
-export default function Groups({ theme, t , setPath }) {
-  const { isRouted, defineRoutedState, definePageInfo , defineNavigatedUrl } =
+const hasAcessToken = localStorage.getItem('access_token');
+export default function Groups({ theme, t, setPath }) {
+  const { isRouted, defineRoutedState, definePageInfo, defineNavigatedUrl } =
     useContext(MainContext);
   const [form] = Form.useForm();
   const teamArray = [
@@ -192,9 +194,19 @@ export default function Groups({ theme, t , setPath }) {
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [emojiSelectInput, setEmojiSelectInput] = useState('');
 
-  useEffect(() => {
-    // anchorRef();
-  }, []);
+  const onSuccess = () => {
+    console.log(data);
+  };
+
+  const onError = () => {
+    console.log(error);
+  };
+
+  const { data, isLoading, isFetching, isError, error } = getUserTeams(
+    onSuccess,
+    onError,
+    hasAcessToken
+  );
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -292,106 +304,109 @@ export default function Groups({ theme, t , setPath }) {
 
   return (
     <>
-      <div style={{padding: 50}}>
-
-      <Row justify="end">
-        <Col span={4}>
-          <Button
-            icon={<TeamOutlined />}
-            className="btn-action"
-            style={{ marginTop: '15px' }}
-            onClick={showModal}
+      <div style={{ padding: 50 }}>
+        <Row justify="end">
+          <Col span={4}>
+            <Button
+              icon={<TeamOutlined />}
+              className="btn-action"
+              style={{ marginTop: '15px' }}
+              onClick={showModal}
+            >
+              {t('home.new_team')}
+            </Button>
+          </Col>
+          <Divider />
+        </Row>
+        <Row justify="end" style={{ padding: '0' }}>
+          <Col span={4} style={{ padding: '0' }}>
+            <Radio.Group value={viewAs} onChange={onChangeView}>
+              <Radio.Button value="grid">
+                <TableOutlined />
+              </Radio.Button>
+              <Radio.Button value="list">
+                <UnorderedListOutlined />
+              </Radio.Button>
+            </Radio.Group>
+          </Col>
+        </Row>
+        {data?.data.totalElements}
+        {viewAs === 'grid' && (
+          <Row
+            className="cards-container"
+            gutter={[8, 8]}
+            style={{
+              paddingTop: '10px',
+            }}
           >
-            {t('home.new_team')}
-          </Button>
-        </Col>
-        <Divider />
-      </Row>
-      <Row justify="end" style={{ padding: '0' }}>
-        <Col span={4} style={{ padding: '0' }}>
-          <Radio.Group value={viewAs} onChange={onChangeView}>
-            <Radio.Button value="grid">
-              <TableOutlined />
-            </Radio.Button>
-            <Radio.Button value="list">
-              <UnorderedListOutlined />
-            </Radio.Button>
-          </Radio.Group>
-        </Col>
-      </Row>
-      {viewAs === 'grid' && (
-        <Row
-          className="cards-container"
-          gutter={[8, 8]}
-          style={{
-            paddingTop: '10px',
-          }}
-        >
-          {teams.map((item, index) => (
-            <Col key={item.id} span={8}>
-              <Link to={`/group/${item.id}`} onClick={() => setRoutState(item)}>
-                <Card
-                  style={{ width: '100%' }}
-                  actions={[
-                    // eslint-disable-next-line react/jsx-key
-                    [<FaUsers />, <span>{item.menbers}</span>],
-                    // eslint-disable-next-line react/jsx-key
-                    [<IoIosDocument />, <span>{item.docs}</span>],
-                  ]}
-                  className="teams-card"
+            {data?.data.content.map((item, index) => (
+              <Col key={item.id} span={8}>
+                <Link
+                  to={`/group/${item.id}`}
+                  onClick={() => setRoutState(item)}
                 >
-                  <Skeleton loading={false} active>
-                    <Meta title={item.title} description={item.desc} />
-                  </Skeleton>
-                </Card>
-              </Link>
+                  <Card
+                    style={{ width: '100%' }}
+                    actions={[
+                      // eslint-disable-next-line react/jsx-key
+                      [<FaUsers />, <span>{item.menbers}</span>],
+                      // eslint-disable-next-line react/jsx-key
+                      [<IoIosDocument />, <span>{item.docs}</span>],
+                    ]}
+                    className="teams-card"
+                  >
+                    <Skeleton loading={isLoading || isFetching} active>
+                      <Meta title={item.name} description={item.description} />
+                    </Skeleton>
+                  </Card>
+                </Link>
+              </Col>
+            ))}
+          </Row>
+        )}
+        {viewAs === 'grid' && (
+          <Row>
+            <Col>
+              <Pagination defaultCurrent={1} total={9} />
             </Col>
-          ))}
-        </Row>
-      )}
-      {viewAs === 'grid' && (
-        <Row>
-          <Col>
-            <Pagination defaultCurrent={1} total={50} />
-          </Col>
-        </Row>
-      )}
-      {viewAs === 'list' && (
-        <Row className="cards-container" style={{ paddingTop: '10px' }}>
-          <Col span={24}>
-            <Table columns={tableColumns} dataSource={teams} />
-          </Col>
-        </Row>
-      )}
-      <ModalLayout
-        theme={theme}
-        visible={isModalVisible}
-        title="Create a new collection"
-        okText="Create"
-        cancelText="Cancel"
-        onCancel={onCancel}
-        onOk={() => {
-          form
-            .validateFields()
-            // eslint-disable-next-line promise/always-return
-            .then((values) => {
-              form.resetFields();
-              onCreateGroup(values);
-            })
-            .catch((info) => {
-              console.log('Validate Failed:', info);
-            });
-        }}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          name="form_in_modal"
-          initialValues={{
-            modifier: 'public',
+          </Row>
+        )}
+        {viewAs === 'list' && (
+          <Row className="cards-container" style={{ paddingTop: '10px' }}>
+            <Col span={24}>
+              <Table columns={tableColumns} dataSource={teams} />
+            </Col>
+          </Row>
+        )}
+        <ModalLayout
+          theme={theme}
+          visible={isModalVisible}
+          title="Create a new collection"
+          okText="Create"
+          cancelText="Cancel"
+          onCancel={onCancel}
+          onOk={() => {
+            form
+              .validateFields()
+              // eslint-disable-next-line promise/always-return
+              .then((values) => {
+                form.resetFields();
+                onCreateGroup(values);
+              })
+              .catch((info) => {
+                console.log('Validate Failed:', info);
+              });
           }}
         >
-          {/* <Form.Item
+          <Form
+            form={form}
+            layout="vertical"
+            name="form_in_modal"
+            initialValues={{
+              modifier: 'public',
+            }}
+          >
+            {/* <Form.Item
             style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}
             label="emoji"
           >
@@ -407,50 +422,50 @@ export default function Groups({ theme, t , setPath }) {
 
 
           </Form.Item> */}
-          <Row>
-            <Col flex="100px">
-              <Form.Item label=".">
-                <Dropdown overlay={menu} trigger={['click']}>
-                  <Button onClick={e => e.preventDefault()}>
-                    {chosenEmoji ? chosenEmoji.emoji : <SmileOutlined />}
-                    <DownOutlined />
-                  </Button>
-                </Dropdown>
-              </Form.Item>
-            </Col>
-            <Col flex="auto">
-              <Form.Item
-                name="title"
-                label="Nome da equipe"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input the title of collection!',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Row>
+              <Col flex="100px">
+                <Form.Item label=".">
+                  <Dropdown overlay={menu} trigger={['click']}>
+                    <Button onClick={(e) => e.preventDefault()}>
+                      {chosenEmoji ? chosenEmoji.emoji : <SmileOutlined />}
+                      <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                </Form.Item>
+              </Col>
+              <Col flex="auto">
+                <Form.Item
+                  name="title"
+                  label="Nome da equipe"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input the title of collection!',
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Form.Item
-            name="description"
-            label="Descrição"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the title of collection!',
-              },
-            ]}
-          >
-            <TextArea
-              placeholder="textarea with clear icon"
-              allowClear
-              onChange={onChangeInput}
-            />
-          </Form.Item>
-          {/* <Form.Item
+            <Form.Item
+              name="description"
+              label="Descrição"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input the title of collection!',
+                },
+              ]}
+            >
+              <TextArea
+                placeholder="textarea with clear icon"
+                allowClear
+                onChange={onChangeInput}
+              />
+            </Form.Item>
+            {/* <Form.Item
     name="description"
     label="Descrição"
     rules={[
@@ -478,8 +493,8 @@ export default function Groups({ theme, t , setPath }) {
       </Tag>
     )}
   </Form.Item> */}
-        </Form>
-      </ModalLayout>
+          </Form>
+        </ModalLayout>
       </div>
     </>
   );

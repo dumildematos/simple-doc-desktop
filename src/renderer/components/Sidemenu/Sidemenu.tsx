@@ -23,15 +23,21 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 const hasLogin = localStorage.getItem('hasLogin');
 
+// window.addEventListener('online', updateOnlineStatus);
+// window.addEventListener('offline', updateOnlineStatus);
+
+// const updateOnlineStatus = () => {
+//   return navigator.onLine ? 'success' : 'error';
+// };
 export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
+
 
   const history = useHistory();
 
-  if(hasLogin === 'true'){
+  if (hasLogin === 'true') {
     console.log('show my teams');
     history.push('/');
   }
-
 
   const {
     defineRoutedState,
@@ -106,7 +112,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     <>
       <Sider trigger={null} collapsible collapsed={collapse.collapsed}>
         <div className="logo" style={{ marginTop: '1.9em' }}>
-          <Badge status="success" dot="true" offset={[-6, 28]}>
+          <Badge status={'success'} dot="true" offset={[-6, 28]}>
             <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" />
           </Badge>
           {/* <Avatar
@@ -135,7 +141,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
           mode="inline"
           theme="light"
         >
-          <Menu.Item key="1" icon={<TeamOutlined />} >
+          <Menu.Item key="1" icon={<TeamOutlined />}>
             <Link to="/">My Teams</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserSwitchOutlined />}>
@@ -145,10 +151,9 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
             <Link to="/explorer">Explorer</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<ShopOutlined />}>
-          <Link to="/marketplace">Marketplace</Link>
+            <Link to="/marketplace">Marketplace</Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<AppstoreAddOutlined />}>
-
             <Link to="/template-builder">Template Builder</Link>
           </Menu.Item>
           {/* <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">

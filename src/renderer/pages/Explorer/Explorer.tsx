@@ -45,6 +45,12 @@ const ExplorerContainer = styled.div`
       }
       .ant-avatar-group {
       }
+      .ant-card-cover {
+        height: 200px;
+        img {
+          height: 100%;
+        }
+      }
       &.doc-ls {
         padding: 0;
         .ant-card {
@@ -79,8 +85,9 @@ export default function Explorer(props: any) {
     <>
       <ExplorerContainer theme={props.theme}>
         <Row justify="start">
-          <Col span={4}>
+          <Col span={24}>
             <h1 style={{ fontSize: '2rem' }}>Explorer</h1>
+            <p>Encontre equipes de trabalho públicos</p>
           </Col>
         </Row>
         <Row>

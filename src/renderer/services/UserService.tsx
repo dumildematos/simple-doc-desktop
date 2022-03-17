@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Request } from 'renderer/utils/request/request';
+import { Request, RequestVersion } from '../utils/request/request';
 
 const loginUserRequest = (loginForm: LoginForm) => {
   return Request({ url: '/login', method: 'POST', data: loginForm });
@@ -8,9 +8,8 @@ const loginUserRequest = (loginForm: LoginForm) => {
 const version = 'v1';
 
 const getCurrentUser = (token) => {
-  console.log(token);
   return Request({
-    url: `/${version}/user/me`,
+    url: `/${RequestVersion}/user/me`,
     method: 'GET',
     data: null,
     headers: {

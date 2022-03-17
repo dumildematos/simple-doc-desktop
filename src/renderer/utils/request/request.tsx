@@ -17,3 +17,5 @@ export const Request = ({ ...options }) => {
 
   return client(options).then(onSuccess).catch(onError);
 };
+
+export const RequestVersion = 'v1';
