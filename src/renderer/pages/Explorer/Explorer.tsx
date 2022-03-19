@@ -76,9 +76,7 @@ const ExplorerContainer = styled.div`
 `;
 
 export default function Explorer(props: any) {
-  const { isRouted, defineRoutedState, definePageInfo, defineNavigatedUrl } =
-    useContext(MainContext);
-
+  const { defineBackButton } = useContext(MainContext);
   const onSearch = (value) => console.log(value);
 
   return (

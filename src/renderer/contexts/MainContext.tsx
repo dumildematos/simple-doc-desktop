@@ -17,6 +17,8 @@ type Page = {
   refreshToken: string | undefined;
   user: LoginResponse | undefined;
   navigateTo: string;
+  backButton: any;
+  defineBackButton: (state: any) => void;
   defineRoutedState: (state: boolean) => void;
   definePageInfo: (data: any) => void;
   definedEditorIsOpened: (state: boolean) => void;
@@ -46,13 +48,22 @@ export function MainContextProvider({ children }: Node) {
   const [refreshToken, setRefreshToken] = useState(undefined);
   const [user, setUser] = useState({});
   const [navigateTo, setNavigateTo] = useState('/');
+  const [backButton, setBackBotton] = useState({
+    state: false,
+    title: '',
+    subtitle: '',
+  });
 
   useEffect(() => {
     console.log({ editorOpened, isRouted });
-  }, [editorOpened, isRouted, theme, accessToken, navigateTo]);
+  }, [editorOpened, isRouted, theme, accessToken, navigateTo, backButton]);
 
   const defineRoutedState = (state: boolean) => {
     setRouted(state);
+  };
+
+  const defineBackButton = (state: any) => {
+    setBackBotton(state);
   };
 
   const definePageInfo = (data: any) => {
@@ -113,6 +124,8 @@ export function MainContextProvider({ children }: Node) {
         defineRefreshtoken,
         navigateTo,
         defineNavigatedUrl,
+        backButton,
+        defineBackButton,
         user,
       }}
     >

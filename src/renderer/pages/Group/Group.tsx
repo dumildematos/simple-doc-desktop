@@ -38,7 +38,7 @@ const GroupContainer = styled.div`
   /* background: red !important; */
   width: 100%;
   height: 100vh;
-  padding: 50px 25px;
+  padding: 50px;
   background: ${(props: { theme: { cardBg: any } }) => props.theme.boxBg};
   margin: 0;
   .ant-row {
@@ -98,8 +98,10 @@ const text = `
 `;
 
 export default function Group(props: any) {
+  console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
-  const { definedEditorIsOpened, groupPage } = useContext(MainContext);
+  const { definedEditorIsOpened, groupPage, defineBackButton } =
+    useContext(MainContext);
 
   const history = useHistory();
 
@@ -118,12 +120,9 @@ export default function Group(props: any) {
   };
 
   const openDocument = (id: number) => {
-    // console.log(2);
     definedEditorIsOpened(true);
-    const urlDocPage = `/page-doc/${id}`;
-    history.push(urlDocPage);
+    history.push(`/page-doc/${id}`);
   };
-  // console.log(props.theme)
 
   const onChangeCollapse = (key: any) => {
     console.log(key);
@@ -139,7 +138,11 @@ export default function Group(props: any) {
 
   return (
     <GroupContainer theme={props.theme}>
-      <Row justify="space-between" className="main">
+      <Row
+        justify="space-between"
+        className="main"
+        style={{ marginTop: '1rem' }}
+      >
         <Col span={8} className="main">
           <Row justify="space-between" style={{ height: 'auto' }}>
             <Col>
@@ -200,7 +203,7 @@ export default function Group(props: any) {
           </Row>
           <Row>
             <Col span={8} className="doc-ls">
-              <Link to={`/page-doc/${2}`} onClick={() => openDocument(2)}>
+              <Link to={`/page-doc/${2}`}>
                 <Card style={{ width: '100%' }}>
                   <Meta
                     avatar={<Avatar icon={<FileFilled />} />}

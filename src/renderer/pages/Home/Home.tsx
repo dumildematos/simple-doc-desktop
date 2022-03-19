@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Layout, PageHeader } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { Badge, Button, Dropdown, Layout, Menu, PageHeader } from 'antd';
+import { MenuUnfoldOutlined, MenuFoldOutlined, DownOutlined, BellOutlined } from '@ant-design/icons';
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,7 +8,8 @@ import {
   useRouteMatch,
   useHistory,
   useLocation,
-  Redirect
+  Redirect,
+  useParams
 } from "react-router-dom";
 import Sidemenu from 'renderer/components/Sidemenu/Sidemenu';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -16,17 +17,18 @@ import { useTranslation } from 'react-i18next';
 import Groups from '../Groups/Groups';
 import Group from '../Group/Group';
 import MainLayout from '../../components/MainLayout/MainLayout';
-import { getUserData } from 'renderer/services/UserService';
-import { LoginForm } from 'renderer/models/UserModels';
-
 import Explorer from '../Explorer/Explorer';
 import Marketplace from '../Marketplace/Marketplace';
 import InvitedGroups from '../InvitedGroups/InvitedGroups';
 import TemplateBuilder from '../TemplateBuilder/TemplateBuilder';
 import EditableDocPage from '../EditableDocPage/EditableDocPage';
+import Navbar from 'renderer/components/Navbar/Navbar';
 
 const { Header, Content } = Layout;
 const localtoken = localStorage.getItem('access_token');
+
+
+
 
 
 export default function Home({ theme, setTheme }) {
@@ -34,46 +36,25 @@ export default function Home({ theme, setTheme }) {
   const history = useHistory();
   const location = useLocation();
 
-
   if(!localtoken){
     console.log('No access')
     document.location.replace(document.location.origin);
     // history.push('/')
   }
 
-
-
-
-
-
-
   const { path, url } = useRouteMatch();
-  console.log(url)
   const {
     isRouted,
     defineRoutedState,
-    groupPage,
-    editorOpened,
     defineDocSideBar,
     definedEditorIsOpened,
-    defineUser,
-    accessToken,
+    backButton,
+    defineBackButton,
   } = useContext(MainContext);
 
   const [currentPath, setCurrentPath] = useState('/');
 
-
-  useEffect(() => {
-    console.log('Location changed');
-  }, location)
-
-
   const { t, i18n } = useTranslation();
-
-  // useEffect(() => {
-  //   inPage = isRouted;
-  // }, [inPage, isRouted, MainLayout]);
-
 
 
   const [collapse, setCollapse] = useState({
@@ -117,6 +98,10 @@ export default function Home({ theme, setTheme }) {
     defineDocSideBar(false);
   };
 
+console.log(isRouted)
+console.log(collapse)
+console.log(location)
+
   return (
     <>
     <MainLayout theme={theme} isRouted={isRouted}>
@@ -151,7 +136,30 @@ export default function Home({ theme, setTheme }) {
                   onClick: toggle,
                 }
               )}
-              {isRouted && (
+              {
+                backButton && backButton.state && (
+                  <PageHeader
+                      className="site-page-header"
+                      title={backButton.title}
+                      subTitle={backButton.subtitle}
+                      onBack={() => {
+                        // window.history.back();
+                        defineBackButton({
+                          state: false,
+                          title: '',
+                          subtitle: '',
+                        });
+                        defineRoutedState(false);
+                        definedEditorIsOpened(false);
+                        history.goBack();
+                      }}
+                    />
+                )
+              }
+
+
+
+              {/* {isRouted && (
                 <PageHeader
                   className="site-page-header"
                   onBack={() => {
@@ -163,20 +171,10 @@ export default function Home({ theme, setTheme }) {
                   title={groupPage.title}
                   // subTitle="This is a subtitle"
                 />
-              )}
-              {/* <div>
-          {Object.keys(lngs).map((lng) => (
-            <button key={lng} style={{ fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal' }} type="submit" onClick={() => {
-              i18n.changeLanguage(lng);
-              setCounter(count + 1);
-            }}>
-              {lngs[lng].nativeName}
-            </button>
-          ))}
-        </div>
-        <p>
-          <i>{t('counter', { count })}</i>
-        </p> */}
+              )} */}
+
+
+            <Navbar collapse={collapse} />
             </Header>
             <Content
               className="site-layout-background"
@@ -187,13 +185,14 @@ export default function Home({ theme, setTheme }) {
               }}
             >
         <div>
-              { location.pathname }
+        {isRouted}
           <Switch>
+
             <Route exact path={["/", "/my-teams"]}>
-              {!isRouted && <Groups t={t} theme={theme} setPath={setCurrentPath}  />}
+              <Groups t={t} theme={theme} setPath={setCurrentPath}  />
             </Route>
-            <Route path={`/group/:id`}>
-              {isRouted && !editorOpened && <Group t={t} theme={theme}  />}
+            <Route exact path={`/group/:id`}>
+              <Group t={t} theme={theme}  />
             </Route>
             <Route exact path="/explorer">
               <Explorer t={t} theme={theme} setPath={setCurrentPath}  />
@@ -207,7 +206,7 @@ export default function Home({ theme, setTheme }) {
             <Route exact path="/template-builder">
               <TemplateBuilder setPath={setCurrentPath}  />
             </Route>
-            <Route path="/page-doc/:id">
+            <Route exact path="/page-doc/:id">
                 <EditableDocPage theme={theme} />
               </Route>
           </Switch>

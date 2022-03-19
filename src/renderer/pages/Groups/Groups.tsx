@@ -12,12 +12,10 @@ import {
   Modal,
   Space,
   Table,
-  Popover,
   Pagination,
   Select,
   Menu,
   Dropdown,
-  Tooltip,
 } from 'antd';
 import {
   TeamOutlined,
@@ -28,7 +26,7 @@ import {
 } from '@ant-design/icons';
 import { FaUsers } from '@react-icons/all-files/fa/FaUsers';
 import { IoIosDocument } from '@react-icons/all-files/io/IoIosDocument';
-import { Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { MainContext } from 'renderer/contexts/MainContext';
 import Picker from 'emoji-picker-react';
@@ -151,7 +149,9 @@ const tableColumns = [
 
 const hasAcessToken = localStorage.getItem('access_token');
 export default function Groups({ theme, t, setPath }) {
-  const { isRouted, defineRoutedState, definePageInfo, defineNavigatedUrl } =
+  const history = useHistory();
+
+  const { isRouted, defineRoutedState, definePageInfo, defineBackButton } =
     useContext(MainContext);
   const [form] = Form.useForm();
   const teamArray = [
@@ -192,7 +192,6 @@ export default function Groups({ theme, t, setPath }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [viewAs, setChangeView] = useState('grid');
   const [chosenEmoji, setChosenEmoji] = useState(null);
-  const [emojiSelectInput, setEmojiSelectInput] = useState('');
 
   const onSuccess = () => {
     console.log(data);
@@ -245,7 +244,7 @@ export default function Groups({ theme, t, setPath }) {
   const setRoutState = (item: any) => {
     console.log('clicked');
     defineRoutedState(true);
-    definePageInfo(item);
+    definePageInfo(item.id);
   };
 
   const onEmojiClick = (
@@ -257,21 +256,6 @@ export default function Groups({ theme, t, setPath }) {
     console.log(form);
     form.setFieldsValue(form.getFieldValue('title') + emojiObject.emoji);
     setChosenEmoji(emojiObject);
-  };
-
-  const emojiContainerSelection = (
-    <div>
-      {chosenEmoji ? (
-        <span>You chose: {chosenEmoji.emoji}</span>
-      ) : (
-        <span>No emoji Chosen</span>
-      )}
-      <Picker onEmojiClick={onEmojiClick} />
-    </div>
-  );
-
-  const handleButtonClick = (e: any) => {
-    console.log('click left button', e);
   };
 
   const handleMenuClick = (e: any) => {
@@ -294,13 +278,19 @@ export default function Groups({ theme, t, setPath }) {
     </Menu>
   );
 
-  const btnEmojiTooltip = (
-    <Popover content={emojiContainerSelection}>
-      <Button type="link">
-        <SmileOutlined />
-      </Button>
-    </Popover>
-  );
+  const navigateToTeam = (team: { id: any }) => {
+    if (team) {
+      defineBackButton({
+        state: true,
+        title: team.name,
+        subtitle: '',
+      });
+      setTimeout(() => {
+        history.push(`/group/${team.id}`);
+      }, 1000);
+      // setRoutState(team);
+    }
+  };
 
   return (
     <>
@@ -340,26 +330,21 @@ export default function Groups({ theme, t, setPath }) {
             }}
           >
             {data?.data.content.map((item, index) => (
-              <Col key={item.id} span={8}>
-                <Link
-                  to={`/group/${item.id}`}
-                  onClick={() => setRoutState(item)}
+              <Col key={item.id} span={8} onClick={() => navigateToTeam(item)}>
+                <Card
+                  style={{ width: '100%' }}
+                  actions={[
+                    // eslint-disable-next-line react/jsx-key
+                    [<FaUsers />, <span>{item.menbers}</span>],
+                    // eslint-disable-next-line react/jsx-key
+                    [<IoIosDocument />, <span>{item.docs}</span>],
+                  ]}
+                  className="teams-card"
                 >
-                  <Card
-                    style={{ width: '100%' }}
-                    actions={[
-                      // eslint-disable-next-line react/jsx-key
-                      [<FaUsers />, <span>{item.menbers}</span>],
-                      // eslint-disable-next-line react/jsx-key
-                      [<IoIosDocument />, <span>{item.docs}</span>],
-                    ]}
-                    className="teams-card"
-                  >
-                    <Skeleton loading={isLoading || isFetching} active>
-                      <Meta title={item.name} description={item.description} />
-                    </Skeleton>
-                  </Card>
-                </Link>
+                  <Skeleton loading={isLoading || isFetching} active>
+                    <Meta title={item.name} description={item.description} />
+                  </Skeleton>
+                </Card>
               </Col>
             ))}
           </Row>
@@ -406,22 +391,6 @@ export default function Groups({ theme, t, setPath }) {
               modifier: 'public',
             }}
           >
-            {/* <Form.Item
-            style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}
-            label="emoji"
-          >
-            <Select
-              value={emojiSelectInput}
-              style={{ width: 80, margin: '0 8px' }}
-            >
-              <Option value="rmb">
-                <btnEmojiTooltip />
-              </Option>
-              <Option value="dollar">Dollar</Option>
-            </Select>
-
-
-          </Form.Item> */}
             <Row>
               <Col flex="100px">
                 <Form.Item label=".">

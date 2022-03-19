@@ -44,8 +44,7 @@ import createDragNDropUploadPlugin from '@draft-js-plugins/drag-n-drop-upload';
 import StateToPdfMake from 'draft-js-export-pdfmake';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts.js';
-import QuillEditor from './tools/quill/QuillEditor';
-import SlateEditor from './tools/SlateEditor/Editor';
+import QuillEditor from './tools/QuillEditor/QuillEditor';
 
 // pdfMake.vfs = pdfFonts.pdfMake.vfs;
 // import robotoItalic from '../../../../assets/fonts/Roboto/Roboto-Italic.ttf';
@@ -72,7 +71,8 @@ const EditorContainer = styled.div`
   width: 100%;
   height: 100vh;
   padding: 0;
-  background: ${(props: { theme: { cardBg: any } }) => props.theme.boxBg};
+  overflow-y: scroll;
+  background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
   margin: 0;
   .ant-row {
     &.main {
@@ -233,6 +233,9 @@ export default function EditableDocPage({ theme }) {
     // console.log(inPage);
   }, [inPage, isRouted, MainLayout]);
   const history = useHistory();
+
+  const [visible, setVisible] = useState(false);
+
   const [collapse, setCollapse] = useState({
     collapsed: false,
   });
@@ -254,13 +257,6 @@ export default function EditableDocPage({ theme }) {
     });
   };
 
-  const showDrawer = () => {
-    defineDocSideBar(true);
-  };
-  const onCloseDrawer = () => {
-    defineDocSideBar(false);
-  };
-
   const onChangeText = (editorState: any) => {
     // const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
     setEditor({
@@ -273,6 +269,13 @@ export default function EditableDocPage({ theme }) {
     console.log(blocks);
   };
 
+  const showDrawer = () => {
+    setVisible(true);
+  };
+  const onClose = () => {
+    setVisible(false);
+  };
+
   const handleGeneratePDF = () => {
     const rawContent = convertToRaw(editor.editorState.getCurrentContent());
     const stateToPdfMake = new StateToPdfMake(rawContent);
@@ -280,20 +283,6 @@ export default function EditableDocPage({ theme }) {
 
     pdfMake.createPdf(stateToPdfMake.generate()).download();
   };
-
-  const previewMenu = (
-    <Menu onClick={() => handleMenuClick()}>
-      <Menu.Item key="1" icon={<UserOutlined />}>
-        1st menu item
-      </Menu.Item>
-      <Menu.Item key="2" icon={<UserOutlined />}>
-        2nd menu item
-      </Menu.Item>
-      <Menu.Item key="3" icon={<UserOutlined />}>
-        3rd menu item
-      </Menu.Item>
-    </Menu>
-  );
 
   const handleMenuClick = (e: any) => {
     // message.info('Click on menu item.');
@@ -308,14 +297,6 @@ export default function EditableDocPage({ theme }) {
     }
   };
 
-  const exportMenu = (
-    <Menu onClick={handleExportAsMenuClick}>
-      <Menu.Item key="pdf" icon={<UserOutlined />}>
-        PDF
-      </Menu.Item>
-    </Menu>
-  );
-
   return (
     <>
       <EditorContainer>
@@ -328,10 +309,13 @@ export default function EditableDocPage({ theme }) {
             marginTop: '48px',
           }}
         >
-
           {/* <QuillEditor /> */}
-          <SlateEditor />
+          <QuillEditor />
+          {/* <SlateEditor /> */}
 
+          {/* <Button type="primary" onClick={showDrawer}>
+            Open
+          </Button> */}
           <Affix style={{ position: 'fixed', top: '90%', right: '3%' }}>
             <Button
               className="btn-action"
@@ -346,59 +330,12 @@ export default function EditableDocPage({ theme }) {
           <Drawer
             title="Basic Drawer"
             placement="right"
-            width={440}
-            onClose={onCloseDrawer}
-            visible={visibleDocSidebar}
+            onClose={onClose}
+            visible={visible}
           >
-            <p
-              className="site-description-item-profile-p"
-              style={{ marginBottom: 24 }}
-            >
-              Membros
-            </p>
-            <p className="site-description-item-profile-p">Personal</p>
-            <Row>
-              <Col span={12}>
-                <DescriptionItem title="Full Name" content="Lily" />
-              </Col>
-              <Col span={12}>
-                <DescriptionItem
-                  title="Account"
-                  content="AntDesign@example.com"
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <DescriptionItem title="City" content="HangZhou" />
-              </Col>
-              <Col span={12}>
-                <DescriptionItem title="Country" content="China🇨🇳" />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <DescriptionItem title="Birthday" content="February 2,1900" />
-              </Col>
-              <Col span={12}>
-                <DescriptionItem title="Website" content="-" />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <DescriptionItem
-                  title="Message"
-                  content="Make things as simple as possible but no simpler."
-                />
-              </Col>
-            </Row>
-            <Divider />
-            <p className="site-description-item-profile-p">Chat</p>
-            <Row>
-              <Col span={24}>
-                <Chat />
-              </Col>
-            </Row>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
           </Drawer>
         </Content>
       </EditorContainer>

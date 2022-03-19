@@ -30,8 +30,6 @@ const hasLogin = localStorage.getItem('hasLogin');
 //   return navigator.onLine ? 'success' : 'error';
 // };
 export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
-
-
   const history = useHistory();
 
   if (hasLogin === 'true') {
@@ -48,6 +46,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     defineUser,
     defineAcesstoken,
     defineRefreshtoken,
+    defineBackButton,
   } = useContext(MainContext);
   const user = JSON.parse(localStorage.getItem('user'));
   const [settingModal, setSettingModal] = useState({
@@ -140,6 +139,13 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
           defaultOpenKeys={['sub1']}
           mode="inline"
           theme="light"
+          // onSelect={() => {
+          //   defineBackButton({
+          //     state: false,
+          //     title: '',
+          //     subtitle: '',
+          //   });
+          // }}
         >
           <Menu.Item key="1" icon={<TeamOutlined />}>
             <Link to="/">My Teams</Link>

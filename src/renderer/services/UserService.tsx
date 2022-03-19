@@ -5,8 +5,6 @@ const loginUserRequest = (loginForm: LoginForm) => {
   return Request({ url: '/login', method: 'POST', data: loginForm });
 };
 
-const version = 'v1';
-
 const getCurrentUser = (token) => {
   return Request({
     url: `/${RequestVersion}/user/me`,
