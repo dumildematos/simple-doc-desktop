@@ -23,6 +23,7 @@ import {
   TableOutlined,
   SmileOutlined,
   DownOutlined,
+  EllipsisOutlined,
 } from '@ant-design/icons';
 import { FaUsers } from '@react-icons/all-files/fa/FaUsers';
 import { IoIosDocument } from '@react-icons/all-files/io/IoIosDocument';
@@ -30,7 +31,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { MainContext } from 'renderer/contexts/MainContext';
 import Picker from 'emoji-picker-react';
-import { getUserTeams } from 'renderer/services/TeamsService';
+import { getUserTeams, onCreateTeam } from 'renderer/services/TeamsService';
+import { TeamAddForm } from 'renderer/models/TeamModel';
 
 const { Meta } = Card;
 const { TextArea } = Input;
@@ -193,26 +195,37 @@ export default function Groups({ theme, t, setPath }) {
   const [viewAs, setChangeView] = useState('grid');
   const [chosenEmoji, setChosenEmoji] = useState(null);
 
+  const onCreateError = () => {};
+
   const onSuccess = () => {
-    console.log(data);
+    console.log(teamList);
   };
 
   const onError = () => {
-    console.log(error);
+    console.log(teamList);
   };
 
-  const { data, isLoading, isFetching, isError, error } = getUserTeams(
-    onSuccess,
-    onError,
-    hasAcessToken
-  );
+  const {
+    data: teamList,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = getUserTeams(onSuccess, onError);
+
+  const onCreateSuccess = () => {
+    refetch();
+  };
+
+  const { mutate: createTeam } = onCreateTeam(onCreateSuccess, onCreateError);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
   const onChangeInput = (e: any) => {
-    console.log(e);
+    // console.log(e);
   };
 
   const onCancel = () => {
@@ -225,18 +238,18 @@ export default function Groups({ theme, t, setPath }) {
 
   const onCreateGroup = (values: any) => {
     console.log(values);
-    const createdTeam = [
-      {
-        id: Math.floor(Math.random(10) * 1000),
-        title: `${chosenEmoji.emoji} ${values.title}`,
-        desc: values.description,
-        menbers: 0,
-        docs: 0,
-        teamUrl: '/teste',
-      },
-    ];
-    setTeams([...teams, ...createdTeam]);
-    teamArray.push();
+
+    const team: TeamAddForm = {
+      name: chosenEmoji ? `${chosenEmoji.emoji} ${values.title}` : values.title,
+      description: values.description,
+      banner: '',
+      type: 'PRIVATE',
+    };
+
+    createTeam(team);
+
+    // setTeams([...teams, ...createdTeam]);
+    // teamArray.push();
     setIsModalVisible(false);
     setChosenEmoji(null);
   };
@@ -292,6 +305,10 @@ export default function Groups({ theme, t, setPath }) {
     }
   };
 
+  const onShowPageSizeChange = (current, pageSize)  => {
+    console.log(current, pageSize);
+  };
+
   return (
     <>
       <div style={{ padding: 50 }}>
@@ -320,7 +337,7 @@ export default function Groups({ theme, t, setPath }) {
             </Radio.Group>
           </Col>
         </Row>
-        {data?.data.totalElements}
+        {teamList?.data.totalElements}
         {viewAs === 'grid' && (
           <Row
             className="cards-container"
@@ -329,10 +346,11 @@ export default function Groups({ theme, t, setPath }) {
               paddingTop: '10px',
             }}
           >
-            {data?.data.content.map((item, index) => (
-              <Col key={item.id} span={8} onClick={() => navigateToTeam(item)}>
+            {teamList?.data.content.map((item, index) => (
+              <Col key={item.id} span={8} >
                 <Card
                   style={{ width: '100%' }}
+                  onClick={() => navigateToTeam(item)}
                   actions={[
                     // eslint-disable-next-line react/jsx-key
                     [<FaUsers />, <span>{item.menbers}</span>],
@@ -349,10 +367,16 @@ export default function Groups({ theme, t, setPath }) {
             ))}
           </Row>
         )}
-        {viewAs === 'grid' && (
-          <Row>
+        {viewAs === 'grid' && teamList?.data&&  (
+          <Row style={{ marginTop: '2rem' }}>
             <Col>
-              <Pagination defaultCurrent={1} total={9} />
+              <Pagination
+                showSizeChanger
+                onShowSizeChange={onShowPageSizeChange}
+                onChange={onShowPageSizeChange}
+                pageSize={teamList?.data.totalPages}
+                total={teamList?.data.totalElements}
+              />
             </Col>
           </Row>
         )}
@@ -419,6 +443,22 @@ export default function Groups({ theme, t, setPath }) {
             </Row>
 
             <Form.Item
+              name="type"
+              label="Selecione o tipo"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input the title of collection!',
+                },
+              ]}
+            >
+              <Radio.Group defaultValue="PRIVATE" buttonStyle="solid">
+                <Radio.Button value="PUBLIC">Público</Radio.Button>
+                <Radio.Button value="PRIVATE">Privado</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
+
+            <Form.Item
               name="description"
               label="Descrição"
               rules={[
@@ -434,34 +474,6 @@ export default function Groups({ theme, t, setPath }) {
                 onChange={onChangeInput}
               />
             </Form.Item>
-            {/* <Form.Item
-    name="description"
-    label="Descrição"
-    rules={[
-      {
-        required: true,
-        message: 'Please input the title of collection!',
-      },
-    ]}
-  >
-    {hashes.inputVisible && (
-      <Input
-        ref={saveInputRef}
-        type="text"
-        size="small"
-        style={{ width: 78 }}
-        value={hashes.inputValue}
-        onChange={handleInputChange}
-        onBlur={handleInputConfirm}
-        onPressEnter={handleInputConfirm}
-      />
-    )}
-    {!hashes.inputVisible && (
-      <Tag onClick={showInput} className="site-tag-plus">
-        <PlusOutlined /> New Tag
-      </Tag>
-    )}
-  </Form.Item> */}
           </Form>
         </ModalLayout>
       </div>

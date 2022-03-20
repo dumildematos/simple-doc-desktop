@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { TeamAdd } from 'renderer/models/TeamModel';
+import { TeamAddForm } from 'renderer/models/TeamModel';
 import { Request, RequestVersion } from '../utils/request/request';
 
-const listTeamsRequest = (token: any) => {
+const listTeamsRequest = () => {
+  const token = localStorage.getItem('access_token');
   return Request({
     url: `/${RequestVersion}/teams/user/?page=0&size=6`,
     method: 'GET',
@@ -15,9 +16,10 @@ const listTeamsRequest = (token: any) => {
   });
 };
 
-const createTeam = (data: TeamAdd, token: string) => {
+const createTeam = (data: TeamAddForm) => {
+  const token = localStorage.getItem('access_token');
   return Request({
-    url: `/${RequestVersion}/teams/user/?page=0&size=6`,
+    url: `/${RequestVersion}/team/create`,
     method: 'POST',
     data,
     headers: {
@@ -34,7 +36,7 @@ export const getUserTeams = (
   onError: () => void,
   token: string | null
 ) => {
-  return useQuery(['list-user-teams'], () => listTeamsRequest(token), {
+  return useQuery('list-user-teams', listTeamsRequest, {
     onSuccess,
     onError,
     // refetchInterval: 1000,
@@ -42,19 +44,26 @@ export const getUserTeams = (
 };
 
 export const onCreateTeam = (
-  onSuccess: (data: any) => void,
-  onError: (error: any) => void,
-  form: TeamAdd,
-  token: string
-) => {
-  return useMutation(
-    () => {
-      createTeam(form, token);
+  onCreateSuccess: (data: any) => void,
+  onCreateError: (error: any) => void
+  ) => {
+  const queryClient = useQueryClient();
+  return useMutation(createTeam, {
+    onMutate: async (newteam) => {
+      await queryClient.cancelQueries('list-user-teams');
+      const previousTeamList = queryClient.getQueryData('list-user-teams');
+      queryClient.setQueryData('list-user-teams', (oldQueryData) => {
+        console.log(oldQueryData);
+        // return {
+        //   ...oldQueryData,
+        //   data: [...oldQueryData.data, newteam],
+        // };
+      });
+      return {
+        previousTeamList,
+      };
     },
-    {
-      onSuccess,
-      onError,
-      disable: true,
-    }
-  );
+    onSuccess: () => onCreateSuccess,
+    onError: () => onCreateError,
+  });
 };
