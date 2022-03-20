@@ -3,6 +3,9 @@ import { Dropdown, Badge, Button, Menu, Avatar, List } from 'antd';
 import styled from 'styled-components';
 
 const Navigation = styled.div`
+  .sc-hkgtus.fsQRKm{
+
+  }
   ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.dropdown-notification-menu {
     width: 245px;
     top: -9px;
@@ -53,25 +56,27 @@ export default function Navbar(props: any) {
   return (
     <>
       <Navigation collapse={props.collapse}>
-        <Dropdown
-          overlay={notificationMenu}
-          trigger={['click']}
-          className="dropdown-notification"
-          // style={{
-          //   marginLeft: props.collapse.collapsed
-          //     ? '71%!important'
-          //     : '81%!important',
-          // }}
-        >
-          {/* <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                Click me <DownOutlined />
-              </a> */}
-          <Badge count={99} offset={[-6, 10]}>
-            <Button type="link" block>
-              <BellOutlined />
-            </Button>
-          </Badge>
-        </Dropdown>
+        <div className="notificationDropdown">
+          <Dropdown
+            overlay={notificationMenu}
+            trigger={['click']}
+            className="dropdown-notification"
+            // style={{
+            //   marginLeft: props.collapse.collapsed
+            //     ? '71%!important'
+            //     : '81%!important',
+            // }}
+          >
+            {/* <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                  Click me <DownOutlined />
+                </a> */}
+            <Badge count={99} offset={[-6, 10]}>
+              <Button type="link" block>
+                <BellOutlined />
+              </Button>
+            </Badge>
+          </Dropdown>
+        </div>
       </Navigation>
     </>
   );

@@ -104,7 +104,7 @@ console.log(location)
 
   return (
     <>
-    <MainLayout theme={theme} isRouted={isRouted}>
+    <MainLayout theme={theme} isRouted={isRouted} collapse={collapse}>
     <Router>
 
     <Layout className="main-layout">

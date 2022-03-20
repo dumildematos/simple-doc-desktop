@@ -74,6 +74,14 @@ const MainLayout = styled.div`
   }
 
   .site-layout {
+    header.ant-layout-header.site-layout-background.nav {
+      div.notificationDropdown {
+        position: absolute;
+        top: 0;
+        right:  ${(props) =>
+          !props.collapse.collapsed ? '20%': '10%'};
+      }
+    }
     .site-layout-background {
       background: ${(props) =>
         !props.isRouted ? props.theme.navBg : 'transparent'};

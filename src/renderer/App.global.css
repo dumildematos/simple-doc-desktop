@@ -157,3 +157,13 @@ section.ant-layout.layout {
 .cards-container {
   padding: 8px 0;
 }
+
+ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.dropdown-notification-menu {
+  width: 245px;
+  top: -9px;
+  overflow-y: scroll;
+  height: 250px;
+  /* li.ant-list-item {
+    height: 104px;
+  } */
+}

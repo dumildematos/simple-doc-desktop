@@ -234,17 +234,25 @@ export default function Group(props: any) {
           <Col flex="600" className="previewTemplate">
             preview
           </Col>
-          <Col flex="200px" className="collapseSelect">
+          <Col
+            flex="200px"
+            className="collapseSelect"
+            style={{ overflow: 'hidden' }}
+          >
             <div className="useTemplateBx">
               <Button type="primary" block>
-                Use Template
+                Create
               </Button>
             </div>
-            <Collapse bordered={false} defaultActiveKey={['1']}>
-              <Panel header="Default" key="2">
+            <Collapse
+              bordered={false}
+              defaultActiveKey={['1']}
+              style={{ height: '100%', overflowY: 'scroll' }}
+            >
+              <Panel header="My Templates" key="1">
                 {text}
               </Panel>
-              <Panel header="Design" key="1">
+              <Panel header="Design" key="2">
                 <DirectoryTree
                   multiple
                   defaultExpandAll
@@ -253,10 +261,10 @@ export default function Group(props: any) {
                   treeData={treeData}
                 />
               </Panel>
-              <Panel header="Student" key="2">
+              <Panel header="Student" key="3">
                 {text}
               </Panel>
-              <Panel header="Engineering" key="3">
+              <Panel header="Engineering" key="4">
                 {text}
               </Panel>
             </Collapse>
