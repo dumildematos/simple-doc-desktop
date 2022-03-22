@@ -16,6 +16,7 @@ import { BsPencil } from '@react-icons/all-files/bs/BsPencil';
 import { HiOutlineDocumentAdd } from '@react-icons/all-files/hi/HiOutlineDocumentAdd';
 import { AntDesignOutlined, FileFilled, UserOutlined } from '@ant-design/icons';
 import { MainContext } from 'renderer/contexts/MainContext';
+import { onListCategory } from 'renderer/services/CategoryService';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
@@ -107,6 +108,16 @@ export default function Group(props: any) {
 
   const [isModalSelectTypeDoc, setIsModalSelectTypeDoc] = useState(false);
 
+  const onSuccessCategoryList = () => {};
+  const onErrorategoryList = () => {};
+
+  const { data: lstCategory, refetch: getCategoryList } = onListCategory(
+    onSuccessCategoryList,
+    onErrorategoryList,
+    false
+  );
+  console.log(lstCategory);
+
   const modalSelecTypeHandleOk = () => {
     setIsModalSelectTypeDoc(false);
   };
@@ -192,7 +203,10 @@ export default function Group(props: any) {
                 type="link"
                 size="small"
                 className="btn-action-pmd"
-                onClick={modalSelecTypeShowModal}
+                onClick={() => {
+                  getCategoryList();
+                  modalSelecTypeShowModal();
+                }}
               >
                 <p>
                   New Document &nbsp;
@@ -245,28 +259,31 @@ export default function Group(props: any) {
               </Button>
             </div>
             <Collapse
+              accordion
               bordered={false}
               defaultActiveKey={['1']}
               style={{ height: '100%', overflowY: 'scroll' }}
             >
-              <Panel header="My Templates" key="1">
+              <Panel header="My Templates" key="0">
                 {text}
               </Panel>
-              <Panel header="Design" key="2">
-                <DirectoryTree
-                  multiple
-                  defaultExpandAll
-                  onSelect={onSelect}
-                  onExpand={onExpand}
-                  treeData={treeData}
-                />
-              </Panel>
-              <Panel header="Student" key="3">
+              {lstCategory?.data.content.map((item) => (
+                <Panel header={item.name} key={item.id}>
+                  <DirectoryTree
+                   multiple
+                   defaultExpandAll
+                   onSelect={onSelect}
+                   onExpand={onExpand}
+                   treeData={treeData}
+                 />
+                </Panel>
+              ))}
+              {/* <Panel header="Student" key="3">
                 {text}
               </Panel>
               <Panel header="Engineering" key="4">
                 {text}
-              </Panel>
+              </Panel> */}
             </Collapse>
           </Col>
         </Row>

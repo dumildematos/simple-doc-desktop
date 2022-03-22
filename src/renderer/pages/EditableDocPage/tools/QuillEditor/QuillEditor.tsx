@@ -70,8 +70,18 @@ const TOOLBAR_OPTIONS = [
   ['bold', 'italic', 'underline'],
   [{ color: [] }, { background: [] }],
   [{ script: 'sub' }, { script: 'super' }],
+  [{ indent: '-1' }, { indent: '+1' }],
   [{ align: [] }],
-  ['image', 'blockquote', 'code-block'],
+  ['image', 'blockquote', 'code-block', 'link'],
+  [
+    'table',
+    'column-left',
+    'column-right',
+    'row-above',
+    'row-below',
+    'row-remove',
+    'column-remove',
+  ],
   ['clean'],
 ];
 const SAVE_INTERVAL_MS = 2000;
@@ -120,6 +130,9 @@ export default function QuillEditor() {
       quill.updateContents(delta);
     };
     socket.on('receive-changes', handler);
+    socket.on('typing-changes', (data) => {
+      console.log(data);
+    });
 
     return () => {
       socket.off('receive-changes', handler);

@@ -16,6 +16,8 @@ import {
   Select,
   Menu,
   Dropdown,
+  Alert,
+  Empty,
 } from 'antd';
 import {
   TeamOutlined,
@@ -305,7 +307,7 @@ export default function Groups({ theme, t, setPath }) {
     }
   };
 
-  const onShowPageSizeChange = (current, pageSize)  => {
+  const onShowPageSizeChange = (current, pageSize) => {
     console.log(current, pageSize);
   };
 
@@ -346,41 +348,55 @@ export default function Groups({ theme, t, setPath }) {
               paddingTop: '10px',
             }}
           >
-            {teamList?.data.content.map((item, index) => (
-              <Col key={item.id} span={8} >
-                <Card
-                  style={{ width: '100%' }}
-                  onClick={() => navigateToTeam(item)}
-                  actions={[
-                    // eslint-disable-next-line react/jsx-key
-                    [<FaUsers />, <span>{item.menbers}</span>],
-                    // eslint-disable-next-line react/jsx-key
-                    [<IoIosDocument />, <span>{item.docs}</span>],
-                  ]}
-                  className="teams-card"
-                >
-                  <Skeleton loading={isLoading || isFetching} active>
-                    <Meta title={item.name} description={item.description} />
-                  </Skeleton>
-                </Card>
+            {teamList?.data.totalElements === 0 && (
+              <Col span={24}>
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </Col>
-            ))}
+            )}
+
+            {teamList?.data.totalElements > 0 &&
+              teamList?.data.content.map((item, index) => (
+                <Col key={item.id} span={8}>
+                  <Card
+                    style={{ width: '100%' }}
+                    onClick={() => navigateToTeam(item)}
+                    actions={[
+                      // eslint-disable-next-line react/jsx-key
+                      [<FaUsers />, <span>{item.menbers}</span>],
+                      // eslint-disable-next-line react/jsx-key
+                      [<IoIosDocument />, <span>{item.docs}</span>],
+                    ]}
+                    className="teams-card"
+                  >
+                    <Skeleton loading={isLoading || isFetching} active>
+                      <Meta title={item.name} description={item.description} />
+                    </Skeleton>
+                  </Card>
+                </Col>
+              ))}
           </Row>
         )}
-        {viewAs === 'grid' && teamList?.data&&  (
-          <Row style={{ marginTop: '2rem' }}>
-            <Col>
-              <Pagination
-                showSizeChanger
-                onShowSizeChange={onShowPageSizeChange}
-                onChange={onShowPageSizeChange}
-                pageSize={teamList?.data.totalPages}
-                total={teamList?.data.totalElements}
-              />
-            </Col>
-          </Row>
+        {teamList?.data.totalElements > 0 &&
+          viewAs === 'grid' &&
+          teamList?.data && (
+            <Row style={{ marginTop: '2rem' }}>
+              <Col>
+                <Pagination
+                  showSizeChanger
+                  onShowSizeChange={onShowPageSizeChange}
+                  onChange={onShowPageSizeChange}
+                  pageSize={teamList?.data.totalPages}
+                  total={teamList?.data.totalElements}
+                />
+              </Col>
+            </Row>
+          )}
+        {teamList?.data.totalElements === 0 && viewAs === 'list' && (
+          <Col span={24}>
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          </Col>
         )}
-        {viewAs === 'list' && (
+        {teamList?.data.totalElements > 0 && viewAs === 'list' && (
           <Row className="cards-container" style={{ paddingTop: '10px' }}>
             <Col span={24}>
               <Table columns={tableColumns} dataSource={teams} />
