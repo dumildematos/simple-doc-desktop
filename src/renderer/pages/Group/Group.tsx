@@ -10,7 +10,7 @@ import {
   Collapse,
   Tree,
 } from 'antd';
-import { Link, useHistory, withRouter } from 'react-router-dom';
+import { Link, useHistory, useParams, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsPencil } from '@react-icons/all-files/bs/BsPencil';
 import { HiOutlineDocumentAdd } from '@react-icons/all-files/hi/HiOutlineDocumentAdd';
@@ -25,6 +25,11 @@ import {
 import { MainContext } from 'renderer/contexts/MainContext';
 import { onListCategory } from 'renderer/services/CategoryService';
 import { onGetTemplates } from 'renderer/services/TemplateService';
+import {
+  getDocumentsOfTeam,
+  onCreateDocument,
+} from 'renderer/services/DocumentService';
+import { CreateDocument } from 'renderer/models/DocumentModel';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
@@ -73,6 +78,20 @@ const GroupContainer = styled.div`
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .ant-card-meta {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            span.ant-avatar.ant-avatar-circle.ant-avatar-icon {
+              background: red !important;
+            }
+            .ant-card-meta-detail {
+              margin-top: 15px;
+              .ant-card-meta-title {
+                font-size: 0.47rem;
+              }
+            }
+          }
           .square {
             width: 70px;
             height: 70px !important;
@@ -87,20 +106,14 @@ const GroupContainer = styled.div`
   }
 `;
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-
 export default function Group(props: any) {
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
-  const { definedEditorIsOpened, groupPage, defineBackButton } =
-    useContext(MainContext);
+  const { definedEditorIsOpened, groupPage } = useContext(MainContext);
   const [currentCollapsedId, setCollpasedId] = useState(0);
   const [treeTemplate, setTreeTemplate] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState({});
+  const { id: teamId } = useParams();
   const history = useHistory();
 
   const [isModalSelectTypeDoc, setIsModalSelectTypeDoc] = useState(false);
@@ -131,13 +144,30 @@ export default function Group(props: any) {
     );
   };
 
-  const { data: templateList, refetch: getTemplateList } = onGetTemplates(
+  const { refetch: getTemplateList } = onGetTemplates(
     onSuccessTemplate,
     onErrorategoryList,
     currentCollapsedId
   );
 
-  // console.log(lstCategory);
+  const onCreateDocumentSuccess = () => {};
+  const onCreateDocumentError = () => {};
+
+  const { mutate: createDocument } = onCreateDocument(
+    onCreateDocumentSuccess,
+    onCreateDocumentError
+  );
+
+  const onDocumentListSuccess = () => {};
+  const onDocumentListError = () => {};
+
+  const { data: documentList } = getDocumentsOfTeam(
+    onDocumentListSuccess,
+    onDocumentListError,
+    Number(teamId)
+  );
+
+  console.log(documentList);
 
   const modalSelecTypeHandleOk = () => {
     setIsModalSelectTypeDoc(false);
@@ -151,20 +181,11 @@ export default function Group(props: any) {
     setIsModalSelectTypeDoc(true);
   };
 
-  const openDocument = (id: number) => {
-    definedEditorIsOpened(true);
-    history.push(`/page-doc/${id}`);
-  };
-
   const onChangeCollapse = (key: number) => {
     if (key) {
       setCollpasedId(Number(key));
       console.log(currentCollapsedId);
       getTemplateList();
-      // console.log(templateList);
-      // setTreeTemplate(
-
-      // );
     }
   };
 
@@ -228,6 +249,8 @@ export default function Group(props: any) {
         <Col span={15} style={{ overflow: 'scroll' }} className="main">
           <Row justify="space-between" style={{ height: 'auto' }}>
             <Col>{/* <h4>Detalhes da equipe</h4> */}</Col>
+            {documentList?.data?.numberOfElements === 0 && 'Empty'}
+
             <Col>
               <Button
                 type="link"
@@ -246,16 +269,23 @@ export default function Group(props: any) {
             </Col>
           </Row>
           <Row>
-            <Col span={8} className="doc-ls">
-              <Link to={`/page-doc/${2}`}>
-                <Card style={{ width: '100%' }}>
-                  <Meta
-                    avatar={<Avatar icon={<FileFilled />} />}
-                    title="Card title Dumilde"
-                  />
-                </Card>
-              </Link>
-            </Col>
+            {documentList?.data.numberOfElements === 0 && 'Empty'}
+
+            {documentList?.data.numberOfElements > 0 &&
+              documentList?.data.content.map((document) => {
+                return (
+                  <Col span={4} className="doc-ls" key={document.id}>
+                    <Link to={`/page-doc/${document.id}`}>
+                      <Card style={{ width: '100%' }}>
+                        <Meta
+                          avatar={<Avatar icon={<FileTextOutlined />} />}
+                          title={document.name}
+                        />
+                      </Card>
+                    </Link>
+                  </Col>
+                );
+              })}
           </Row>
         </Col>
       </Row>
@@ -276,7 +306,9 @@ export default function Group(props: any) {
       >
         <Row>
           <Col flex="600" className="previewTemplate">
-            {selectedTemplate ? selectedTemplate.node.content : 'empty'}
+            {selectedTemplate && selectedTemplate.node
+              ? selectedTemplate.node.content
+              : 'empty'}
           </Col>
           <Col
             flex="200px"
@@ -289,6 +321,18 @@ export default function Group(props: any) {
                 block
                 onClick={() => {
                   console.log(selectedTemplate);
+                  console.log(teamId);
+
+                  const form: CreateDocument = {
+                    name: 'Untitled',
+                    content: '{[]}',
+                    type: 'PRIVATE',
+                    teamId: Number(teamId),
+                    templateId: selectedTemplate?.node
+                      ? selectedTemplate.node.key
+                      : null,
+                  };
+                  createDocument(form);
                 }}
               >
                 Create
@@ -302,7 +346,7 @@ export default function Group(props: any) {
               onChange={(e) => onChangeCollapse(e)}
             >
               <Panel header="My Templates" key="0">
-                {text}
+                {/* {text} */}
               </Panel>
               {lstCategory?.data.content.map((item) => (
                 <Panel header={item.name} key={item.id}>
