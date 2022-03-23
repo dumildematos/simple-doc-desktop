@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Avatar,
   Button,
@@ -14,26 +14,21 @@ import { Link, useHistory, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsPencil } from '@react-icons/all-files/bs/BsPencil';
 import { HiOutlineDocumentAdd } from '@react-icons/all-files/hi/HiOutlineDocumentAdd';
-import { AntDesignOutlined, FileFilled, UserOutlined } from '@ant-design/icons';
+import {
+  AntDesignOutlined,
+  CarryOutOutlined,
+  FileFilled,
+  FileTextOutlined,
+  FormOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { onListCategory } from 'renderer/services/CategoryService';
+import { onGetTemplates } from 'renderer/services/TemplateService';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
 const { DirectoryTree } = Tree;
-
-const treeData = [
-  {
-    title: 'parent 0',
-    key: '0-0',
-    icon: '🍿',
-  },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    icon: '🥊',
-  },
-];
 
 const GroupContainer = styled.div`
   /* background: red !important; */
@@ -99,11 +94,13 @@ const text = `
 `;
 
 export default function Group(props: any) {
-  console.log('detail group');
+  // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
   const { definedEditorIsOpened, groupPage, defineBackButton } =
     useContext(MainContext);
-
+  const [currentCollapsedId, setCollpasedId] = useState(0);
+  const [treeTemplate, setTreeTemplate] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState({});
   const history = useHistory();
 
   const [isModalSelectTypeDoc, setIsModalSelectTypeDoc] = useState(false);
@@ -116,7 +113,31 @@ export default function Group(props: any) {
     onErrorategoryList,
     false
   );
-  console.log(lstCategory);
+
+  const onSuccessTemplate = (data: any) => {
+    // console.log(data);
+    setTreeTemplate(
+      data?.data.content.map((template: { name: string; id: number }) => {
+        return {
+          title:
+            template.name.length >= 10
+              ? `${template.name.substring(0, template.name.length - 10)}...`
+              : template.name,
+          key: template.id,
+          icon: <FileTextOutlined />,
+          content: template.content,
+        };
+      })
+    );
+  };
+
+  const { data: templateList, refetch: getTemplateList } = onGetTemplates(
+    onSuccessTemplate,
+    onErrorategoryList,
+    currentCollapsedId
+  );
+
+  // console.log(lstCategory);
 
   const modalSelecTypeHandleOk = () => {
     setIsModalSelectTypeDoc(false);
@@ -135,12 +156,21 @@ export default function Group(props: any) {
     history.push(`/page-doc/${id}`);
   };
 
-  const onChangeCollapse = (key: any) => {
-    console.log(key);
+  const onChangeCollapse = (key: number) => {
+    if (key) {
+      setCollpasedId(Number(key));
+      console.log(currentCollapsedId);
+      getTemplateList();
+      // console.log(templateList);
+      // setTreeTemplate(
+
+      // );
+    }
   };
 
-  const onSelect = (keys: React.Key[], info: any) => {
+  const onSelectTree = (keys: React.Key[], info: any) => {
     console.log('Trigger Select', keys, info);
+    setSelectedTemplate(info);
   };
 
   const onExpand = () => {
@@ -246,7 +276,7 @@ export default function Group(props: any) {
       >
         <Row>
           <Col flex="600" className="previewTemplate">
-            preview
+            {selectedTemplate ? selectedTemplate.node.content : 'empty'}
           </Col>
           <Col
             flex="200px"
@@ -254,7 +284,13 @@ export default function Group(props: any) {
             style={{ overflow: 'hidden' }}
           >
             <div className="useTemplateBx">
-              <Button type="primary" block>
+              <Button
+                type="primary"
+                block
+                onClick={() => {
+                  console.log(selectedTemplate);
+                }}
+              >
                 Create
               </Button>
             </div>
@@ -263,6 +299,7 @@ export default function Group(props: any) {
               bordered={false}
               defaultActiveKey={['1']}
               style={{ height: '100%', overflowY: 'scroll' }}
+              onChange={(e) => onChangeCollapse(e)}
             >
               <Panel header="My Templates" key="0">
                 {text}
@@ -270,20 +307,14 @@ export default function Group(props: any) {
               {lstCategory?.data.content.map((item) => (
                 <Panel header={item.name} key={item.id}>
                   <DirectoryTree
-                   multiple
-                   defaultExpandAll
-                   onSelect={onSelect}
-                   onExpand={onExpand}
-                   treeData={treeData}
-                 />
+                    multiple
+                    defaultExpandAll
+                    onSelect={onSelectTree}
+                    onExpand={onExpand}
+                    treeData={treeTemplate}
+                  />
                 </Panel>
               ))}
-              {/* <Panel header="Student" key="3">
-                {text}
-              </Panel>
-              <Panel header="Engineering" key="4">
-                {text}
-              </Panel> */}
             </Collapse>
           </Col>
         </Row>
