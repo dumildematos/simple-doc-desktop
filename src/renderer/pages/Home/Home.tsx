@@ -157,24 +157,7 @@ console.log(location)
                 )
               }
 
-
-
-              {/* {isRouted && (
-                <PageHeader
-                  className="site-page-header"
-                  onBack={() => {
-                    // window.history.back();
-                    defineRoutedState(false);
-                    definedEditorIsOpened(false);
-                    history.push('/home');
-                  }}
-                  title={groupPage.title}
-                  // subTitle="This is a subtitle"
-                />
-              )} */}
-
-
-            <Navbar collapse={collapse} />
+              <Navbar collapse={collapse} />
             </Header>
             <Content
               className="site-layout-background"

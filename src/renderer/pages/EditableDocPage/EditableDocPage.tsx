@@ -1,16 +1,21 @@
 import { useContext, useEffect, useState } from 'react';
-import { withRouter } from 'react-router';
+import { useParams, withRouter } from 'react-router';
 import {
   Affix,
   Button,
+  Checkbox,
   Col,
   Divider,
   Drawer,
   Dropdown,
+  Form,
+  Input,
   Layout,
   Menu,
+  Modal,
   PageHeader,
   Row,
+  Select,
 } from 'antd';
 import {
   MenuUnfoldOutlined,
@@ -22,6 +27,8 @@ import {
   EyeOutlined,
   SendOutlined,
   MessageFilled,
+  UserAddOutlined,
+  LockOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -46,7 +53,7 @@ import StateToPdfMake from 'draft-js-export-pdfmake';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import QuillEditor from './tools/QuillEditor/QuillEditor';
-
+const { Option } = Select
 // pdfMake.vfs = pdfFonts.pdfMake.vfs;
 // import robotoItalic from '../../../../assets/fonts/Roboto/Roboto-Italic.ttf';
 
@@ -75,6 +82,13 @@ const EditorContainer = styled.div`
   overflow-y: scroll;
   background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
   margin: 0;
+  .addContributorBtn {
+    position: fixed;
+    top: 0.7em;
+    right: 5rem;
+    z-index: 1;
+    width: 24px;
+  }
   .ant-row {
     &.main {
       height: 100%;
@@ -220,19 +234,12 @@ const DescriptionItem = ({ title, content }) => (
   </div>
 );
 export default function EditableDocPage({ theme }) {
-  const {
-    isRouted,
-    defineRoutedState,
-    groupPage,
-    editorOpened,
-    visibleDocSidebar,
-    defineDocSideBar,
-    definedEditorIsOpened,
-  } = useContext(MainContext);
+  const { isRouted } = useContext(MainContext);
+  const { id: documentId } = useParams();
   useEffect(() => {
     inPage = isRouted;
     // console.log(inPage);
-  }, [inPage, isRouted, MainLayout]);
+  }, [isRouted]);
   const history = useHistory();
 
   const [visible, setVisible] = useState(false);
@@ -298,6 +305,28 @@ export default function EditableDocPage({ theme }) {
     }
   };
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const onFinish = (values: any) => {
+    console.log('Received values of form: ', values);
+  };
+
+  const handleChangeSelect = (value) => {
+    console.log(`selected ${value}`);
+  };
+
   return (
     <>
       <EditorContainer>
@@ -310,9 +339,64 @@ export default function EditableDocPage({ theme }) {
             marginTop: '48px',
           }}
         >
+          <Button
+            type="link"
+            block
+            className="addContributorBtn"
+            onClick={showModal}
+          >
+            <UserAddOutlined />
+          </Button>
+
+          <QuillEditor id={documentId} />
+
+          <Modal
+            title="Basic Modal"
+            visible={isModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+          >
+            <Form
+              name="add-contributor"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+            >
+              <Form.Item
+                name="username"
+                label="Email do utilizador"
+                rules={[
+                  { required: true, message: 'Please input your Username!' },
+                ]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Username"
+                />
+              </Form.Item>
+              <Form.Item
+                name="role"
+                label="Regra"
+                rules={[
+                  { required: true, message: 'Please input your Password!' },
+                ]}
+              >
+                <Select
+                  defaultValue="WRITER"
+                  style={{ width: 120 }}
+                  onChange={handleChangeSelect}
+                >
+                  <Option value="WRITER">Editor</Option>
+                  <Option value="REVISER">Revisor</Option>
+                  <Option value="READER">Leitor</Option>
+
+                </Select>
+              </Form.Item>
 
 
-          <QuillEditor />
+            </Form>
+          </Modal>
 
           <Affix style={{ position: 'fixed', top: '90%', right: '3%' }}>
             <Button

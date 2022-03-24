@@ -4,7 +4,6 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
 import { io } from 'socket.io-client';
-import { v4 as uuidV4 } from 'uuid';
 
 const Editor = styled.div`
   *,
@@ -86,8 +85,8 @@ const TOOLBAR_OPTIONS = [
 ];
 const SAVE_INTERVAL_MS = 2000;
 
-export default function QuillEditor() {
-  const documentId = uuidV4();
+export default function QuillEditor({id}) {
+  const documentId = id;
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
 
