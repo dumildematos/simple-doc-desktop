@@ -166,7 +166,7 @@ export default function Groups({ theme, t, setPath }) {
       menbers: 20,
       docs: 23,
       teamUrl: '/teste',
-    };
+    },
   ];
   const [teams, setTeams] = useState(teamArray);
   const [isModalVisible, setIsModalVisible] = useState(false);

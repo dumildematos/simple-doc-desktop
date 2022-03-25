@@ -6,16 +6,17 @@ const { Search } = Input;
 const MarketPlaceContainer = styled.div`
   /* background: red !important; */
   width: 100%;
-  height: 100%;
+  height: 100vh;
   margin: 0;
   padding: 0;
+  overflow-y: scroll;
   main.ant-layout-content.site-layout-background {
     padding: 0 !important;
   }
   .banner {
     background-image: url(${imgBanner});
     background-size: cover;
-    background-attachment: scroll;
+    background-attachment: fixed;
     height: 350px;
     display: flex;
     justify-content: center;
@@ -26,9 +27,6 @@ const MarketPlaceContainer = styled.div`
     }
   }
   .ant-row {
-    &.main {
-      height: 100%;
-    }
     .ant-col {
       border-radius: 3px;
       background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
@@ -92,7 +90,7 @@ export default function Marketplace(props: any) {
           />
         </div>
         <Row>
-          <Col span={24}>
+          <Col span={24} style={{ height: '100%', overflowY: 'scroll' }}>
             <Tabs tabPosition="left">
               <TabPane tab="Tab 1" key="1">
                 <Row>
