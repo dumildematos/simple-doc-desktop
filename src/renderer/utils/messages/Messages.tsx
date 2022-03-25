@@ -1,13 +1,32 @@
-import { message } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { message, Modal, Spin } from 'antd';
 
-const meessage = (type: string, text: string) => {
-  const hide = message[type](text, 0);
-  if (type === 'loading') {
-    setTimeout(hide, 2500);
-  }
+const key = '';
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+const mensagem = (type: string, text: string) => {
+  // const hide = message[type](text, 0);
+  // if (type === 'loading') {
+  //   setTimeout(hide, 2500);
+  // }
+  // message.loading({ content: 'Loading...', key });
+  // setTimeout(() => {
+  //   message.success({ content: 'Loaded!', key, duration: 2 });
+  // }, 1000);
+  info();
 };
 
 // eslint-disable-next-line import/prefer-default-export
 export const MessageShow = (type: string, text: string) => {
-  meessage(type, text);
+  mensagem(type, text);
+};
+
+const info = (type: string) => {
+  Modal.info({
+    content: (
+      <div>
+        <Spin indicator={antIcon} />
+      </div>
+    ),
+  });
 };

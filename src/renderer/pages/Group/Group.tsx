@@ -69,10 +69,18 @@ const GroupContainer = styled.div`
       .ant-avatar-group {
       }
       &.doc-ls {
-        padding: 0;
-        .ant-card {
-          border: 1px solid var(--purple-1);
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin: 5px;
+        cursor: pointer;
+        &:hover {
+          background: #97959526;
+          transition: 1s;
         }
+
         .doc-item {
           background-color: blue;
           display: flex;
@@ -150,21 +158,23 @@ export default function Group(props: any) {
     currentCollapsedId
   );
 
-  const onCreateDocumentSuccess = () => {};
+  const onDocumentListSuccess = () => {};
+  const onDocumentListError = () => {};
+
+  const { data: documentList, refetch: refetchDocuments } = getDocumentsOfTeam(
+    onDocumentListSuccess,
+    onDocumentListError,
+    Number(teamId)
+  );
+
+  const onCreateDocumentSuccess = () => {
+    refetchDocuments();
+  };
   const onCreateDocumentError = () => {};
 
   const { mutate: createDocument } = onCreateDocument(
     onCreateDocumentSuccess,
     onCreateDocumentError
-  );
-
-  const onDocumentListSuccess = () => {};
-  const onDocumentListError = () => {};
-
-  const { data: documentList } = getDocumentsOfTeam(
-    onDocumentListSuccess,
-    onDocumentListError,
-    Number(teamId)
   );
 
   console.log(documentList);
@@ -274,15 +284,13 @@ export default function Group(props: any) {
             {documentList?.data.numberOfElements > 0 &&
               documentList?.data.content.map((document) => {
                 return (
-                  <Col span={4} className="doc-ls" key={document.id}>
+                  <Col span={4} key={document.id} className="doc-ls">
                     <Link to={`/page-doc/${document.id}`}>
-                      <Card style={{ width: '100%' }}>
-                        <Meta
-                          avatar={<Avatar icon={<FileTextOutlined />} />}
-                          title={document.name}
-                        />
-                      </Card>
+                      <Button type="link" block style={{ fontSize: '2rem' }}>
+                        <FileTextOutlined />
+                      </Button>
                     </Link>
+                    {document.name}
                   </Col>
                 );
               })}

@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { TeamAddForm } from 'renderer/models/TeamModel';
 import { Request, RequestVersion } from '../utils/request/request';
 
-const listTeamsRequest = () => {
+const listTeamsRequest = (page: number) => {
   const token = localStorage.getItem('access_token');
   return Request({
-    url: `/${RequestVersion}/teams/user/?page=0&size=6`,
+    url: `/${RequestVersion}/teams/user/?page=${
+      page === 1 ? 0 : page - 1
+    }&size=6`,
     method: 'GET',
     data: null,
     headers: {
@@ -34,26 +36,23 @@ const createTeam = (data: TeamAddForm) => {
 export const getUserTeams = (
   onSuccess: () => void,
   onError: () => void,
-  token: string | null
+  page: number
 ) => {
-  return useQuery('list-user-teams', listTeamsRequest, {
+  return useQuery(['list-user-teams', page], () => listTeamsRequest(page), {
     onSuccess,
     onError,
     // refetchInterval: 1000,
   });
 };
 
-export const onCreateTeam = (
-  onCreateSuccess: (data: any) => void,
-  onCreateError: (error: any) => void
-  ) => {
+export const onCreateTeam = (onSuccess: () => void, onError: () => void) => {
   const queryClient = useQueryClient();
   return useMutation(createTeam, {
     onMutate: async (newteam) => {
       await queryClient.cancelQueries('list-user-teams');
       const previousTeamList = queryClient.getQueryData('list-user-teams');
       queryClient.setQueryData('list-user-teams', (oldQueryData) => {
-        console.log(oldQueryData);
+        console.log(oldQueryData, newteam);
         // return {
         //   ...oldQueryData,
         //   data: [...oldQueryData.data, newteam],
@@ -63,7 +62,7 @@ export const onCreateTeam = (
         previousTeamList,
       };
     },
-    onSuccess: () => onCreateSuccess,
-    onError: () => onCreateError,
+    onSuccess,
+    onError,
   });
 };

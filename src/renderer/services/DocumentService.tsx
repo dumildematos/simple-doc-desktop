@@ -44,12 +44,12 @@ export const getDocumentsOfTeam = (
 };
 
 export const onCreateDocument = (
-  onCreateSuccess: (data: any) => void,
-  onCreateError: (error: any) => void
+  onSuccess: () => void,
+  onError: () => void
 ) => {
   const queryClient = useQueryClient();
   return useMutation(createDocument, {
-    onSuccess: () => onCreateSuccess,
-    onError: () => onCreateError,
+    onSuccess,
+    onError,
   });
 };

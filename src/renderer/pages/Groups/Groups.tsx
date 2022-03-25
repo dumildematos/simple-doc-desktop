@@ -144,7 +144,7 @@ const tableColumns = [
       }
     ) => (
       <Space size="middle">
-        <a>Invite {record.name}</a>
+        <a>Entrar {record.name}</a>
         <a>Delete</a>
       </Space>
     ),
@@ -166,36 +166,13 @@ export default function Groups({ theme, t, setPath }) {
       menbers: 20,
       docs: 23,
       teamUrl: '/teste',
-    },
-    {
-      id: 2,
-      title: 'Slack Team 1',
-      desc: 'description',
-      menbers: 90,
-      docs: 23,
-      teamUrl: '/teste',
-    },
-    {
-      id: 3,
-      title: 'Zoom Teams',
-      desc: 'description',
-      menbers: 120,
-      docs: 23,
-      teamUrl: '/teste',
-    },
-    {
-      id: 4,
-      title: 'Discord Teams',
-      desc: 'description',
-      menbers: 220,
-      docs: 23,
-      teamUrl: '/teste',
-    },
+    };
   ];
   const [teams, setTeams] = useState(teamArray);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [viewAs, setChangeView] = useState('grid');
   const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [currentPag, setCurrentPag] = useState(1);
 
   const onCreateError = () => {};
 
@@ -213,11 +190,12 @@ export default function Groups({ theme, t, setPath }) {
     isFetching,
     isError,
     error,
-    refetch,
-  } = getUserTeams(onSuccess, onError);
+    refetch: reFetchTeams,
+  } = getUserTeams(onSuccess, onError, currentPag);
 
-  const onCreateSuccess = () => {
-    refetch();
+  const onCreateSuccess = (data) => {
+    // console.log(data)
+    reFetchTeams();
   };
 
   const { mutate: createTeam } = onCreateTeam(onCreateSuccess, onCreateError);
@@ -276,6 +254,11 @@ export default function Groups({ theme, t, setPath }) {
   const handleMenuClick = (e: any) => {
     console.log('click', e);
     console.log(chosenEmoji);
+  };
+
+  const onChangePagination = (page) => {
+    console.log(page);
+    setCurrentPag(page)
   };
 
   const menu = (
@@ -339,7 +322,6 @@ export default function Groups({ theme, t, setPath }) {
             </Radio.Group>
           </Col>
         </Row>
-        {teamList?.data.totalElements}
         {viewAs === 'grid' && (
           <Row
             className="cards-container"
@@ -364,7 +346,7 @@ export default function Groups({ theme, t, setPath }) {
                       // eslint-disable-next-line react/jsx-key
                       [<FaUsers />, <span>{item.menbers}</span>],
                       // eslint-disable-next-line react/jsx-key
-                      [<IoIosDocument />, <span>{item.docs}</span>],
+                      [<IoIosDocument />, <span>{item.documents.length}</span>],
                     ]}
                     className="teams-card"
                   >
@@ -381,12 +363,18 @@ export default function Groups({ theme, t, setPath }) {
           teamList?.data && (
             <Row style={{ marginTop: '2rem' }}>
               <Col>
-                <Pagination
+                {/* <Pagination
                   showSizeChanger
                   onShowSizeChange={onShowPageSizeChange}
                   onChange={onShowPageSizeChange}
                   pageSize={teamList?.data.totalPages}
                   total={teamList?.data.totalElements}
+                /> */}
+                <Pagination
+                  current={currentPag}
+                  onChange={onChangePagination}
+                  total={teamList?.data.totalElements}
+                  pageSize={teamList?.data.size}
                 />
               </Col>
             </Row>

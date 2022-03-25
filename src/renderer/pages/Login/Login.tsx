@@ -210,7 +210,7 @@ const Login = (props: any) => {
     data
   );
 
-  if (isLoading || isLoadingDetails) {
+  if (isLoading) {
     MessageShow('loading', 'Action in progress');
     console.log('isLoading...');
     // if(!data){
