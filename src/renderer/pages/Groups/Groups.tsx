@@ -177,7 +177,7 @@ export default function Groups({ theme, t, setPath }) {
   const onCreateError = () => {};
 
   const onSuccess = () => {
-    console.log(teamList);
+    // console.log(teamList);
   };
 
   const onError = () => {
