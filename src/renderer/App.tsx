@@ -12,7 +12,6 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import { MainContext, MainContextProvider } from './contexts/MainContext';
-import EditableDocPage from './pages/EditableDocPage/EditableDocPage';
 
 const LightTheme = {
   boxBg: '#dee3ed',
@@ -111,16 +110,6 @@ export default function App() {
   const queryClient = new QueryClient();
 
 
-
-
-
-
-
-  // console.log({'App.tsx': accessToken})
-  // console.log(isRouted);
-  // if (!accessToken) {
-  //   return <Redirect to="/" />
-  // }
   return (
     <QueryClientProvider client={queryClient}>
       <MainContextProvider>

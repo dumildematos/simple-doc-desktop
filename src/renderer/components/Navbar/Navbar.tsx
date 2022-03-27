@@ -2,10 +2,9 @@ import { BellOutlined } from '@ant-design/icons';
 import { Dropdown, Badge, Button, Menu, Avatar, List } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { io } from 'socket.io-client';
 import { over } from 'stompjs';
 import SockJS from 'sockjs-client';
-let stompClient = null;
+let stompClient: any = null;
 
 const token = localStorage.getItem('access_token');
 const user = JSON.parse(localStorage.getItem('user'));
@@ -43,30 +42,65 @@ export default function Navbar(props: any) {
   const [publicChats, setPublicChats] = useState([]);
   const [tab, setTab] = useState('CHATROOM');
   const [userData, setUserData] = useState({
-    username: 'dumilde.matos@mailinator.com',
+    username: user.username,
     receivername: '',
     connected: true,
     message: '',
   });
+  let cnt = 0;
+  const [countNotification, setCountNotification] = useState(0);
+
   useEffect(() => {
     console.log(userData);
     let Sock = new SockJS('http://localhost:8080/ws');
     stompClient = over(Sock);
-    stompClient.connect(
-      {},
-      () => {
-        stompClient.subscribe('/chatroom/public', () => {
-          alert('new Message public');
-        });
-        stompClient.subscribe(`/user/${user.username}/private`, () => {
-          alert('new Message private');
-        });
-      },
-      onError
-    );
+    stompClient.connect({}, onSuccessConnect, onError);
+
+    return () => {
+      stompClient.disconnect();
+    };
   }, []);
 
-  const connect = () => {};
+  const onSuccessConnect = () => {
+    console.log('conected', stompClient);
+    stompClient.subscribe('/chatroom/public', (payload: any) => {
+      const payloadData = JSON.parse(payload.body);
+      console.log(cnt);
+      cnt += 1;
+      // eslint-disable-next-line default-case
+      switch (payloadData.status) {
+        case 'JOIN':
+          if (!privateChats.get(payloadData.senderName)) {
+            privateChats.set(payloadData.senderName, []);
+            setPrivateChats(new Map(privateChats));
+          }
+          break;
+        case 'MESSAGE':
+          publicChats.push(payloadData);
+          setPublicChats([...publicChats]);
+          break;
+      }
+      setCountNotification(cnt);
+    });
+    stompClient.subscribe(`/user/${user.username}/private`, () => {
+      // alert('new Message private');
+    });
+  };
+
+  const showNotification = () => {
+    const notification = {
+      title: 'Basic Notification',
+      body: 'Short message part',
+    };
+    const myNotification = new window.Notification(
+      notification.title,
+      notification
+    );
+
+    myNotification.onclick = () => {
+      console.log('Notification clicked');
+    };
+  };
 
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
@@ -187,21 +221,21 @@ export default function Navbar(props: any) {
   return (
     <>
       <Navigation collapse={props.collapse}>
-        <div className="notificationDropdown">
+        <div
+          className="notificationDropdown"
+          onClick={() => {
+            setCountNotification(0);
+          }}
+        >
           <Dropdown
             overlay={notificationMenu}
             trigger={['click']}
             className="dropdown-notification"
-            // style={{
-            //   marginLeft: props.collapse.collapsed
-            //     ? '71%!important'
-            //     : '81%!important',
-            // }}
           >
             {/* <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
                   Click me <DownOutlined />
                 </a> */}
-            <Badge count={99} offset={[-6, 10]}>
+            <Badge count={countNotification} offset={[-6, 10]}>
               <Button type="link" block>
                 <BellOutlined />
               </Button>

@@ -11,7 +11,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Notification } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -31,6 +31,17 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on('app-notify', async (event, arg) => {
+  const NOTIFICATION_TITLE = 'Basic Notification';
+  const NOTIFICATION_BODY = 'Notification from the Main process';
+  new Notification({
+    title: NOTIFICATION_TITLE,
+    body: NOTIFICATION_BODY,
+  }).show();
+  console.log('notification');
+  event.reply('app-notify', "msgTemplate('pong')");
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -96,8 +107,8 @@ const createWindow = async () => {
   //        https://github.com/electron/electron/blob/main/docs/api/browser-window.md#using-ready-to-show-event
 
   mainWindow.once('ready-to-show', () => {
-      mainWindow.show()
-  })
+    mainWindow.show();
+  });
 
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
