@@ -117,13 +117,13 @@ const GroupContainer = styled.div`
 export default function Group(props: any) {
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
-  const { definedEditorIsOpened, groupPage } = useContext(MainContext);
+  const { definedEditorIsOpened, groupPage , team } = useContext(MainContext);
   const [currentCollapsedId, setCollpasedId] = useState(0);
   const [treeTemplate, setTreeTemplate] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState({});
   const { id: teamId } = useParams();
   const history = useHistory();
-
+ 
   const [isModalSelectTypeDoc, setIsModalSelectTypeDoc] = useState(false);
 
   const onSuccessCategoryList = () => {};
@@ -256,10 +256,9 @@ export default function Group(props: any) {
             </Col>
           </Row>
         </Col>
-        <Col span={15} style={{ overflow: 'scroll' }} className="main">
+        <Col span={15} className="main">
           <Row justify="space-between" style={{ height: 'auto' }}>
             <Col>{/* <h4>Detalhes da equipe</h4> */}</Col>
-            {documentList?.data?.numberOfElements === 0 && 'Empty'}
 
             <Col>
               <Button
@@ -278,7 +277,7 @@ export default function Group(props: any) {
               </Button>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ height: 'auto', maxHeight: '90%', overflowY: 'scroll' }}>
             {documentList?.data.numberOfElements === 0 && 'Empty'}
 
             {documentList?.data.numberOfElements > 0 &&

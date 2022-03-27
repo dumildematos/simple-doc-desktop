@@ -78,97 +78,71 @@ const ModalLayout = styled(Modal)`
   }
 `;
 
-const tableColumns = [
-  {
-    title: 'Name',
-    dataIndex: 'title',
-    key: 'title',
-    // eslint-disable-next-line react/display-name
-    render: (
-      text:
-        | boolean
-        | React.ReactChild
-        | React.ReactFragment
-        | React.ReactPortal
-        | null
-        | undefined
-      // eslint-disable-next-line jsx-a11y/anchor-is-valid
-    ) => <a>{text}</a>,
-  },
-  {
-    title: 'Membros',
-    dataIndex: 'menbers',
-    key: 'menbers',
-  },
-  {
-    title: 'Documentos',
-    dataIndex: 'docs',
-    key: 'docs',
-  },
-  // {
-  //   title: 'Tags',
-  //   key: 'tags',
-  //   dataIndex: 'tags',
-  //   render: (tags: any[]) => (
-  //     <>
-  //       {tags.map((tag: React.Key | null | undefined) => {
-  //         let color = tag.length > 5 ? 'geekblue' : 'green';
-  //         if (tag === 'loser') {
-  //           color = 'volcano';
-  //         }
-  //         return (
-  //           <Tag color={color} key={tag}>
-  //             {tag.toUpperCase()}
-  //           </Tag>
-  //         );
-  //       })}
-  //     </>
-  //   ),
-  // },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (
-      text: any,
-      record: {
-        name:
-          | string
-          | number
-          | boolean
-          | {}
-          | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-          | React.ReactNodeArray
-          | React.ReactPortal
-          | null
-          | undefined;
-      }
-    ) => (
-      <Space size="middle">
-        <a>Entrar {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-
 const hasAcessToken = localStorage.getItem('access_token');
 export default function Groups({ theme, t, setPath }) {
   const history = useHistory();
 
-  const { isRouted, defineRoutedState, definePageInfo, defineBackButton } =
-    useContext(MainContext);
+  const {
+    isRouted,
+    defineRoutedState,
+    definePageInfo,
+    defineBackButton,
+    defineTeam,
+  } = useContext(MainContext);
+  const [tabledTeamList, setTableLIstTeam] = useState([]);
   const [form] = Form.useForm();
-  const teamArray = [
+  const tableColumns = [
     {
-      id: 1,
-      title: 'Time SonaGas',
-      desc: 'description',
-      menbers: 20,
-      docs: 23,
-      teamUrl: '/teste',
+      title: 'Name',
+      dataIndex: 'title',
+      key: 'title',
+      // eslint-disable-next-line react/display-name
+      render: (
+        text:
+          | boolean
+          | React.ReactChild
+          | React.ReactFragment
+          | React.ReactPortal
+          | null
+          | undefined
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+      ) => <a>{text}</a>,
+    },
+    {
+      title: 'Membros',
+      dataIndex: 'menbers',
+      key: 'menbers',
+    },
+    {
+      title: 'Documentos',
+      dataIndex: 'docs',
+      key: 'docs',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (
+        text: any,
+        record: {
+          name:
+            | string
+            | number
+            | boolean
+            | {}
+            | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+            | React.ReactNodeArray
+            | React.ReactPortal
+            | null
+            | undefined;
+        }
+      ) => (
+        <Space size="middle">
+          <a onClick={() => navigateToTeam(record)}>Entrar</a>
+          <a>Delete</a>
+        </Space>
+      ),
     },
   ];
-  const [teams, setTeams] = useState(teamArray);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [viewAs, setChangeView] = useState('grid');
   const [chosenEmoji, setChosenEmoji] = useState(null);
@@ -176,12 +150,24 @@ export default function Groups({ theme, t, setPath }) {
 
   const onCreateError = () => {};
 
-  const onSuccess = () => {
-    // console.log(teamList);
+  const onSuccess = (data) => {
+    console.log(data);
+    setTableLIstTeam(
+      data?.data.content.map((team) => {
+        return {
+          id: team.id,
+          key: team.id,
+          title: team.name,
+          desc: team.description,
+          menbers: 20,
+          docs: team.documents.length,
+        };
+      })
+    );
   };
 
-  const onError = () => {
-    console.log(teamList);
+  const onError = (data) => {
+    console.log(data);
   };
 
   const {
@@ -258,7 +244,7 @@ export default function Groups({ theme, t, setPath }) {
 
   const onChangePagination = (page) => {
     console.log(page);
-    setCurrentPag(page)
+    setCurrentPag(page);
   };
 
   const menu = (
@@ -280,15 +266,17 @@ export default function Groups({ theme, t, setPath }) {
     if (team) {
       defineBackButton({
         state: true,
-        title: team.name,
+        title: team.name || team.title,
         subtitle: '',
       });
+      defineTeam(team);
       setTimeout(() => {
         history.push(`/group/${team.id}`);
       }, 1000);
-      // setRoutState(team);
     }
   };
+
+
 
   const onShowPageSizeChange = (current, pageSize) => {
     console.log(current, pageSize);
@@ -387,7 +375,7 @@ export default function Groups({ theme, t, setPath }) {
         {teamList?.data.totalElements > 0 && viewAs === 'list' && (
           <Row className="cards-container" style={{ paddingTop: '10px' }}>
             <Col span={24}>
-              <Table columns={tableColumns} dataSource={teams} />
+              <Table columns={tableColumns} dataSource={tabledTeamList} />
             </Col>
           </Row>
         )}

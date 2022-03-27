@@ -1,11 +1,28 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { CreateDocument } from 'renderer/models/DocumentModel';
+import {
+  AddContributorForm,
+  CreateDocument,
+} from 'renderer/models/DocumentModel';
 import { Request, RequestVersion } from '../utils/request/request';
 
 const createDocument = (data: CreateDocument) => {
   const token = localStorage.getItem('access_token');
   return Request({
     url: `/${RequestVersion}/document/create`,
+    method: 'POST',
+    data,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const addContributor = (data: AddContributorForm) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/document/add/contributor`,
     method: 'POST',
     data,
     headers: {
@@ -30,11 +47,10 @@ const listDcomentsByTeam = (teamId: number) => {
   });
 };
 
-
 export const getDocumentsOfTeam = (
   onSuccess: () => void,
   onError: () => void,
-  teamId: number,
+  teamId: number
 ) => {
   return useQuery('list-teams-document', () => listDcomentsByTeam(teamId), {
     onSuccess,
@@ -49,6 +65,16 @@ export const onCreateDocument = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation(createDocument, {
+    onSuccess,
+    onError,
+  });
+};
+
+export const onAddContributor = (
+  onSuccess: () => void,
+  onError: () => void
+) => {
+  return useMutation(addContributor, {
     onSuccess,
     onError,
   });

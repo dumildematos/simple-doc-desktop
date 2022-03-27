@@ -5,3 +5,10 @@ export type CreateDocument = {
   teamId: number;
   templateId: number;
 };
+
+export type AddContributorForm = {
+  username: string;
+  role: string;
+  documentId: number;
+  teamId: number;
+};

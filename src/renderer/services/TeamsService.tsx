@@ -17,6 +17,21 @@ const listTeamsRequest = (page: number) => {
     },
   });
 };
+const listInvitedTEams = (page: number) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/teams/user/invited?page=${
+      page === 1 ? 0 : page - 1
+    }&size=6`,
+    method: 'GET',
+    data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 const createTeam = (data: TeamAddForm) => {
   const token = localStorage.getItem('access_token');
@@ -43,6 +58,21 @@ export const getUserTeams = (
     onError,
     // refetchInterval: 1000,
   });
+};
+export const getUserInvitedTeams = (
+  onSuccess: () => void,
+  onError: () => void,
+  page: number
+) => {
+  return useQuery(
+    ['list-user-invited-teams', page],
+    () => listInvitedTEams(page),
+    {
+      onSuccess,
+      onError,
+      // refetchInterval: 1000,
+    }
+  );
 };
 
 export const onCreateTeam = (onSuccess: () => void, onError: () => void) => {

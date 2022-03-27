@@ -53,7 +53,9 @@ import StateToPdfMake from 'draft-js-export-pdfmake';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import QuillEditor from './tools/QuillEditor/QuillEditor';
-const { Option } = Select
+import { onAddContributor } from 'renderer/services/DocumentService';
+import { AddContributorForm } from 'renderer/models/DocumentModel';
+const { Option } = Select;
 // pdfMake.vfs = pdfFonts.pdfMake.vfs;
 // import robotoItalic from '../../../../assets/fonts/Roboto/Roboto-Italic.ttf';
 
@@ -234,14 +236,16 @@ const DescriptionItem = ({ title, content }) => (
   </div>
 );
 export default function EditableDocPage({ theme }) {
-  const { isRouted } = useContext(MainContext);
+  const { isRouted , team } = useContext(MainContext);
+  const [form] = Form.useForm();
+  const [role, setRole] = useState('WRITER');
   const { id: documentId } = useParams();
   useEffect(() => {
     inPage = isRouted;
     // console.log(inPage);
   }, [isRouted]);
   const history = useHistory();
-
+  console.log(team)
   const [visible, setVisible] = useState(false);
 
   const [collapse, setCollapse] = useState({
@@ -275,6 +279,28 @@ export default function EditableDocPage({ theme }) {
     const rows = convertToRaw(editor.editorState.getCurrentContent());
     const { blocks } = rows;
     console.log(blocks);
+  };
+
+  const onSuccessAddContributor = () => {
+    setIsModalVisible(false);
+  };
+  const onErrorAddContributor = () => {};
+
+  const { mutate: addContributor } = onAddContributor(
+    onSuccessAddContributor,
+    onErrorAddContributor
+  );
+
+  const formAddContributor = ({username, role}) => {
+    if (role && username) {
+      const contrubutor: AddContributorForm = {
+        username,
+        role,
+        documentId: Number(documentId),
+        teamId: team.id,
+      };
+      addContributor(contrubutor);
+    }
   };
 
   const showDrawer = () => {
@@ -353,10 +379,22 @@ export default function EditableDocPage({ theme }) {
           <Modal
             title="Basic Modal"
             visible={isModalVisible}
-            onOk={handleOk}
             onCancel={handleCancel}
+            onOk={() => {
+              form
+                .validateFields()
+                // eslint-disable-next-line promise/always-return
+                .then((values) => {
+                  form.resetFields();
+                  formAddContributor(values);
+                })
+                .catch((info) => {
+                  console.log('Validate Failed:', info);
+                });
+            }}
           >
             <Form
+              form={form}
               name="add-contributor"
               initialValues={{ remember: true }}
               onFinish={onFinish}
@@ -381,20 +419,14 @@ export default function EditableDocPage({ theme }) {
                 rules={[
                   { required: true, message: 'Please input your Password!' },
                 ]}
+                initialValue="WRITER"
               >
-                <Select
-                  defaultValue="WRITER"
-                  style={{ width: 120 }}
-                  onChange={handleChangeSelect}
-                >
+                <Select defaultValue="WRITER" style={{ width: 120 }}>
                   <Option value="WRITER">Editor</Option>
                   <Option value="REVISER">Revisor</Option>
                   <Option value="READER">Leitor</Option>
-
                 </Select>
               </Form.Item>
-
-
             </Form>
           </Modal>
 

@@ -181,7 +181,7 @@ console.log(location)
               <Explorer t={t} theme={theme} setPath={setCurrentPath}  />
             </Route>
             <Route exact path="/invited-teams">
-              <InvitedGroups setPath={setCurrentPath}  />
+              <InvitedGroups t={t} theme={theme} setPath={setCurrentPath}  />
             </Route>
             <Route exact path={`/marketplace`}>
               <Marketplace t={t} theme={theme} setPath={setCurrentPath}  />
