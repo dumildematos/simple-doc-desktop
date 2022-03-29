@@ -19,6 +19,7 @@ type Page = {
   navigateTo: string;
   backButton: any;
   team: any;
+  documentOnWork: any;
   defineBackButton: (state: any) => void;
   defineRoutedState: (state: boolean) => void;
   definePageInfo: (data: any) => void;
@@ -31,6 +32,7 @@ type Page = {
   defineUser: (user: LoginResponse) => void;
   defineNavigatedUrl: (path: string) => void;
   defineTeam: (data: any) => void;
+  defineDocument: (data: any) => void;
 };
 
 type Node = {
@@ -43,6 +45,7 @@ export function MainContextProvider({ children }: Node) {
   const [isRouted, setRouted] = useState(false);
   const [groupPage, setGroupPage] = useState({});
   const [team, setTeam] = useState({});
+  const [documentOnWork, setDocument] = useState({});
   const [editorOpened, setOpenedEditor] = useState(false);
   const [visibleDocSidebar, setVisibleDocSidebar] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
@@ -59,7 +62,16 @@ export function MainContextProvider({ children }: Node) {
 
   useEffect(() => {
     console.log({ editorOpened, isRouted });
-  }, [editorOpened, isRouted, theme, accessToken, navigateTo, backButton, team]);
+  }, [
+    editorOpened,
+    isRouted,
+    theme,
+    accessToken,
+    navigateTo,
+    backButton,
+    team,
+    document,
+  ]);
 
   const defineRoutedState = (state: boolean) => {
     setRouted(state);
@@ -75,6 +87,10 @@ export function MainContextProvider({ children }: Node) {
 
   const defineTeam = (value: any) => {
     setTeam(value);
+  };
+
+  const defineDocument = (value: any) => {
+    setDocument(value);
   };
 
   const definedEditorIsOpened = (state: boolean) => {
@@ -135,7 +151,8 @@ export function MainContextProvider({ children }: Node) {
         defineBackButton,
         team,
         defineTeam,
-        user,
+        documentOnWork,
+        defineDocument,
       }}
     >
       {children}

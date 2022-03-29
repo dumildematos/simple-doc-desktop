@@ -1,9 +1,10 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
 import { io } from 'socket.io-client';
+import { MainContext } from 'renderer/contexts/MainContext';
 
 const Editor = styled.div`
   *,
@@ -84,11 +85,19 @@ const TOOLBAR_OPTIONS = [
   ['clean'],
 ];
 const SAVE_INTERVAL_MS = 2000;
-
-export default function QuillEditor({id}) {
+const user = JSON.parse(localStorage.getItem('user'));
+export default function QuillEditor({ id }) {
+  const { isRouted, team, documentOnWork } = useContext(MainContext);
+  console.log(documentOnWork);
   const documentId = id;
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
+
+  const isContributor = (arr: any[]) => {
+    return arr.find((el: { username: any }) => el.username === user.username);
+  };
+
+  const currentContrinutor = isContributor(documentOnWork.contributors);
 
   useEffect(() => {
     const s = io('http://localhost:3001');
@@ -101,10 +110,16 @@ export default function QuillEditor({id}) {
 
   useEffect(() => {
     if (socket == null && quill == null) return;
-    console.log(quill);
+    // console.log(quill);
     socket.once('load-document', (document) => {
       quill.setContents(document.data);
       quill.enable();
+      if (
+        currentContrinutor?.role === 'READER' &&
+        user.username != currentContrinutor.username
+      ) {
+        quill.disable(true);
+      }
     });
 
     socket.emit('get-document', documentId);
@@ -162,6 +177,7 @@ export default function QuillEditor({id}) {
       modules: { toolbar: TOOLBAR_OPTIONS },
     });
     q.disable(false);
+
     q.setText('Loading...');
     setQuill(q);
   }, []);

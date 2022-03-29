@@ -35,7 +35,8 @@ import { MainContext } from 'renderer/contexts/MainContext';
 import Picker from 'emoji-picker-react';
 import { getUserTeams, onCreateTeam } from 'renderer/services/TeamsService';
 import { TeamAddForm } from 'renderer/models/TeamModel';
-
+import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
+import { FaLock } from '@react-icons/all-files/fa/FaLock';
 const { Meta } = Card;
 const { TextArea } = Input;
 const { Option } = Select;
@@ -109,9 +110,9 @@ export default function Groups({ theme, t, setPath }) {
       ) => <a>{text}</a>,
     },
     {
-      title: 'Membros',
-      dataIndex: 'menbers',
-      key: 'menbers',
+      title: 'Tipo',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: 'Documentos',
@@ -159,7 +160,7 @@ export default function Groups({ theme, t, setPath }) {
           key: team.id,
           title: team.name,
           desc: team.description,
-          menbers: 20,
+          type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
           docs: team.documents.length,
         };
       })
@@ -167,6 +168,8 @@ export default function Groups({ theme, t, setPath }) {
   };
 
   const onError = (data) => {
+    localStorage.clear();
+    window.location.href = '/';
     console.log(data);
   };
 
@@ -174,7 +177,7 @@ export default function Groups({ theme, t, setPath }) {
     data: teamList,
     isLoading,
     isFetching,
-    isError,
+    isError: isErrorOnlist,
     error,
     refetch: reFetchTeams,
   } = getUserTeams(onSuccess, onError, currentPag);
@@ -183,6 +186,11 @@ export default function Groups({ theme, t, setPath }) {
     // console.log(data)
     reFetchTeams();
   };
+
+  if (isErrorOnlist) {
+    localStorage.clear();
+    window.location.href = '/';
+  }
 
   const { mutate: createTeam } = onCreateTeam(onCreateSuccess, onCreateError);
 
@@ -209,7 +217,7 @@ export default function Groups({ theme, t, setPath }) {
       name: chosenEmoji ? `${chosenEmoji.emoji} ${values.title}` : values.title,
       description: values.description,
       banner: '',
-      type: 'PRIVATE',
+      type: values.type,
     };
 
     createTeam(team);
@@ -276,8 +284,6 @@ export default function Groups({ theme, t, setPath }) {
     }
   };
 
-
-
   const onShowPageSizeChange = (current, pageSize) => {
     console.log(current, pageSize);
   };
@@ -331,8 +337,13 @@ export default function Groups({ theme, t, setPath }) {
                     style={{ width: '100%' }}
                     onClick={() => navigateToTeam(item)}
                     actions={[
-                      // eslint-disable-next-line react/jsx-key
-                      [<FaUsers />, <span>{item.menbers}</span>],
+                      [
+                        item.type === 'PRIVATE' ? (
+                          <FaLock />
+                        ) : (
+                          <FaGlobeAfrica />
+                        ),
+                      ],
                       // eslint-disable-next-line react/jsx-key
                       [<IoIosDocument />, <span>{item.documents.length}</span>],
                     ]}
@@ -351,13 +362,6 @@ export default function Groups({ theme, t, setPath }) {
           teamList?.data && (
             <Row style={{ marginTop: '2rem' }}>
               <Col>
-                {/* <Pagination
-                  showSizeChanger
-                  onShowSizeChange={onShowPageSizeChange}
-                  onChange={onShowPageSizeChange}
-                  pageSize={teamList?.data.totalPages}
-                  total={teamList?.data.totalElements}
-                /> */}
                 <Pagination
                   current={currentPag}
                   onChange={onChangePagination}
@@ -391,8 +395,8 @@ export default function Groups({ theme, t, setPath }) {
               .validateFields()
               // eslint-disable-next-line promise/always-return
               .then((values) => {
-                form.resetFields();
                 onCreateGroup(values);
+                form.resetFields();
               })
               .catch((info) => {
                 console.log('Validate Failed:', info);
@@ -437,6 +441,7 @@ export default function Groups({ theme, t, setPath }) {
             <Form.Item
               name="type"
               label="Selecione o tipo"
+              initialValue="PRIVATE"
               rules={[
                 {
                   required: true,

@@ -9,6 +9,7 @@ import {
   Tooltip,
   Collapse,
   Tree,
+  notification,
 } from 'antd';
 import { Link, useHistory, useParams, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -80,6 +81,12 @@ const GroupContainer = styled.div`
           background: #97959526;
           transition: 1s;
         }
+        &.disable {
+          background: #f3f3f3;
+          span.anticon.anticon-file-text {
+            color: #a9a1a4;
+          }
+        }
 
         .doc-item {
           background-color: blue;
@@ -114,16 +121,19 @@ const GroupContainer = styled.div`
   }
 `;
 
+const user = JSON.parse(localStorage.getItem('user'));
+
 export default function Group(props: any) {
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
-  const { definedEditorIsOpened, groupPage , team } = useContext(MainContext);
+  const { definedEditorIsOpened, groupPage, team, defineBackButton, defineDocument } =
+    useContext(MainContext);
   const [currentCollapsedId, setCollpasedId] = useState(0);
   const [treeTemplate, setTreeTemplate] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState({});
   const { id: teamId } = useParams();
   const history = useHistory();
- 
+
   const [isModalSelectTypeDoc, setIsModalSelectTypeDoc] = useState(false);
 
   const onSuccessCategoryList = () => {};
@@ -208,6 +218,34 @@ export default function Group(props: any) {
     console.log('Trigger Expand');
   };
 
+  const isContributor = (arr: any[]) => {
+    if (user) {
+      return arr.find((el: { username: any }) => el.username === user.username);
+    }
+  };
+
+  const navigateToTeam = (document) => {
+    if (
+      document.creator === user.username ||
+      isContributor(document.contributors)
+    ) {
+      defineBackButton({
+        state: true,
+        title: team.name || team.title,
+        subtitle: document.name,
+      });
+      defineDocument(document);
+      setTimeout(() => {
+        history.push(`/page-doc/${document.id}`);
+      }, 0);
+    } else {
+      notification.warning({
+        message: 'Alerta',
+        description: 'Você não possui permissão para abrir este documento',
+      });
+    }
+  };
+
   return (
     <GroupContainer theme={props.theme}>
       <Row
@@ -277,18 +315,24 @@ export default function Group(props: any) {
               </Button>
             </Col>
           </Row>
-          <Row style={{ height: 'auto', maxHeight: '90%', overflowY: 'scroll' }}>
+          <Row
+            style={{ height: 'auto', maxHeight: '90%', overflowY: 'scroll' }}
+          >
             {documentList?.data.numberOfElements === 0 && 'Empty'}
 
             {documentList?.data.numberOfElements > 0 &&
               documentList?.data.content.map((document) => {
                 return (
-                  <Col span={4} key={document.id} className="doc-ls">
-                    <Link to={`/page-doc/${document.id}`}>
+                  <Col span={4} key={document.id} className="doc-ls" className={ (document.creator === user.username ||
+                    isContributor(document.contributors))
+                      ? 'doc-ls'
+                      : 'doc-ls disable'
+                  }>
+                    <div onClick={() => navigateToTeam(document)}>
                       <Button type="link" block style={{ fontSize: '2rem' }}>
                         <FileTextOutlined />
                       </Button>
-                    </Link>
+                    </div>
                     {document.name}
                   </Col>
                 );

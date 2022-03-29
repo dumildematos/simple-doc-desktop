@@ -18,6 +18,8 @@ import { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { getUserInvitedTeams } from 'renderer/services/TeamsService';
+import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
+import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import styled from 'styled-components';
 const { Search } = Input;
 const InvitedContainer = styled.div`
@@ -113,9 +115,9 @@ export default function InvitedGroups(props: any) {
       ) => <a>{text}</a>,
     },
     {
-      title: 'Membros',
-      dataIndex: 'menbers',
-      key: 'menbers',
+      title: 'Tipo',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: 'Documentos',
@@ -155,7 +157,7 @@ export default function InvitedGroups(props: any) {
           key: team.id,
           title: team.name,
           desc: team.description,
-          menbers: 20,
+          type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
           docs: team.documents.length,
         };
       })
@@ -230,7 +232,7 @@ export default function InvitedGroups(props: any) {
             gutter={[8, 8]}
             style={{
               paddingTop: '10px',
-              display: 'block',
+              display: 'flex',
             }}
           >
             {teamList?.data.totalElements === 0 && (
@@ -247,7 +249,13 @@ export default function InvitedGroups(props: any) {
                     onClick={() => navigateToTeam(item)}
                     actions={[
                       // eslint-disable-next-line react/jsx-key
-                      [<FaUsers />, <span>{item.menbers}</span>],
+                      [
+                        item.type === 'PRIVATE' ? (
+                          <FaLock />
+                        ) : (
+                          <FaGlobeAfrica />
+                        ),
+                      ],
                       // eslint-disable-next-line react/jsx-key
                       [<IoIosDocument />, <span>{item.documents.length}</span>],
                     ]}
@@ -259,27 +267,7 @@ export default function InvitedGroups(props: any) {
                   </Card>
                 </Col>
               ))}
-            {teamList?.data.totalElements > 0 &&
-              viewAs === 'grid' &&
-              teamList?.data && (
-                <Row style={{ marginTop: '2rem' }}>
-                  <Col>
-                    {/* <Pagination
-                  showSizeChanger
-                  onShowSizeChange={onShowPageSizeChange}
-                  onChange={onShowPageSizeChange}
-                  pageSize={teamList?.data.totalPages}
-                  total={teamList?.data.totalElements}
-                /> */}
-                    <Pagination
-                      current={currentPag}
-                      onChange={onChangePagination}
-                      total={teamList?.data.totalElements}
-                      pageSize={teamList?.data.size}
-                    />
-                  </Col>
-                </Row>
-              )}
+
             {teamList?.data.totalElements === 0 && viewAs === 'list' && (
               <Col span={24}>
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
@@ -287,7 +275,27 @@ export default function InvitedGroups(props: any) {
             )}
           </Row>
         )}
-
+        {teamList?.data.totalElements > 0 &&
+          viewAs === 'grid' &&
+          teamList?.data && (
+            <Row style={{ marginTop: '2rem' }}>
+              <Col>
+                {/* <Pagination
+                  showSizeChanger
+                  onShowSizeChange={onShowPageSizeChange}
+                  onChange={onShowPageSizeChange}
+                  pageSize={teamList?.data.totalPages}
+                  total={teamList?.data.totalElements}
+                /> */}
+                <Pagination
+                  current={currentPag}
+                  onChange={onChangePagination}
+                  total={teamList?.data.totalElements}
+                  pageSize={teamList?.data.size}
+                />
+              </Col>
+            </Row>
+          )}
         {teamList?.data.totalElements === 0 && viewAs === 'list' && (
           <Col span={24}>
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
