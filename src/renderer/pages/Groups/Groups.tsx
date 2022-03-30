@@ -27,6 +27,7 @@ import {
   SmileOutlined,
   DownOutlined,
   EllipsisOutlined,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { FaUsers } from '@react-icons/all-files/fa/FaUsers';
 import { IoIosDocument } from '@react-icons/all-files/io/IoIosDocument';
@@ -42,7 +43,7 @@ import ImgCrop from 'antd-img-crop';
 const { Meta } = Card;
 const { TextArea } = Input;
 const { Option } = Select;
-
+const { confirm } = Modal;
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
     background: ${(props: { theme: { modalBg: any } }) => props.theme.modalBg};
@@ -144,7 +145,7 @@ export default function Groups({ theme, t, setPath }) {
       ) => (
         <Space size="middle">
           <a onClick={() => navigateToTeam(record)}>Entrar</a>
-          <a>Delete</a>
+          <a onClick={() => {showDeleteConfirm(record)}}>Delete</a>
         </Space>
       ),
     },
@@ -155,6 +156,25 @@ export default function Groups({ theme, t, setPath }) {
   const [currentPag, setCurrentPag] = useState(1);
 
   const onCreateError = () => {};
+
+
+  function showDeleteConfirm(team) {
+    console.log(team)
+    confirm({
+      title: 'Are you sure delete this task?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        console.log('OK');
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
 
   const onSuccess = (data) => {
     console.log(data);

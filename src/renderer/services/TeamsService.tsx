@@ -17,13 +17,27 @@ const listTeamsRequest = (page: number) => {
     },
   });
 };
-const listInvitedTEams = (page: number) => {
+const listInvitedTeamsRequest = (page: number) => {
   const token = localStorage.getItem('access_token');
   return Request({
     url: `/${RequestVersion}/teams/user/invited?page=${
       page === 1 ? 0 : page - 1
     }&size=6`,
     method: 'GET',
+    data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const deleteTeamRequest = (id: number) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/teams/delete`,
+    method: 'POST',
     data: null,
     headers: {
       'Content-Type': 'application/json',
@@ -48,6 +62,7 @@ const createTeam = (data: TeamAddForm) => {
 };
 
 // eslint-disable-next-line import/prefer-default-export
+
 export const getUserTeams = (
   onSuccess: () => void,
   onError: () => void,
@@ -66,7 +81,7 @@ export const getUserInvitedTeams = (
 ) => {
   return useQuery(
     ['list-user-invited-teams', page],
-    () => listInvitedTEams(page),
+    () => listInvitedTeamsRequest(page),
     {
       onSuccess,
       onError,
@@ -78,6 +93,32 @@ export const getUserInvitedTeams = (
 export const onCreateTeam = (onSuccess: () => void, onError: () => void) => {
   const queryClient = useQueryClient();
   return useMutation(createTeam, {
+    onMutate: async (newteam) => {
+      await queryClient.cancelQueries('list-user-teams');
+      const previousTeamList = queryClient.getQueryData('list-user-teams');
+      queryClient.setQueryData('list-user-teams', (oldQueryData) => {
+        console.log(oldQueryData, newteam);
+        // return {
+        //   ...oldQueryData,
+        //   data: [...oldQueryData.data, newteam],
+        // };
+      });
+      return {
+        previousTeamList,
+      };
+    },
+    onSuccess,
+    onError,
+  });
+};
+
+export const onDeleteTeam = (
+  onSuccess: () => void,
+  onError: () => void,
+  id: number
+) => {
+  const queryClient = useQueryClient();
+  return useMutation(() => deleteTeamRequest(id), {
     onMutate: async (newteam) => {
       await queryClient.cancelQueries('list-user-teams');
       const previousTeamList = queryClient.getQueryData('list-user-teams');
