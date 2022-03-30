@@ -58,6 +58,7 @@ export function MainContextProvider({ children }: Node) {
     state: false,
     title: '',
     subtitle: '',
+    prevPath: '/',
   });
 
   useEffect(() => {

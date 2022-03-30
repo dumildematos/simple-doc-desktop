@@ -144,14 +144,15 @@ console.log(location)
                       subTitle={backButton.subtitle}
                       onBack={() => {
                         // window.history.back();
-                        defineBackButton({
-                          state: false,
-                          title: '',
-                          subtitle: '',
-                        });
+                        // defineBackButton({
+                        //   state: false,
+                        //   title: '',
+                        //   subtitle: '',
+                        //   prevPath: '/'
+                        // });
                         defineRoutedState(false);
                         definedEditorIsOpened(false);
-                        history.goBack();
+                        history.push(backButton.prevPath);
                       }}
                     />
                 )

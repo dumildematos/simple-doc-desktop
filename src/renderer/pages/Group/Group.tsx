@@ -47,6 +47,16 @@ const GroupContainer = styled.div`
     &.main {
       height: 100%;
     }
+    .bannerToolBar {
+      background: rgba(0, 0, 0, 0.5);
+      .ant-col {
+        background: transparent !important;
+        h3,
+        button {
+          color: #fff!important;
+        }
+      }
+    }
     .ant-col {
       border-radius: 3px;
       background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
@@ -126,8 +136,13 @@ const user = JSON.parse(localStorage.getItem('user'));
 export default function Group(props: any) {
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
-  const { definedEditorIsOpened, groupPage, team, defineBackButton, defineDocument } =
-    useContext(MainContext);
+  const {
+    definedEditorIsOpened,
+    groupPage,
+    team,
+    defineBackButton,
+    defineDocument,
+  } = useContext(MainContext);
   const [currentCollapsedId, setCollpasedId] = useState(0);
   const [treeTemplate, setTreeTemplate] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState({});
@@ -233,6 +248,7 @@ export default function Group(props: any) {
         state: true,
         title: team.name || team.title,
         subtitle: document.name,
+        prevPath: window.location.pathname,
       });
       defineDocument(document);
       setTimeout(() => {
@@ -246,6 +262,8 @@ export default function Group(props: any) {
     }
   };
 
+  console.log(team);
+
   return (
     <GroupContainer theme={props.theme}>
       <Row
@@ -254,22 +272,35 @@ export default function Group(props: any) {
         style={{ marginTop: '1rem' }}
       >
         <Col span={8} className="main">
-          <Row justify="space-between" style={{ height: 'auto' }}>
-            <Col>
-              <h3>Detalhes da equipe</h3>
-            </Col>
-            <Col>
-              <Button type="link" size="small" className="btn-action-pmd">
-                <BsPencil />
-              </Button>
-            </Col>
-          </Row>
+          <div
+            style={{
+              height: '160px',
+              backgroundImage: `url(${team.banner})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+            }}
+          >
+            <Row
+              justify="space-between"
+              className="bannerToolBar"
+              style={{ height: 'auto' }}
+            >
+              <Col>
+                <h3>Detalhes da equipe</h3>
+              </Col>
+              <Col>
+                <Button type="link" size="small" className="btn-action-pmd">
+                  <BsPencil />
+                </Button>
+              </Col>
+            </Row>
+          </div>
           <Row style={{ height: 'auto' }}>
+            {/* <Col span={24}>
+              <h4>{team.name}</h4>
+            </Col> */}
             <Col span={24}>
-              <h4>Nome da eqiupe</h4>
-            </Col>
-            <Col span={24}>
-              <p>{groupPage.desc}</p>
+              <p>{team.description}</p>
             </Col>
           </Row>
           <Row style={{ height: 'auto' }}>
@@ -323,11 +354,17 @@ export default function Group(props: any) {
             {documentList?.data.numberOfElements > 0 &&
               documentList?.data.content.map((document) => {
                 return (
-                  <Col span={4} key={document.id} className="doc-ls" className={ (document.creator === user.username ||
-                    isContributor(document.contributors))
-                      ? 'doc-ls'
-                      : 'doc-ls disable'
-                  }>
+                  <Col
+                    span={4}
+                    key={document.id}
+                    className="doc-ls"
+                    className={
+                      document.creator === user.username ||
+                      isContributor(document.contributors)
+                        ? 'doc-ls'
+                        : 'doc-ls disable'
+                    }
+                  >
                     <div onClick={() => navigateToTeam(document)}>
                       <Button type="link" block style={{ fontSize: '2rem' }}>
                         <FileTextOutlined />

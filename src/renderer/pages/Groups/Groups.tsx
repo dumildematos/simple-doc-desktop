@@ -18,6 +18,7 @@ import {
   Dropdown,
   Alert,
   Empty,
+  Upload,
 } from 'antd';
 import {
   TeamOutlined,
@@ -37,6 +38,7 @@ import { getUserTeams, onCreateTeam } from 'renderer/services/TeamsService';
 import { TeamAddForm } from 'renderer/models/TeamModel';
 import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
+import ImgCrop from 'antd-img-crop';
 const { Meta } = Card;
 const { TextArea } = Input;
 const { Option } = Select;
@@ -92,6 +94,9 @@ export default function Groups({ theme, t, setPath }) {
   } = useContext(MainContext);
   const [tabledTeamList, setTableLIstTeam] = useState([]);
   const [form] = Form.useForm();
+
+  const [bannerInput, setBannerInput] = useState([]);
+
   const tableColumns = [
     {
       title: 'Name',
@@ -216,7 +221,7 @@ export default function Groups({ theme, t, setPath }) {
     const team: TeamAddForm = {
       name: chosenEmoji ? `${chosenEmoji.emoji} ${values.title}` : values.title,
       description: values.description,
-      banner: '',
+      banner: bannerInput[0].thumbUrl,
       type: values.type,
     };
 
@@ -276,6 +281,7 @@ export default function Groups({ theme, t, setPath }) {
         state: true,
         title: team.name || team.title,
         subtitle: '',
+        prevPath: '/',
       });
       defineTeam(team);
       setTimeout(() => {
@@ -286,6 +292,26 @@ export default function Groups({ theme, t, setPath }) {
 
   const onShowPageSizeChange = (current, pageSize) => {
     console.log(current, pageSize);
+  };
+
+  const onChangeBanner = ({ fileList: newFileList }) => {
+    console.log(newFileList);
+    setBannerInput(newFileList);
+  };
+
+  const onPreviewBannerImage = async (file) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow.document.write(image.outerHTML);
   };
 
   return (
@@ -454,7 +480,27 @@ export default function Groups({ theme, t, setPath }) {
                 <Radio.Button value="PRIVATE">Privado</Radio.Button>
               </Radio.Group>
             </Form.Item>
-
+            <Form.Item
+              name="banner"
+              label="Cover do grupo"
+              rules={[
+                {
+                  required: !(bannerInput.length > 0),
+                  message: 'Please input the title of collection!',
+                },
+              ]}
+            >
+              <ImgCrop rotate>
+                <Upload
+                  listType="picture-card"
+                  fileList={bannerInput}
+                  onChange={onChangeBanner}
+                  onPreview={onPreviewBannerImage}
+                >
+                  {bannerInput.length < 1 && '+ Upload'}
+                </Upload>
+              </ImgCrop>
+            </Form.Item>
             <Form.Item
               name="description"
               label="Descrição"
@@ -468,6 +514,8 @@ export default function Groups({ theme, t, setPath }) {
               <TextArea
                 placeholder="textarea with clear icon"
                 allowClear
+                showCount
+                maxLength={400}
                 onChange={onChangeInput}
               />
             </Form.Item>
