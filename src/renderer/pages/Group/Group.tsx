@@ -10,6 +10,8 @@ import {
   Collapse,
   Tree,
   notification,
+  Dropdown,
+  Menu,
 } from 'antd';
 import { Link, useHistory, useParams, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -18,6 +20,7 @@ import { HiOutlineDocumentAdd } from '@react-icons/all-files/hi/HiOutlineDocumen
 import {
   AntDesignOutlined,
   CarryOutOutlined,
+  DeleteFilled,
   FileFilled,
   FileTextOutlined,
   FormOutlined,
@@ -31,6 +34,7 @@ import {
   onCreateDocument,
 } from 'renderer/services/DocumentService';
 import { CreateDocument } from 'renderer/models/DocumentModel';
+import { ipcRenderer } from 'electron';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
@@ -53,7 +57,7 @@ const GroupContainer = styled.div`
         background: transparent !important;
         h3,
         button {
-          color: #fff!important;
+          color: #fff !important;
         }
       }
     }
@@ -239,7 +243,7 @@ export default function Group(props: any) {
     }
   };
 
-  const navigateToTeam = (document) => {
+  const openDocument = (document) => {
     if (
       document.creator === user.username ||
       isContributor(document.contributors)
@@ -262,7 +266,29 @@ export default function Group(props: any) {
     }
   };
 
-  console.log(team);
+  const handleDocRightClick = (document) => {};
+
+  const openLocalFile = () => {
+    window.electron.ipcRenderer.openDialog();
+    
+  };
+  window.electron.ipcRenderer.on('opened-file', (args) => {
+
+    console.log(args)
+  });
+
+  // electron.ipcRenderer.on('selected-directory', (event, path) => {
+
+  // })
+
+  const documentMenu = (
+    <Menu>
+      <Menu.Item key="1">Rename</Menu.Item>
+      <Menu.Item key="2" danger icon={<DeleteFilled />}>
+        Delete
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <GroupContainer theme={props.theme}>
@@ -335,6 +361,21 @@ export default function Group(props: any) {
                 size="small"
                 className="btn-action-pmd"
                 onClick={() => {
+                  openLocalFile();
+                  // getCategoryList();
+                  // modalSelecTypeShowModal();
+                }}
+              >
+                <p>
+                  Open Document &nbsp;
+                  <HiOutlineDocumentAdd />
+                </p>
+              </Button>
+              <Button
+                type="link"
+                size="small"
+                className="btn-action-pmd"
+                onClick={() => {
                   getCategoryList();
                   modalSelecTypeShowModal();
                 }}
@@ -354,24 +395,26 @@ export default function Group(props: any) {
             {documentList?.data.numberOfElements > 0 &&
               documentList?.data.content.map((document) => {
                 return (
-                  <Col
-                    span={4}
-                    key={document.id}
-                    className="doc-ls"
-                    className={
-                      document.creator === user.username ||
-                      isContributor(document.contributors)
-                        ? 'doc-ls'
-                        : 'doc-ls disable'
-                    }
-                  >
-                    <div onClick={() => navigateToTeam(document)}>
-                      <Button type="link" block style={{ fontSize: '2rem' }}>
-                        <FileTextOutlined />
-                      </Button>
-                    </div>
-                    {document.name}
-                  </Col>
+                  <Dropdown overlay={documentMenu} trigger={['contextMenu']}>
+                    <Col
+                      span={4}
+                      key={document.id}
+                      className="doc-ls"
+                      className={
+                        document.creator === user?.username ||
+                        isContributor(document.contributors)
+                          ? 'doc-ls'
+                          : 'doc-ls disable'
+                      }
+                    >
+                      <div onClick={() => openDocument(document)}>
+                        <Button type="link" block style={{ fontSize: '2rem' }}>
+                          <FileTextOutlined />
+                        </Button>
+                      </div>
+                      {document.name}
+                    </Col>
+                  </Dropdown>
                 );
               })}
           </Row>

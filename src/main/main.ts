@@ -11,12 +11,21 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, Notification } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  ipcMain,
+  Notification,
+  dialog,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import EventEmitter from 'events';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-
+const emitter = new EventEmitter();
+emitter.setMaxListeners(100);
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -33,15 +42,16 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.on('app-notify', async (event, arg) => {
-  const NOTIFICATION_TITLE = 'Basic Notification';
-  const NOTIFICATION_BODY = 'Notification from the Main process';
-  new Notification({
-    title: NOTIFICATION_TITLE,
-    body: NOTIFICATION_BODY,
-  }).show();
-  console.log('notification');
-  event.reply('app-notify', "msgTemplate('pong')");
+ipcMain.on('open-file-dialog', async (event, arg) => {
+dialog.showOpenDialog(mainWindow, {
+  properties: ['openFile']
+}).then(result => {
+  console.log(result.canceled)
+  console.log(result.filePaths)
+  event.sender.send('opened-file', result.filePaths);
+}).catch(err => {
+  console.log(err)
+})
 });
 
 if (process.env.NODE_ENV === 'production') {
