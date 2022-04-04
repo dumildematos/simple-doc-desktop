@@ -117,12 +117,12 @@ export default function App() {
         <ThemeProvider theme={themes[Apptheme]}>
           <Router>
             <Switch>
-              <Route exact path={['/', '/index.html', '/login']}>
+              <Route exact path={['/', '/index.html', '/login', "", `${location.pathname}`]}>
                 { !accessToken ? (
                   <Login />
                 ) : (<Redirect to="/home" />) }
               </Route>
-              <Route exact path={['/home', '/index.html']}>
+              <Route exact path={['/home', '/index.html', `${location.pathname}`]}>
                 <Home theme={theme} setTheme={setTheme} />
               </Route>
 

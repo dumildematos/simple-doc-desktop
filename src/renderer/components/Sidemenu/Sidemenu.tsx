@@ -73,7 +73,14 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
       defineUser({});
       defineAcesstoken(undefined);
       defineRefreshtoken(undefined);
-      window.location.href = '/';
+      // window.location.href = '/';
+      setTimeout(() => {
+        // history.push('/home');
+        history.push(`${location.pathname}`)
+        window.location.href = window.location.origin;
+        // document.location.reload();
+      }, 2000)
+      // history.push(`${location.pathname}`);
       // document.location.reload();
       // document.location.replace(document.location.origin);
       //setTimeout(() => history.push('/'), 10);

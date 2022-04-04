@@ -169,7 +169,11 @@ const Login = (props: any) => {
     if (userDetail) {
       localStorage.setItem('user', JSON.stringify(userResp));
       localStorage.setItem('hasLogin', JSON.stringify(true));
-      history.push('/home');
+      setTimeout(() => {
+        // history.push('/home');
+        // history.push(`${location.pathname}`)
+        document.location.reload();
+      }, 2000)
     }
   };
   const onDetailError = () => {};
