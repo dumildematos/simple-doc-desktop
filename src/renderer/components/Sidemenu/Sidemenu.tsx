@@ -47,6 +47,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     defineAcesstoken,
     defineRefreshtoken,
     defineBackButton,
+    logout
   } = useContext(MainContext);
   const user = JSON.parse(localStorage.getItem('user'));
   const [settingModal, setSettingModal] = useState({

@@ -5,6 +5,10 @@ import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
 import { io } from 'socket.io-client';
 import { MainContext } from 'renderer/contexts/MainContext';
+import QuillCursors from 'quill-cursors';
+
+Quill.register('modules/cursors', QuillCursors);
+
 
 const Editor = styled.div`
   *,
@@ -61,6 +65,8 @@ const Editor = styled.div`
     }
   }
 `;
+
+const CURSOR_LATENCY = 1000;
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -142,11 +148,16 @@ export default function QuillEditor({ id }) {
 
     const handler = (delta) => {
       quill.updateContents(delta);
+      const cursors = quill.getModule('cursors');
+      console.log(cursors);
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      quill.on('selection-change', selectionChangeHandler(cursors));
     };
     socket.on('receive-changes', handler);
     socket.on('typing-changes', (data) => {
       console.log(data);
     });
+
 
     return () => {
       socket.off('receive-changes', handler);
@@ -161,7 +172,8 @@ export default function QuillEditor({ id }) {
       socket.emit('send-changes', delta);
     };
     quill.on('text-change', handler);
-
+    console.log(quill.getModule('cursors'));
+    // quill.on('selection-change', selectionChangeHandler(cursorsOne));
     return () => {
       quill.off('text-change', handler);
     };
@@ -174,13 +186,68 @@ export default function QuillEditor({ id }) {
     wrapper.append(editor);
     const q = new Quill(editor, {
       theme: 'snow',
-      modules: { toolbar: TOOLBAR_OPTIONS },
+      modules: {
+        toolbar: TOOLBAR_OPTIONS,
+        cursors: {
+          transformOnTextChange: true,
+        },
+      },
     });
+    const cursor = q.getModule('cursors');
+    cursor.createCursor(user.id, user.firstname, 'blue');
     q.disable(false);
 
     q.setText('Loading...');
     setQuill(q);
   }, []);
+
+  const selectionChangeHandler = (cursors: {
+    moveCursor: (arg0: string, arg1: any) => void;
+  }) => {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    const debouncedUpdate = debounce(updateCursor, 500);
+
+    return (range: any, oldRange: any, source: string) => {
+      if (source === 'user') {
+        // If the user has manually updated their selection, send this change
+        // immediately, because a user update is important, and should be
+        // sent as soon as possible for a smooth experience.
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        updateCursor(range);
+      } else {
+        // Otherwise, it's a text change update or similar. These changes will
+        // automatically get transformed by the receiving client without latency.
+        // If we try to keep sending updates, then this will undo the low-latency
+        // transformation already performed, which we don't want to do. Instead,
+        // add a debounce so that we only send the update once the user has stopped
+        // typing, which ensures we send the most up-to-date position (which should
+        // hopefully match what the receiving client already thinks is the cursor
+        // position anyway).
+        debouncedUpdate(range);
+      }
+    };
+
+    function updateCursor(range: any) {
+      // Use a timeout to simulate a high latency connection.
+      setTimeout(() => cursors.moveCursor('cursor', range), CURSOR_LATENCY);
+    }
+  };
+
+  const debounce = (
+    func: { (range: any): void; apply?: any },
+    wait: number | undefined
+  ) => {
+    let timeout: NodeJS.Timeout | null;
+    return (...args) => {
+      const context = this;
+      const later = function() {
+        timeout = null;
+        func.apply(context, args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
 
   return (
     <Editor>

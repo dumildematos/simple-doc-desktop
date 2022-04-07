@@ -19,11 +19,8 @@ import {
   getUserDataService,
   UserLoginService,
 } from 'renderer/services/UserService';
-import {
-  messageIsloading,
-  MessageShow,
-} from 'renderer/utils/messages/Messages';
-import { useContext } from 'react';
+import { MessageShow } from 'renderer/utils/messages/Messages';
+import { useContext, useState } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { LoginForm } from 'renderer/models/UserModels';
 import folder1 from './undraw_Add_notes_re_ln36.svg';
@@ -161,51 +158,78 @@ type RequiredMark = boolean | 'optional';
 const Login = (props: any) => {
   const [form] = Form.useForm();
   const history = useHistory();
-  const { defineRoutedState, defineAcesstoken } = useContext(MainContext);
+  const {
+    defineRoutedState,
+    defineAcesstoken,
+    definePageInfo,
+    definedEditorIsOpened,
+    defineRefreshtoken,
+    defineUser,
+    defineCurrentPath,
+    defineDocSideBar,
+  } = useContext(MainContext);
+  const [isLoginError, setIsLoginError] = useState(false);
   const hasAcessToken = localStorage.getItem('access_token');
 
-  const onDetailSuccess = () => {
-    const userResp = userDetail?.data;
-    if (userDetail) {
-      localStorage.setItem('user', JSON.stringify(userResp));
+  const onDetailSuccess = (data: any) => {
+    if (data?.status === 200) {
+      localStorage.setItem('user', JSON.stringify(data.data));
       localStorage.setItem('hasLogin', JSON.stringify(true));
       setTimeout(() => {
         // history.push('/home');
         // history.push(`${location.pathname}`)
         document.location.reload();
+      }, 2000);
+    } else {
+      localStorage.clear();
+      defineRoutedState(false);
+      definePageInfo({});
+      definedEditorIsOpened(false);
+      defineDocSideBar(false);
+      defineCurrentPath('');
+      defineUser({});
+      defineAcesstoken(undefined);
+      defineRefreshtoken(undefined);
+      // window.location.href = '/';
+      setTimeout(() => {
+        // history.push('/home');
+        history.push(`${location.pathname}`)
+        window.location.href = window.location.origin;
+        // document.location.reload();
       }, 2000)
+      // history.push(`${location.pathname}`);
+      // document.location.reload();
+      // document.location.replace(document.location.origin);
+      //setTimeout(() => history.push('/'), 10);
     }
   };
   const onDetailError = () => {};
 
-  const onSuccess = (data: any) => {
-    const accessToken = data?.data?.access_token;
-    const refreshToken = data?.data?.refresh_token;
-
-    if (accessToken && refreshToken) {
-      localStorage.setItem('access_token', accessToken);
-      localStorage.setItem('refresh_token', refreshToken);
-      console.log('login success');
-      defineAcesstoken(accessToken);
-
-      // queryClient.setQueryData('detail-user', (old) => {
-      //   console.log(old)
-      //   return null
-      // })
-      // document.location.reload();
-      // history.push('/home');
+  const onLoginSuccess = (data: any) => {
+    if (data?.data.status === 200) {
+      const accessToken = data?.data?.access_token;
+      const refreshToken = data?.data?.refresh_token;
+      if (accessToken && refreshToken) {
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+        defineAcesstoken(accessToken);
+      }
+      setIsLoginError(false);
+    } else {
+      setIsLoginError(true);
+      MessageShow('error', 'Action in progress');
     }
   };
 
-  const onError = (error: any) => {
+  const onLoginError = (error: any) => {
     console.log(error.message);
   };
   const {
     mutate: onUserLogin,
     data,
-    isError,
+    isError: loginError,
     isLoading,
-  } = UserLoginService(onSuccess, onError);
+  } = UserLoginService(onLoginSuccess, onLoginError);
 
   const { data: userDetail, isLoading: isLoadingDetails } = getUserDataService(
     onDetailSuccess,
@@ -222,7 +246,8 @@ const Login = (props: any) => {
     // }
   }
 
-  if (isError) {
+  if (loginError) {
+    alert('Error');
   }
 
   const onFinish = (values: any) => {
@@ -321,7 +346,7 @@ const Login = (props: any) => {
                     </Row>
                     <Row>
                       <Col span={16}>
-                        {isError && (
+                        {isLoginError && (
                           <Alert
                             message="Error"
                             description="This is an error message about copywriting."

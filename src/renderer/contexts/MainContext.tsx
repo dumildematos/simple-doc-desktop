@@ -1,4 +1,5 @@
 import { useState, createContext, ReactNode, useEffect } from 'react';
+import { useHistory } from 'react-router';
 import { LoginResponse } from 'renderer/models/UserModels';
 
 type GroupPage = {
@@ -33,6 +34,7 @@ type Page = {
   defineNavigatedUrl: (path: string) => void;
   defineTeam: (data: any) => void;
   defineDocument: (data: any) => void;
+  logout: () => void;
 };
 
 type Node = {
@@ -126,6 +128,32 @@ export function MainContextProvider({ children }: Node) {
     setNavigateTo(path);
   };
 
+  const logout = () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const history = useHistory();
+
+    localStorage.clear();
+    defineRoutedState(false);
+    definePageInfo({});
+    definedEditorIsOpened(false);
+    defineDocSideBar(false);
+    defineCurrentPath('');
+    defineUser({});
+    defineAcesstoken(undefined);
+    defineRefreshtoken(undefined);
+    // window.location.href = '/';
+    setTimeout(() => {
+      // history.push('/home');
+      history.push(`${location.pathname}`);
+      window.location.href = window.location.origin;
+      // document.location.reload();
+    }, 2000);
+    // history.push(`${location.pathname}`);
+    // document.location.reload();
+    // document.location.replace(document.location.origin);
+    // setTimeout(() => history.push('/'), 10);
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -154,6 +182,7 @@ export function MainContextProvider({ children }: Node) {
         defineTeam,
         documentOnWork,
         defineDocument,
+        logout,
       }}
     >
       {children}

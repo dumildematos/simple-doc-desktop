@@ -35,10 +35,11 @@ export const getUserDataService = (
   login: any
 ) => {
   // console.log(token)
+  console.log(login)
   return useQuery(['detail-user', login], () => getCurrentUser(token), {
     onSuccess: onDetailSuccess,
     onError,
-    enabled: !!login,
+    enabled: login?.data.status === 200,
     refetchInterval: 1000,
   });
 };

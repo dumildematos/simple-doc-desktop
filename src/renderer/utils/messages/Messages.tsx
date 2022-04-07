@@ -5,7 +5,11 @@ const key = '';
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const mensagem = (type: string, text: string) => {
-  // const hide = message[type](text, 0);
+  message.destroy();
+  const hide = message[type](text, 0);
+  setTimeout(() => {
+    message.destroy();
+  }, 2500);
   // if (type === 'loading') {
   //   setTimeout(hide, 2500);
   // }
@@ -13,7 +17,7 @@ const mensagem = (type: string, text: string) => {
   // setTimeout(() => {
   //   message.success({ content: 'Loaded!', key, duration: 2 });
   // }, 1000);
-  info();
+  // info();
 };
 
 // eslint-disable-next-line import/prefer-default-export

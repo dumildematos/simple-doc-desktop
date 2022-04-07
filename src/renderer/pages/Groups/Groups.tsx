@@ -281,6 +281,7 @@ export default function Groups({ theme, t, setPath }) {
   };
 
   const menu = (
+    // <Button type="primary" shape="circle" icon={<SearchOutlined />} />
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1">
         <div>
