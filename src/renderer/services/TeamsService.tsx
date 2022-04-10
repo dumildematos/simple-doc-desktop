@@ -36,9 +36,29 @@ const listInvitedTeamsRequest = (page: number) => {
 const deleteTeamRequest = (id: number) => {
   const token = localStorage.getItem('access_token');
   return Request({
-    url: `/${RequestVersion}/teams/delete`,
-    method: 'POST',
+    url: `/${RequestVersion}/team/${id}`,
+    method: 'DELETE',
     data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const editTeamRequest = (data: TeamAddForm) => {
+  const token = localStorage.getItem('access_token');
+  const team: TeamAddForm = {
+    name: data.name,
+    description: data.description,
+    banner: data.banner,
+    type: data.type,
+  };
+  return Request({
+    url: `/${RequestVersion}/team/${data.id}`,
+    method: 'PUT',
+    data: team,
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -68,6 +88,7 @@ export const getUserTeams = (
   onError: () => void,
   page: number
 ) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useQuery(['list-user-teams', page], () => listTeamsRequest(page), {
     onSuccess,
     onError,
@@ -79,6 +100,7 @@ export const getUserInvitedTeams = (
   onError: () => void,
   page: number
 ) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useQuery(
     ['list-user-invited-teams', page],
     () => listInvitedTeamsRequest(page),
@@ -91,7 +113,9 @@ export const getUserInvitedTeams = (
 };
 
 export const onCreateTeam = (onSuccess: () => void, onError: () => void) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const queryClient = useQueryClient();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(createTeam, {
     onMutate: async (newteam) => {
       await queryClient.cancelQueries('list-user-teams');
@@ -112,13 +136,35 @@ export const onCreateTeam = (onSuccess: () => void, onError: () => void) => {
   });
 };
 
-export const onDeleteTeam = (
-  onSuccess: () => void,
-  onError: () => void,
-  id: number
-) => {
+export const onEditTeam = (onSuccess: () => void, onError: () => void) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const queryClient = useQueryClient();
-  return useMutation(() => deleteTeamRequest(id), {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(editTeamRequest, {
+    onMutate: async (newteam) => {
+      await queryClient.cancelQueries('list-user-teams');
+      const previousTeamList = queryClient.getQueryData('list-user-teams');
+      queryClient.setQueryData('list-user-teams', (oldQueryData) => {
+        console.log(oldQueryData, newteam);
+        // return {
+        //   ...oldQueryData,
+        //   data: [...oldQueryData.data, newteam],
+        // };
+      });
+      return {
+        previousTeamList,
+      };
+    },
+    onSuccess,
+    onError,
+  });
+};
+
+export const onDeleteTeam = (onSuccess: () => void, onError: () => void) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(deleteTeamRequest, {
     onMutate: async (newteam) => {
       await queryClient.cancelQueries('list-user-teams');
       const previousTeamList = queryClient.getQueryData('list-user-teams');

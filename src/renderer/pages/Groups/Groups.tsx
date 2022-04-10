@@ -35,11 +35,16 @@ import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { MainContext } from 'renderer/contexts/MainContext';
 import Picker from 'emoji-picker-react';
-import { getUserTeams, onCreateTeam } from 'renderer/services/TeamsService';
+import {
+  getUserTeams,
+  onCreateTeam,
+  onDeleteTeam,
+} from 'renderer/services/TeamsService';
 import { TeamAddForm } from 'renderer/models/TeamModel';
 import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import ImgCrop from 'antd-img-crop';
+import { MessageShow } from 'renderer/utils/messages/Messages';
 const { Meta } = Card;
 const { TextArea } = Input;
 const { Option } = Select;
@@ -145,7 +150,13 @@ export default function Groups({ theme, t, setPath }) {
       ) => (
         <Space size="middle">
           <a onClick={() => navigateToTeam(record)}>Entrar</a>
-          <a onClick={() => {showDeleteConfirm(record)}}>Delete</a>
+          <a
+            onClick={() => {
+              showDeleteConfirm(record);
+            }}
+          >
+            Delete
+          </a>
         </Space>
       ),
     },
@@ -155,11 +166,11 @@ export default function Groups({ theme, t, setPath }) {
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [currentPag, setCurrentPag] = useState(1);
 
-  const onCreateError = () => {};
-
+  const onCreateError = () => {
+    MessageShow('error', 'Action in progress');
+  };
 
   function showDeleteConfirm(team) {
-    console.log(team)
     confirm({
       title: 'Are you sure delete this task?',
       icon: <ExclamationCircleOutlined />,
@@ -168,7 +179,12 @@ export default function Groups({ theme, t, setPath }) {
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        console.log('OK');
+        if (team.docs === 0) {
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          deleteTeam(team.id);
+        } else {
+          MessageShow('error', 'Action in progress');
+        }
       },
       onCancel() {
         console.log('Cancel');
@@ -179,7 +195,7 @@ export default function Groups({ theme, t, setPath }) {
   const onSuccess = (data) => {
     console.log(data);
     setTableLIstTeam(
-      data?.data.content.map((team) => {
+      data?.data?.content.map((team) => {
         return {
           id: team.id,
           key: team.id,
@@ -209,6 +225,7 @@ export default function Groups({ theme, t, setPath }) {
 
   const onCreateSuccess = (data) => {
     // console.log(data)
+    MessageShow('success', 'Action in progress');
     reFetchTeams();
   };
 
@@ -218,6 +235,7 @@ export default function Groups({ theme, t, setPath }) {
   }
 
   const { mutate: createTeam } = onCreateTeam(onCreateSuccess, onCreateError);
+  const { mutate: deleteTeam } = onDeleteTeam(onCreateSuccess, onCreateError);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -271,7 +289,7 @@ export default function Groups({ theme, t, setPath }) {
   };
 
   const handleMenuClick = (e: any) => {
-    console.log('click', e);
+    // console.log('click', e);
     console.log(chosenEmoji);
   };
 
@@ -371,14 +389,14 @@ export default function Groups({ theme, t, setPath }) {
               paddingTop: '10px',
             }}
           >
-            {teamList?.data.totalElements === 0 && (
+            {teamList?.data?.totalElements === 0 && (
               <Col span={24}>
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               </Col>
             )}
 
-            {teamList?.data.totalElements > 0 &&
-              teamList?.data.content.map((item, index) => (
+            {teamList?.data?.totalElements > 0 &&
+              teamList?.data?.content.map((item, index) => (
                 <Col key={item.id} span={8}>
                   <Card
                     style={{ width: '100%' }}
@@ -404,7 +422,7 @@ export default function Groups({ theme, t, setPath }) {
               ))}
           </Row>
         )}
-        {teamList?.data.totalElements > 0 &&
+        {teamList?.data?.totalElements > 0 &&
           viewAs === 'grid' &&
           teamList?.data && (
             <Row style={{ marginTop: '2rem' }}>
@@ -418,12 +436,12 @@ export default function Groups({ theme, t, setPath }) {
               </Col>
             </Row>
           )}
-        {teamList?.data.totalElements === 0 && viewAs === 'list' && (
+        {teamList?.data?.totalElements === 0 && viewAs === 'list' && (
           <Col span={24}>
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
           </Col>
         )}
-        {teamList?.data.totalElements > 0 && viewAs === 'list' && (
+        {teamList?.data?.totalElements > 0 && viewAs === 'list' && (
           <Row className="cards-container" style={{ paddingTop: '10px' }}>
             <Col span={24}>
               <Table columns={tableColumns} dataSource={tabledTeamList} />

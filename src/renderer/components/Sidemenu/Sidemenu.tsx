@@ -47,7 +47,6 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     defineAcesstoken,
     defineRefreshtoken,
     defineBackButton,
-    logout
   } = useContext(MainContext);
   const user = JSON.parse(localStorage.getItem('user'));
   const [settingModal, setSettingModal] = useState({
@@ -65,7 +64,6 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
     }
 
     if (e.key === 'logout') {
-      localStorage.clear();
       defineRoutedState(false);
       definePageInfo({});
       definedEditorIsOpened(false);
@@ -74,13 +72,14 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
       defineUser({});
       defineAcesstoken(undefined);
       defineRefreshtoken(undefined);
+      localStorage.clear();
       // window.location.href = '/';
       setTimeout(() => {
         // history.push('/home');
-        history.push(`${location.pathname}`)
-        window.location.href = window.location.origin;
+        history.push(`${location.pathname}`);
+        // window.location.href = window.location.origin;
         // document.location.reload();
-      }, 2000)
+      }, 2000);
       // history.push(`${location.pathname}`);
       // document.location.reload();
       // document.location.replace(document.location.origin);

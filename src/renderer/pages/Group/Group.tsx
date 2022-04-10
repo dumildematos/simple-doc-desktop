@@ -12,6 +12,11 @@ import {
   notification,
   Dropdown,
   Menu,
+  Form,
+  Input,
+  Radio,
+  Upload,
+  Empty,
 } from 'antd';
 import { Link, useHistory, useParams, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -21,11 +26,14 @@ import {
   AntDesignOutlined,
   CarryOutOutlined,
   DeleteFilled,
+  DownOutlined,
   FileFilled,
   FileTextOutlined,
   FormOutlined,
+  SmileOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import Picker from 'emoji-picker-react';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { onListCategory } from 'renderer/services/CategoryService';
 import { onGetTemplates } from 'renderer/services/TemplateService';
@@ -35,13 +43,18 @@ import {
 } from 'renderer/services/DocumentService';
 import { CreateDocument } from 'renderer/models/DocumentModel';
 import { ipcRenderer } from 'electron';
+import { useForm } from 'antd/lib/form/Form';
+import ImgCrop from 'antd-img-crop';
+import TextArea from 'antd/lib/input/TextArea';
+import menu from 'antd/lib/menu';
+import { TeamAddForm } from 'renderer/models/TeamModel';
+import { onEditTeam } from 'renderer/services/TeamsService';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
 const { DirectoryTree } = Tree;
 
 const GroupContainer = styled.div`
-  /* background: red !important; */
   width: 100%;
   height: 100vh;
   padding: 50px;
@@ -135,21 +148,62 @@ const GroupContainer = styled.div`
   }
 `;
 
-const user = JSON.parse(localStorage.getItem('user'));
+const ModalLayout = styled(Modal)`
+  .ant-modal-content {
+    background: ${(props: { theme: { modalBg: any } }) => props.theme.modalBg};
+    .ant-modal-header {
+      background: ${(props: { theme: { modalBg: any } }) =>
+        props.theme.modalBg};
+      border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
+        props.theme.modalInnerBorderColor};
+      .ant-modal-title {
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor} !important;
+      }
+    }
+    .ant-modal-body {
+      label {
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor} !important;
+      }
+      .ant-input {
+        background: ${(props: { theme: { modalBgInput: any } }) =>
+          props.theme.modalBgInput} !important;
+        border: ${(props: { theme: { modalInputBorder: any } }) =>
+          props.theme.modalInputBorder};
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor} !important;
+      }
+    }
+    .ant-modal-footer {
+      border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
+        props.theme.modalInnerBorderColor};
+      button.ant-btn.ant-btn-primary {
+        background-color: var(--purple-1);
+        border: none;
+      }
+    }
+  }
+`;
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 export default function Group(props: any) {
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
   const {
-    definedEditorIsOpened,
-    groupPage,
     team,
     defineBackButton,
     defineDocument,
+    defineTeam
   } = useContext(MainContext);
   const [currentCollapsedId, setCollpasedId] = useState(0);
   const [treeTemplate, setTreeTemplate] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState({});
+  const [isModalEditTeam, setModalEditTeam] = useState(false);
+  const [chosenEmoji, setChosenEmoji] = useState(null);
+  const [bannerInput, setBannerInput] = useState([]);
+  const [formEditTeam] = useForm();
   const { id: teamId } = useParams();
   const history = useHistory();
 
@@ -216,8 +270,16 @@ export default function Group(props: any) {
     setIsModalSelectTypeDoc(false);
   };
 
+  const onCancelEditteam = () => {
+    setModalEditTeam(false);
+  };
+
   const modalSelecTypeShowModal = () => {
     setIsModalSelectTypeDoc(true);
+  };
+
+  const openModalEditTeam = () => {
+    setModalEditTeam(true);
   };
 
   const onChangeCollapse = (key: number) => {
@@ -266,20 +328,92 @@ export default function Group(props: any) {
     }
   };
 
+  const onSuccesEditTeam = (data: TeamAddForm) => {
+    // console.log(data);
+    defineTeam(data?.data);
+  };
+
+  const onErrorEditTeam = () => {};
+
+  const { mutate: mutateEditTeam } = onEditTeam(
+    onSuccesEditTeam,
+    onErrorEditTeam
+  );
+
   const handleDocRightClick = (document) => {};
 
   const openLocalFile = () => {
-    window.electron.ipcRenderer.openDialog();
-    
+    // window.electron.ipcRenderer.openDialog();
   };
-  window.electron.ipcRenderer.on('opened-file', (args) => {
+  // window.electron.ipcRenderer.on('opened-file', (args) => {
+  //   console.log(args)
+  // });
 
-    console.log(args)
-  });
+  const onEmojiClick = (
+    _event: any,
+    emojiObject: React.SetStateAction<any>
+  ) => {
+    // console.log(emojiObject);
+    // console.log(formEditTeam.getFieldValue('title'));
+    // console.log(formEditTeam);
+    formEditTeam.setFieldsValue(
+      formEditTeam.getFieldValue('title') + emojiObject.emoji
+    );
+    setChosenEmoji(emojiObject);
+  };
 
-  // electron.ipcRenderer.on('selected-directory', (event, path) => {
+  const handleMenuEmojiClick = (e: any) => {
+    // console.log('click', e);
+    console.log(chosenEmoji);
+  };
 
-  // })
+  const onPreviewBannerImage = async (file) => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow.document.write(image.outerHTML);
+  };
+
+  const onEditGroup = (values: any) => {
+    const teamForm: TeamAddForm = {
+      id: team.id,
+      name: chosenEmoji ? `${chosenEmoji.emoji} ${values.title}` : values.title,
+      description: values.description,
+      banner: bannerInput[0].thumbUrl,
+      type: values.type,
+    };
+    mutateEditTeam(teamForm);
+    // console.log(teamForm);
+  };
+
+  const onChangeBanner = ({ fileList: newFileList }) => {
+    console.log(newFileList);
+    setBannerInput(newFileList);
+  };
+
+  const menuEmoji = (
+    // <Button type="primary" shape="circle" icon={<SearchOutlined />} />
+    <Menu onClick={handleMenuEmojiClick}>
+      <Menu.Item key="1">
+        <div>
+          {chosenEmoji ? (
+            <span>You chose: {chosenEmoji.emoji}</span>
+          ) : (
+            <span>No emoji Chosen</span>
+          )}
+          <Picker onEmojiClick={onEmojiClick} />
+        </div>
+      </Menu.Item>
+    </Menu>
+  );
 
   const documentMenu = (
     <Menu>
@@ -315,7 +449,12 @@ export default function Group(props: any) {
                 <h3>Detalhes da equipe</h3>
               </Col>
               <Col>
-                <Button type="link" size="small" className="btn-action-pmd">
+                <Button
+                  type="link"
+                  size="small"
+                  className="btn-action-pmd"
+                  onClick={() => openModalEditTeam()}
+                >
                   <BsPencil />
                 </Button>
               </Col>
@@ -356,7 +495,7 @@ export default function Group(props: any) {
             <Col>{/* <h4>Detalhes da equipe</h4> */}</Col>
 
             <Col>
-              <Button
+              {/* <Button
                 type="link"
                 size="small"
                 className="btn-action-pmd"
@@ -370,7 +509,7 @@ export default function Group(props: any) {
                   Open Document &nbsp;
                   <HiOutlineDocumentAdd />
                 </p>
-              </Button>
+              </Button> */}
               <Button
                 type="link"
                 size="small"
@@ -390,7 +529,11 @@ export default function Group(props: any) {
           <Row
             style={{ height: 'auto', maxHeight: '90%', overflowY: 'scroll' }}
           >
-            {documentList?.data.numberOfElements === 0 && 'Empty'}
+            {documentList?.data.numberOfElements === 0 && (
+              <Col span={24}>
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              </Col>
+            )}
 
             {documentList?.data.numberOfElements > 0 &&
               documentList?.data.content.map((document) => {
@@ -494,6 +637,122 @@ export default function Group(props: any) {
           </Col>
         </Row>
       </Modal>
+
+      <ModalLayout
+        theme={props.theme}
+        visible={isModalEditTeam}
+        title="Create a new collection"
+        okText="Create"
+        cancelText="Cancel"
+        onCancel={onCancelEditteam}
+        onOk={() => {
+          formEditTeam
+            .validateFields()
+            // eslint-disable-next-line promise/always-return
+            .then((values) => {
+              onEditGroup(values);
+              formEditTeam.resetFields();
+            })
+            .catch((info) => {
+              console.log('Validate Failed:', info);
+            });
+        }}
+      >
+        <Form
+          form={formEditTeam}
+          layout="vertical"
+          name="form_in_modal"
+          initialValues={{
+            modifier: 'public',
+          }}
+        >
+          <Row>
+            <Col flex="100px">
+              <Form.Item label=".">
+                <Dropdown overlay={menuEmoji} trigger={['click']}>
+                  <Button onClick={(e) => e.preventDefault()}>
+                    {chosenEmoji ? chosenEmoji.emoji : <SmileOutlined />}
+                    <DownOutlined />
+                  </Button>
+                </Dropdown>
+              </Form.Item>
+            </Col>
+            <Col flex="auto">
+              <Form.Item
+                name="title"
+                label="Nome da equipe"
+                initialValue={team.name}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input the title of collection!',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item
+            name="type"
+            label="Selecione o tipo"
+            initialValue={team.type}
+            rules={[
+              {
+                required: true,
+                message: 'Please input the title of collection!',
+              },
+            ]}
+          >
+            <Radio.Group defaultValue="PRIVATE" buttonStyle="solid">
+              <Radio.Button value="PUBLIC">Público</Radio.Button>
+              <Radio.Button value="PRIVATE">Privado</Radio.Button>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            name="banner"
+            label="Cover do grupo"
+            rules={[
+              {
+                required: !(bannerInput.length > 0),
+                message: 'Please input the title of collection!',
+              },
+            ]}
+          >
+            <ImgCrop rotate>
+              <Upload
+                listType="picture-card"
+                fileList={bannerInput}
+                onChange={onChangeBanner}
+                onPreview={onPreviewBannerImage}
+              >
+                {bannerInput.length < 1 && '+ Upload'}
+              </Upload>
+            </ImgCrop>
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Descrição"
+            initialValue={team.description}
+            rules={[
+              {
+                required: true,
+                message: 'Please input the title of collection!',
+              },
+            ]}
+          >
+            <TextArea
+              placeholder="textarea with clear icon"
+              allowClear
+              showCount
+              maxLength={400}
+            />
+          </Form.Item>
+        </Form>
+      </ModalLayout>
     </GroupContainer>
   );
 }
+
+

@@ -9,7 +9,6 @@ import QuillCursors from 'quill-cursors';
 
 Quill.register('modules/cursors', QuillCursors);
 
-
 const Editor = styled.div`
   *,
   *::before,
@@ -91,7 +90,7 @@ const TOOLBAR_OPTIONS = [
   ['clean'],
 ];
 const SAVE_INTERVAL_MS = 2000;
-const user = JSON.parse(localStorage.getItem('user'));
+const user = JSON.parse(localStorage.getItem('user') || '{}');
 export default function QuillEditor({ id }) {
   const { isRouted, team, documentOnWork } = useContext(MainContext);
   console.log(documentOnWork);
@@ -120,11 +119,22 @@ export default function QuillEditor({ id }) {
     socket.once('load-document', (document) => {
       quill.setContents(document.data);
       quill.enable();
-      if (
-        currentContrinutor?.role === 'READER' &&
-        user.username != currentContrinutor.username
-      ) {
-        quill.disable(true);
+
+      // console.log(currentContrinutor);
+      // console.log(documentOnWork);
+      if(currentContrinutor) {
+        if (currentContrinutor?.username !== documentOnWork.creator) {
+          if (documentOnWork.type === 'PUBLIC') {
+            quill.disable(false);
+          } else if (currentContrinutor?.role !== 'WRITER') {
+            quill.disable(true);
+          }
+        }
+      }else {
+        console.log(documentOnWork?.creator === user?.username)
+        if (documentOnWork?.creator === user?.username) {
+          quill.enable()
+        }
       }
     });
 
@@ -158,7 +168,6 @@ export default function QuillEditor({ id }) {
       console.log(data);
     });
 
-
     return () => {
       socket.off('receive-changes', handler);
     };
@@ -188,50 +197,13 @@ export default function QuillEditor({ id }) {
       theme: 'snow',
       modules: {
         toolbar: TOOLBAR_OPTIONS,
-        cursors: {
-          transformOnTextChange: true,
-        },
       },
     });
-    const cursor = q.getModule('cursors');
-    cursor.createCursor(user.id, user.firstname, 'blue');
-    q.disable(false);
 
+    q.disable(false);
     q.setText('Loading...');
     setQuill(q);
   }, []);
-
-  const selectionChangeHandler = (cursors: {
-    moveCursor: (arg0: string, arg1: any) => void;
-  }) => {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const debouncedUpdate = debounce(updateCursor, 500);
-
-    return (range: any, oldRange: any, source: string) => {
-      if (source === 'user') {
-        // If the user has manually updated their selection, send this change
-        // immediately, because a user update is important, and should be
-        // sent as soon as possible for a smooth experience.
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        updateCursor(range);
-      } else {
-        // Otherwise, it's a text change update or similar. These changes will
-        // automatically get transformed by the receiving client without latency.
-        // If we try to keep sending updates, then this will undo the low-latency
-        // transformation already performed, which we don't want to do. Instead,
-        // add a debounce so that we only send the update once the user has stopped
-        // typing, which ensures we send the most up-to-date position (which should
-        // hopefully match what the receiving client already thinks is the cursor
-        // position anyway).
-        debouncedUpdate(range);
-      }
-    };
-
-    function updateCursor(range: any) {
-      // Use a timeout to simulate a high latency connection.
-      setTimeout(() => cursors.moveCursor('cursor', range), CURSOR_LATENCY);
-    }
-  };
 
   const debounce = (
     func: { (range: any): void; apply?: any },
@@ -240,14 +212,14 @@ export default function QuillEditor({ id }) {
     let timeout: NodeJS.Timeout | null;
     return (...args) => {
       const context = this;
-      const later = function() {
+      const later = function () {
         timeout = null;
         func.apply(context, args);
       };
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
     };
-  }
+  };
 
   return (
     <Editor>

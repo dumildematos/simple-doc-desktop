@@ -7,6 +7,7 @@ import {
   Redirect,
   Route,
   Switch,
+  useHistory,
 } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Home from './pages/Home/Home';
@@ -108,7 +109,6 @@ export default function App() {
   const [Apptheme, setTheme] = useState('light');
   const accessToken = localStorage.getItem('access_token');
   const queryClient = new QueryClient();
-
 
   return (
     <QueryClientProvider client={queryClient}>

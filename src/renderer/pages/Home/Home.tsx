@@ -98,10 +98,6 @@ export default function Home({ theme, setTheme }) {
     defineDocSideBar(false);
   };
 
-console.log(isRouted)
-console.log(collapse)
-console.log(location)
-
   return (
     <>
     <MainLayout theme={theme} isRouted={isRouted} collapse={collapse}>

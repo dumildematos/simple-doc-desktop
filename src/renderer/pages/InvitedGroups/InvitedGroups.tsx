@@ -144,7 +144,7 @@ export default function InvitedGroups(props: any) {
       ) => (
         <Space size="middle">
           <a onClick={() => navigateToTeam(record)}>Entrar</a>
-          <a>Delete</a>
+          {/* <a>Delete</a> */}
         </Space>
       ),
     },
