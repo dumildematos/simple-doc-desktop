@@ -27,6 +27,7 @@ import {
   CarryOutOutlined,
   DeleteFilled,
   DownOutlined,
+  ExclamationCircleOutlined,
   FileFilled,
   FileTextOutlined,
   FormOutlined,
@@ -40,6 +41,7 @@ import { onGetTemplates } from 'renderer/services/TemplateService';
 import {
   getDocumentsOfTeam,
   onCreateDocument,
+  onDeleteDocument,
 } from 'renderer/services/DocumentService';
 import { CreateDocument } from 'renderer/models/DocumentModel';
 import { ipcRenderer } from 'electron';
@@ -49,10 +51,12 @@ import TextArea from 'antd/lib/input/TextArea';
 import menu from 'antd/lib/menu';
 import { TeamAddForm } from 'renderer/models/TeamModel';
 import { onEditTeam } from 'renderer/services/TeamsService';
+import { MessageShow } from 'renderer/utils/messages/Messages';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
 const { DirectoryTree } = Tree;
+const { confirm } = Modal;
 
 const GroupContainer = styled.div`
   width: 100%;
@@ -191,15 +195,11 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 export default function Group(props: any) {
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
-  const {
-    team,
-    defineBackButton,
-    defineDocument,
-    defineTeam
-  } = useContext(MainContext);
+  const { team, defineBackButton, defineDocument, defineTeam } =
+    useContext(MainContext);
   const [currentCollapsedId, setCollpasedId] = useState(0);
   const [treeTemplate, setTreeTemplate] = useState([]);
-  const [selectedTemplate, setSelectedTemplate] = useState({});
+  const [selectedTemplate, setSelectedTemplate] = useState([]);
   const [isModalEditTeam, setModalEditTeam] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [bannerInput, setBannerInput] = useState([]);
@@ -291,8 +291,9 @@ export default function Group(props: any) {
   };
 
   const onSelectTree = (keys: React.Key[], info: any) => {
-    console.log('Trigger Select', keys, info);
-    setSelectedTemplate(info);
+    // console.log('Trigger Select', keys, info);
+    console.log('Trigger Select', info);
+    setSelectedTemplate([info]);
   };
 
   const onExpand = () => {
@@ -338,6 +339,16 @@ export default function Group(props: any) {
   const { mutate: mutateEditTeam } = onEditTeam(
     onSuccesEditTeam,
     onErrorEditTeam
+  );
+
+  const onDeleteSuccess = () => {
+    MessageShow('success', 'Action in progress');
+    refetchDocuments();
+  };
+  const onDeleteError = () => {};
+  const { mutate: deleteDocument } = onDeleteDocument(
+    onDeleteSuccess,
+    onDeleteError
   );
 
   const handleDocRightClick = (document) => {};
@@ -415,14 +426,43 @@ export default function Group(props: any) {
     </Menu>
   );
 
-  const documentMenu = (
-    <Menu>
-      <Menu.Item key="1">Rename</Menu.Item>
-      <Menu.Item key="2" danger icon={<DeleteFilled />}>
+  const documentMenuClick = (e: any, id: number) => {
+    if (e.key === 'delete') {
+      confirm({
+        title: 'Are you sure delete this task?',
+        icon: <ExclamationCircleOutlined />,
+        content: 'Some descriptions',
+        okText: 'Yes',
+        okType: 'danger',
+        cancelText: 'No',
+        onOk() {
+          deleteDocument({ docId: id, teamId: team.id });
+          // if (team.docs === 0) {
+          //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          //   // deleteTeam(team.id);
+          // } else {
+          //   MessageShow('error', 'Action in progress');
+          // }
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
+    }
+  };
+
+  const documentMenu = (id) => (
+    <Menu onClick={(e) => documentMenuClick(e, id)}>
+      {/* <Menu.Item key="1">Rename</Menu.Item> */}
+      <Menu.Item key="delete" danger icon={<DeleteFilled />}>
         Delete
       </Menu.Item>
     </Menu>
   );
+
+  const onEditFileName = (e) => {
+    console.log(e);
+  };
 
   return (
     <GroupContainer theme={props.theme}>
@@ -538,7 +578,11 @@ export default function Group(props: any) {
             {documentList?.data.numberOfElements > 0 &&
               documentList?.data.content.map((document) => {
                 return (
-                  <Dropdown overlay={documentMenu} trigger={['contextMenu']}>
+                  <Dropdown
+                    overlay={documentMenu(document.id)}
+                    disabled={document.creator !== user?.username}
+                    trigger={['contextMenu']}
+                  >
                     <Col
                       span={4}
                       key={document.id}
@@ -578,10 +622,22 @@ export default function Group(props: any) {
           padding: '0',
         }}
       >
-        <Row>
+        <Row className="templateP">
           <Col flex="600" className="previewTemplate">
-            {selectedTemplate && selectedTemplate.node
-              ? selectedTemplate.node.content
+            <div className="fl-name">
+              <Input
+                placeholder="input with clear icon"
+                allowClear
+                onChange={onEditFileName}
+                value={
+                  selectedTemplate.length > 0
+                    ? selectedTemplate[0]?.node?.title
+                    : 'Untitled'
+                }
+              />
+            </div>
+            {selectedTemplate.length > 0 && selectedTemplate[0]?.node
+              ? selectedTemplate[0]?.node?.content
               : 'empty'}
           </Col>
           <Col
@@ -593,9 +649,10 @@ export default function Group(props: any) {
               <Button
                 type="primary"
                 block
+                disabled={selectedTemplate.length === 0}
                 onClick={() => {
                   console.log(selectedTemplate);
-                  console.log(teamId);
+                  // console.log(teamId);
 
                   const form: CreateDocument = {
                     name: 'Untitled',
@@ -754,5 +811,3 @@ export default function Group(props: any) {
     </GroupContainer>
   );
 }
-
-

@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { Comment, Avatar, Form, Button, List, Input } from 'antd';
 import moment from 'moment';
+import styled from 'styled-components';
+
+const ChatContainer = styled.div`
+  // .ant-list.ant-list-split {
+  //   height: 53%;
+  //   max-height: 53%;
+  //   overflow-y: scroll;
+  //   background: red;
+  // }
+`;
 
 const { TextArea } = Input;
 const CommentList = ({ comments }) => (
@@ -76,7 +86,7 @@ export default function Chat() {
   };
 
   return (
-    <>
+    <ChatContainer>
       {chatData.comments.length > 0 && (
         <CommentList comments={chatData.comments} />
       )}
@@ -96,6 +106,6 @@ export default function Chat() {
           />
         }
       />
-    </>
+    </ChatContainer>
   );
 }

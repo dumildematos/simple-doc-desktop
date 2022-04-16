@@ -33,6 +33,20 @@ const addContributor = (data: AddContributorForm) => {
   });
 };
 
+const deleteDocumentRequest = (data: any) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/document/${data.docId}/${data.teamId}`,
+    method: 'DELETE',
+    data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 const listDcomentsByTeam = (teamId: number) => {
   const token = localStorage.getItem('access_token');
   return Request({
@@ -75,6 +89,30 @@ export const onAddContributor = (
   onError: () => void
 ) => {
   return useMutation(addContributor, {
+    onSuccess,
+    onError,
+  });
+};
+
+export const onDeleteDocument = (onSuccess: () => void, onError: () => void) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(deleteDocumentRequest, {
+    onMutate: async (newteam) => {
+      await queryClient.cancelQueries('list-teams-document');
+      const previousTeamList = queryClient.getQueryData('list-teams-document');
+      queryClient.setQueryData('list-teams-document', (oldQueryData) => {
+        console.log(oldQueryData, newteam);
+        // return {
+        //   ...oldQueryData,
+        //   data: [...oldQueryData.data, newteam],
+        // };
+      });
+      return {
+        previousTeamList,
+      };
+    },
     onSuccess,
     onError,
   });

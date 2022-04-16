@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams, withRouter } from 'react-router';
 import {
   Affix,
+  Avatar,
   Button,
   Checkbox,
   Col,
@@ -11,11 +12,14 @@ import {
   Form,
   Input,
   Layout,
+  List,
   Menu,
   Modal,
   PageHeader,
   Row,
   Select,
+  Skeleton,
+  Tooltip,
 } from 'antd';
 import {
   MenuUnfoldOutlined,
@@ -29,52 +33,20 @@ import {
   MessageFilled,
   UserAddOutlined,
   LockOutlined,
+  AntDesignOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
 import Chat from 'renderer/components/Chat/Chat';
-import MainLayout from 'renderer/components/MainLayout/MainLayout';
-import Editor, {
-  createEditorStateWithText,
-  composeDecorators,
-} from '@draft-js-plugins/editor';
 import styled from 'styled-components';
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
-import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
-import createSideToolbarPlugin from '@draft-js-plugins/side-toolbar';
-import createImagePlugin from '@draft-js-plugins/image';
-
-import createAlignmentPlugin from '@draft-js-plugins/alignment';
-import createFocusPlugin from '@draft-js-plugins/focus';
-import createResizeablePlugin from '@draft-js-plugins/resizeable';
-import createBlockDndPlugin from '@draft-js-plugins/drag-n-drop';
-import createDragNDropUploadPlugin from '@draft-js-plugins/drag-n-drop-upload';
-import StateToPdfMake from 'draft-js-export-pdfmake';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import QuillEditor from './tools/QuillEditor/QuillEditor';
 import { onAddContributor } from 'renderer/services/DocumentService';
 import { AddContributorForm } from 'renderer/models/DocumentModel';
+import { MessageShow } from 'renderer/utils/messages/Messages';
+import { onDeleteDocumentContributor, onListDocumentContributor } from 'renderer/services/ContributorService';
 const { Option } = Select;
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
-// import robotoItalic from '../../../../assets/fonts/Roboto/Roboto-Italic.ttf';
 
-// const fonts = {
-//   Roboto: {
-//     normal: '../../../../assets/fonts/Roboto/Roboto-Italic.ttf',
-//     bold: '../../../../assets/fonts/Roboto/Roboto-Italic.ttf',
-//     italics: '../../../../assets/fonts/Roboto/Roboto-Italic.ttf',
-//     bolditalics: '../../../../assets/fonts/Roboto/Roboto-Italic.ttf',
-//   },
-// };
-// pdfFonts.pdfMake.vfs = fonts;
-// pdfMake.vfs = fonts;
-// pdfMake.vfs = {
-//   'Roboto-Italic.ttf': fonts.Roboto.italics,
-//   'Roboto-Medium.ttf': fonts.Roboto.italics,
-//   'Roboto-MediumItalic.ttf': fonts.Roboto.italics,
-//   'Roboto-Regular.ttf': fonts.Roboto.italics,
-// };
 
 const EditorContainer = styled.div`
   /* background: red !important; */
@@ -142,103 +114,13 @@ const EditorContainer = styled.div`
 `;
 
 const { Header, Content } = Layout;
+const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-let inPage = false;
-
-const inlineToolbarPlugin = createInlineToolbarPlugin();
-const { InlineToolbar } = inlineToolbarPlugin;
-
-const sideToolbarPlugin = createSideToolbarPlugin();
-const { SideToolbar } = sideToolbarPlugin;
-
-const focusPlugin = createFocusPlugin();
-const resizeablePlugin = createResizeablePlugin();
-const blockDndPlugin = createBlockDndPlugin();
-const alignmentPlugin = createAlignmentPlugin();
-const { AlignmentTool } = alignmentPlugin;
-
-const decorator = composeDecorators(
-  resizeablePlugin.decorator,
-  alignmentPlugin.decorator,
-  focusPlugin.decorator,
-  blockDndPlugin.decorator
-);
-
-const imagePlugin = createImagePlugin({ decorator });
-
-const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
-  handleUpload: null,
-  addImage: imagePlugin.addImage,
-});
-
-const plugins = [
-  inlineToolbarPlugin,
-  sideToolbarPlugin,
-  dragNDropFileUploadPlugin,
-  blockDndPlugin,
-  focusPlugin,
-  alignmentPlugin,
-  resizeablePlugin,
-  imagePlugin,
-];
-
-const initialState = {
-  entityMap: {
-    0: {
-      type: 'IMAGE',
-      mutability: 'IMMUTABLE',
-      data: {
-        src: 'https://i.gadgets360cdn.com/large/loki_tom_hiddleston_crop_1622797154582.jpg',
-      },
-    },
-  },
-  blocks: [
-    {
-      key: '9gm3s',
-      text: 'You can have images in your text field. This is a very rudimentary example, but you can enhance the image plugin with resizing, focus or alignment plugins.',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-    {
-      key: 'ov7r',
-      text: ' ',
-      type: 'atomic',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [
-        {
-          offset: 0,
-          length: 1,
-          key: 0,
-        },
-      ],
-      data: {},
-    },
-    {
-      key: 'e23a8',
-      text: 'See advanced examples further down …',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-  ],
-};
-
-const DescriptionItem = ({ title, content }) => (
-  <div className="site-description-item-profile-wrapper">
-    <p className="site-description-item-profile-p-label">{title}:</p>
-    {content}
-  </div>
-);
 export default function EditableDocPage({ theme }) {
-  const { isRouted , team } = useContext(MainContext);
+  const { isRouted , team, documentOnWork } = useContext(MainContext);
+  const [isModalListContributorsVisible, setModalListContributorsVisible] = useState(false);
+
   const [form] = Form.useForm();
-  const [role, setRole] = useState('WRITER');
   const { id: documentId } = useParams();
   useEffect(() => {
     inPage = isRouted;
@@ -247,46 +129,39 @@ export default function EditableDocPage({ theme }) {
   const history = useHistory();
   console.log(team)
   const [visible, setVisible] = useState(false);
-
-  const [collapse, setCollapse] = useState({
-    collapsed: false,
-  });
-  const [editor, setEditor] = useState({
-    editorState: EditorState.createWithContent(convertFromRaw(initialState)),
-  });
-
-  const [detailGroup, setDatailGroup] = useState(false);
-
-  const [hashes, setHash] = useState({
-    tags: ['Tag 1', 'Tag 2', 'Tag 3'],
-    inputVisible: false,
-    inputValue: '',
+  const [ listContributors , setListContrinutors ] = useState({
+    initLoading: true,
+    loading: false,
+    data: [],
+    list: [],
   });
 
-  const toggle = () => {
-    setCollapse({
-      collapsed: !collapse.collapsed,
-    });
-  };
+  console.log(documentOnWork)
 
-  const onChangeText = (editorState: any) => {
-    // const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
-    setEditor({
-      editorState,
-    });
-    // const editorState = EditorState.createWithContent(contentState);
-    // const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
-    const rows = convertToRaw(editor.editorState.getCurrentContent());
-    const { blocks } = rows;
-    console.log(blocks);
-  };
 
   const onSuccessAddContributor = () => {
     setIsModalVisible(false);
+    MessageShow('success', 'Action in progress');
+    reftechLsContributors();
   };
-  const onErrorAddContributor = () => {};
+  const onErrorAddContributor = () => {
+    MessageShow('error', 'Action in progress');
+  };
+
+  const onSuccessLsContributors = (data: any) => {
+
+  }
+  const onErrorLsContributors = (error: any) => {
+
+  }
+  const { data: lsContributors, refetch: reftechLsContributors } = onListDocumentContributor(onSuccessLsContributors, onErrorLsContributors, Number(documentId));
+  console.log(lsContributors)
 
   const { mutate: addContributor } = onAddContributor(
+    onSuccessAddContributor,
+    onErrorAddContributor
+  );
+  const { mutate: removeContributor } = onDeleteDocumentContributor(
     onSuccessAddContributor,
     onErrorAddContributor
   );
@@ -310,26 +185,8 @@ export default function EditableDocPage({ theme }) {
     setVisible(false);
   };
 
-  const handleGeneratePDF = () => {
-    const rawContent = convertToRaw(editor.editorState.getCurrentContent());
-    const stateToPdfMake = new StateToPdfMake(rawContent);
-    console.log(stateToPdfMake.generate());
 
-    pdfMake.createPdf(stateToPdfMake.generate()).download();
-  };
 
-  const handleMenuClick = (e: any) => {
-    // message.info('Click on menu item.');
-    console.log('click', e);
-  };
-
-  const handleExportAsMenuClick = (e: any) => {
-    // message.info('Click on menu item.');
-    console.log('click', e);
-    if (e.key === 'pdf') {
-      handleGeneratePDF();
-    }
-  };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -337,9 +194,6 @@ export default function EditableDocPage({ theme }) {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -349,9 +203,25 @@ export default function EditableDocPage({ theme }) {
     console.log('Received values of form: ', values);
   };
 
-  const handleChangeSelect = (value) => {
-    console.log(`selected ${value}`);
+
+  const showModalLIstContributors = () => {
+    setModalListContributorsVisible(true);
   };
+
+  const handleOkModalContrinutors = () => {
+    setModalListContributorsVisible(false);
+  };
+
+  const handleCancelModalContributors = () => {
+    setModalListContributorsVisible(false);
+  };
+
+  const removeContributorFromDoc = (contrId: number) => {
+    console.log({ contrId, docId: documentId })
+    // removeContributor({ contrId, documentId })
+  }
+
+
 
   return (
     <>
@@ -365,14 +235,16 @@ export default function EditableDocPage({ theme }) {
             marginTop: '48px',
           }}
         >
-          <Button
-            type="link"
-            block
-            className="addContributorBtn"
-            onClick={showModal}
-          >
-            <UserAddOutlined />
-          </Button>
+          {documentOnWork.creator === user?.username && (
+            <Button
+              type="link"
+              block
+              className="addContributorBtn"
+              onClick={showModal}
+            >
+              <UserAddOutlined />
+            </Button>
+          )}
 
           <QuillEditor id={documentId} />
 
@@ -448,11 +320,64 @@ export default function EditableDocPage({ theme }) {
             onClose={onClose}
             visible={visible}
           >
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+
+            <Row>
+              <Col>
+              <p
+              className="site-description-item-profile-p"
+              style={{ marginBottom: 24 }}
+            >
+              Membros
+            </p>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={21}>
+                <Avatar.Group  maxCount={10} >
+                  {
+                    lsContributors?.data.length > 0 && lsContributors?.data.map(user => (
+                      <Tooltip title={`${user.firstName} ${user.lastName}`} placement="top">
+                        <Avatar style={{ backgroundColor: '#87d068' }} src={user.avatar} icon={<UserOutlined />} />
+                      </Tooltip>
+                    ))
+                  }
+                </Avatar.Group>
+              </Col>
+              <Col>
+                <Button onClick={showModalLIstContributors} type="link" shape="circle" icon={<EyeOutlined />} />
+              </Col>
+            </Row>
+            <Divider />
+            <p className="site-description-item-profile-p">Chat</p>
+            <Row>
+              <Col span={24}>
+                <Chat />
+              </Col>
+            </Row>
           </Drawer>
         </Content>
+        <Modal title="Contribuidores" visible={isModalListContributorsVisible} onOk={handleOkModalContrinutors} onCancel={handleCancelModalContributors} zIndex={1000000} footer={[]}>
+        <List
+        className="demo-loadmore-list"
+        loading={false}
+        itemLayout="horizontal"
+        dataSource={lsContributors?.data || []}
+        renderItem={item => (
+          <List.Item
+            actions={[ documentOnWork.creator === user?.username && ( <Button onClick={ () => {
+              removeContributor({ contrId: item.id, docId: Number(documentId) })
+            }} type="link" danger icon={<DeleteOutlined />} />) ]}
+          >
+            <Skeleton avatar title={false} loading={false} active>
+              <List.Item.Meta
+                avatar={<Avatar src={item.avatar} />}
+                title={<a>{`${item.firstName} ${item.lastName} `} - <small> {item.role} </small> </a>}
+              />
+            </Skeleton>
+          </List.Item>
+          )}
+        />
+      </Modal>
       </EditorContainer>
     </>
   );
