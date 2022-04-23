@@ -3,13 +3,6 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import 'antd/dist/antd.css';
-@import 'draft-js/dist/Draft.css';
-@import '@draft-js-plugins/side-toolbar/lib/plugin.css';
-@import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
-@import '@draft-js-plugins/image/lib/plugin.css';
-@import '@draft-js-plugins/alignment/lib/plugin.css';
-@import '@draft-js-plugins/focus/lib/plugin.css';
-@import '@draft-js-plugins/emoji/lib/plugin.css';
 
 
 

@@ -19,6 +19,10 @@ import {
   Alert,
   Empty,
   Upload,
+  Avatar,
+  List,
+  Tooltip,
+  Typography,
 } from 'antd';
 import {
   TeamOutlined,
@@ -45,6 +49,9 @@ import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import ImgCrop from 'antd-img-crop';
 import { MessageShow } from 'renderer/utils/messages/Messages';
+import list from 'antd/lib/list';
+
+import moment from 'moment';
 const { Meta } = Card;
 const { TextArea } = Input;
 const { Option } = Select;
@@ -86,7 +93,7 @@ const ModalLayout = styled(Modal)`
     }
   }
 `;
-
+const { Paragraph } = Typography;
 const hasAcessToken = localStorage.getItem('access_token');
 export default function Groups({ theme, t, setPath }) {
   const history = useHistory();
@@ -353,9 +360,87 @@ export default function Groups({ theme, t, setPath }) {
     imgWindow.document.write(image.outerHTML);
   };
 
+  const getKey = (id: string, index: number) => `${id}-${index}`;
+
+  const cardListTeam = teamList?.data?.content && (
+    <List
+      rowKey="id"
+      loading={isLoading || isFetching}
+      grid={{
+        gutter: 16,
+        xs: 1,
+        sm: 2,
+        md: 4,
+        lg: 4,
+        xl: 4,
+        xxl: 4,
+      }}
+      dataSource={teamList?.data?.content}
+      renderItem={(item) => (
+        <List.Item>
+          <Card
+            className="card"
+            hoverable
+            cover={<img alt={item.name} src={item.banner} />}
+            onClick={() => navigateToTeam(item)}
+          >
+            <Card.Meta
+              title={
+                <a>
+                  {item.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />}  {' '}
+                  {item.name}
+                </a>
+              }
+              description={
+                <Paragraph className="item" ellipsis={{ rows: 2 }}>
+                  {item.description}
+                </Paragraph>
+              }
+            />
+            <div
+              className="cardItemContent"
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <span>{moment(item.createdAt).fromNow()}</span>
+
+              <Avatar.Group
+                maxCount={2}
+                maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}
+              >
+                {item.contributors.map((member, i) => (
+                  <Tooltip
+                  title={`${member.firstName} ${member.lastName}`}
+                    placement="top"
+                    key={getKey(item.id, i)}
+                  >
+                    <Avatar
+                      src={member.avatar}
+                      style={{ backgroundColor: '#87d068' }}
+                    />
+                  </Tooltip>
+                ))}
+              </Avatar.Group>
+            </div>
+          </Card>
+        </List.Item>
+      )}
+    />
+  );
+
   return (
     <>
-      <div style={{ padding: 50 }}>
+      <div
+        style={{
+          padding: 50,
+          height: '100vh',
+          boxSizing: 'border-box',
+          overflow: 'auto',
+        }}
+      >
         <Row justify="end">
           <Col span={4}>
             <Button
@@ -382,45 +467,27 @@ export default function Groups({ theme, t, setPath }) {
           </Col>
         </Row>
         {viewAs === 'grid' && (
-          <Row
-            className="cards-container"
-            gutter={[8, 8]}
-            style={{
-              paddingTop: '10px',
-            }}
-          >
-            {teamList?.data?.totalElements === 0 && (
-              <Col span={24}>
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-              </Col>
-            )}
-
-            {teamList?.data?.totalElements > 0 &&
-              teamList?.data?.content.map((item, index) => (
-                <Col key={item.id} span={8}>
-                  <Card
-                    style={{ width: '100%' }}
-                    onClick={() => navigateToTeam(item)}
-                    actions={[
-                      [
-                        item.type === 'PRIVATE' ? (
-                          <FaLock />
-                        ) : (
-                          <FaGlobeAfrica />
-                        ),
-                      ],
-                      // eslint-disable-next-line react/jsx-key
-                      [<IoIosDocument />, <span>{item.documents.length}</span>],
-                    ]}
-                    className="teams-card"
-                  >
-                    <Skeleton loading={isLoading || isFetching} active>
-                      <Meta title={item.name} description={item.description} />
-                    </Skeleton>
-                  </Card>
+          <>
+            <Row
+              className="cards-container"
+              gutter={24}
+              style={{
+                paddingTop: '10px',
+                overflowY: 'hidden',
+              }}
+            >
+              {teamList?.data?.totalElements === 0 && (
+                <Col span={24}>
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 </Col>
-              ))}
-          </Row>
+              )}
+              {teamList?.data?.totalElements > 0 && (
+                <div className="cardList" style={{ width: '100%' }}>
+                  {cardListTeam}
+                </div>
+              )}
+            </Row>
+          </>
         )}
         {teamList?.data?.totalElements > 0 &&
           viewAs === 'grid' &&

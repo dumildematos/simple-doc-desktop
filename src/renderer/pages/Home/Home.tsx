@@ -165,7 +165,7 @@ export default function Home({ theme, setTheme }) {
               }}
             >
         <div>
-        {isRouted}
+
           <Switch>
 
             <Route exact path={["/", "/my-teams"]}>

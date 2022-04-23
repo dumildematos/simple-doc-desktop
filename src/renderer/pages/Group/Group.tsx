@@ -513,19 +513,21 @@ export default function Group(props: any) {
               <h3>Membros</h3>
             </Col>
             <Col span={24}>
-              <Avatar.Group>
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
-                <Tooltip title="Ant User" placement="top">
-                  <Avatar
-                    style={{ backgroundColor: '#87d068' }}
-                    icon={<UserOutlined />}
-                  />
-                </Tooltip>
-                <Avatar
-                  style={{ backgroundColor: '#1890ff' }}
-                  icon={<AntDesignOutlined />}
-                />
+              <Avatar.Group maxCount={6}>
+                {team.contributors.length > 0 &&
+                  team.contributors.map((contributor) => (
+                    <Tooltip
+                      key={contributor.id}
+                      title={`${contributor.firstName} ${contributor.lastName}`}
+                      placement="top"
+                    >
+                      <Avatar
+                        style={{ backgroundColor: '#87d068' }}
+                        icon={<UserOutlined />}
+                        src={contributor.avatar}
+                      />
+                    </Tooltip>
+                  ))}
               </Avatar.Group>
             </Col>
           </Row>
@@ -566,9 +568,7 @@ export default function Group(props: any) {
               </Button>
             </Col>
           </Row>
-          <Row
-            style={{ height: 'auto', maxHeight: '90%', overflowY: 'scroll' }}
-          >
+          <Row style={{ height: 'auto', maxHeight: '90%', overflowY: 'auto' }}>
             {documentList?.data.numberOfElements === 0 && (
               <Col span={24}>
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
@@ -643,7 +643,7 @@ export default function Group(props: any) {
           <Col
             flex="200px"
             className="collapseSelect"
-            style={{ overflow: 'hidden' }}
+            style={{ overflow: 'auto' }}
           >
             <div className="useTemplateBx">
               <Button

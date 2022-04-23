@@ -78,8 +78,7 @@ const MainLayout = styled.div`
       div.notificationDropdown {
         position: absolute;
         top: 0;
-        right:  ${(props) =>
-          !props.collapse.collapsed ? '20%': '10%'};
+        right: ${(props) => (!props.collapse.collapsed ? '20%' : '10%')};
       }
     }
     .site-layout-background {
