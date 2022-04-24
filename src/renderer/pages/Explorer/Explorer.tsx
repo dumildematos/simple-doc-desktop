@@ -4,6 +4,8 @@ import {
   SettingOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
+import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
+import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import {
   Avatar,
   Button,
@@ -20,6 +22,7 @@ import Meta from 'antd/lib/card/Meta';
 import { t } from 'i18next';
 import moment from 'moment';
 import { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { onListPublicTeams } from 'renderer/services/TeamsService';
 import styled from 'styled-components';
@@ -89,9 +92,11 @@ const ExplorerContainer = styled.div`
 `;
 
 export default function Explorer(props: any) {
-  const { defineBackButton } = useContext(MainContext);
+  const { defineBackButton , defineTeam} = useContext(MainContext);
   const [currentPag, setCurrentPag] = useState(1);
   const [searchTeamName, setSearchTeamName] = useState('');
+  const history = useHistory();
+
 
   const onSearch = (value) => {
     setSearchTeamName(value);
@@ -113,6 +118,19 @@ export default function Explorer(props: any) {
     currentPag,
     searchTeamName
   );
+  const navigateToTeam = (team: { id: any }) => {
+    if (team) {
+      defineBackButton({
+        state: true,
+        title: team.name || team.title,
+        subtitle: '',
+      });
+      defineTeam(team);
+      setTimeout(() => {
+        history.push(`/group/${team.id}`);
+      }, 1000);
+    }
+  };
 
   const getKey = (id: string, index: number) => `${id}-${index}`;
 
