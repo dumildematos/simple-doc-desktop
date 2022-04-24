@@ -2,16 +2,20 @@ import { TableOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { FaUsers } from '@react-icons/all-files/fa/FaUsers';
 import { IoIosDocument } from '@react-icons/all-files/io/IoIosDocument';
 import {
+  Avatar,
   Card,
   Col,
   Empty,
   Input,
+  List,
   Pagination,
   Radio,
   Row,
   Skeleton,
   Space,
   Table,
+  Tooltip,
+  Typography,
 } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import { useState, useContext } from 'react';
@@ -21,13 +25,18 @@ import { getUserInvitedTeams } from 'renderer/services/TeamsService';
 import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import styled from 'styled-components';
+import moment from 'moment';
 const { Search } = Input;
+const { Paragraph } = Typography;
 const InvitedContainer = styled.div`
   /* background: red !important; */
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 50px;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: auto;
   .ant-row {
     &.main {
       height: 100%;
@@ -94,8 +103,9 @@ export default function InvitedGroups(props: any) {
   } = useContext(MainContext);
   const [tabledTeamList, setTableLIstTeam] = useState([]);
   const history = useHistory();
-  const onSearch = (value) => console.log(value);
+
   const [currentPag, setCurrentPag] = useState(1);
+  const [searchTeamName, setSearchTeamName] = useState('');
   const [viewAs, setChangeView] = useState('grid');
   const tableColumns = [
     {
@@ -168,9 +178,18 @@ export default function InvitedGroups(props: any) {
     data: teamList,
     isLoading,
     isFetching,
-  } = getUserInvitedTeams(onSuccessListTeams, onErrorListTeams, currentPag);
+    refetch,
+  } = getUserInvitedTeams(
+    onSuccessListTeams,
+    onErrorListTeams,
+    currentPag,
+    searchTeamName
+  );
 
-  console.log(teamList);
+  const onSearch = (value) => {
+    setSearchTeamName(value);
+    refetch();
+  };
 
   const onChangePagination = (page) => {
     console.log(page);
@@ -179,6 +198,7 @@ export default function InvitedGroups(props: any) {
   const onChangeView = (e: any) => {
     setChangeView(e.target.value);
   };
+  const getKey = (id: string, index: number) => `${id}-${index}`;
 
   const navigateToTeam = (team: { id: any }) => {
     if (team) {
@@ -194,6 +214,75 @@ export default function InvitedGroups(props: any) {
     }
   };
 
+  const cardListTeam = teamList?.data?.content && (
+    <List
+      rowKey="id"
+      loading={isLoading || isFetching}
+      grid={{
+        gutter: 16,
+        xs: 1,
+        sm: 2,
+        md: 4,
+        lg: 4,
+        xl: 4,
+        xxl: 4,
+      }}
+      dataSource={teamList?.data?.content}
+      renderItem={(item) => (
+        <List.Item>
+          <Card
+            className="card"
+            hoverable
+            cover={<img alt={item.name} src={item.banner} />}
+            onClick={() => navigateToTeam(item)}
+          >
+            <Card.Meta
+              title={
+                <a>
+                  {item.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />}{' '}
+                  {item.name}
+                </a>
+              }
+              description={
+                <Paragraph className="item" ellipsis={{ rows: 2 }}>
+                  {item.description}
+                </Paragraph>
+              }
+            />
+            <div
+              className="cardItemContent"
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <span>{moment(item.createdAt).fromNow()}</span>
+
+              <Avatar.Group
+                maxCount={2}
+                maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf' }}
+              >
+                {item.contributors.map((member, i) => (
+                  <Tooltip
+                    title={`${member.firstName} ${member.lastName}`}
+                    placement="top"
+                    key={getKey(item.id, i)}
+                  >
+                    <Avatar
+                      src={member.avatar}
+                      style={{ backgroundColor: '#87d068' }}
+                    />
+                  </Tooltip>
+                ))}
+              </Avatar.Group>
+            </div>
+          </Card>
+        </List.Item>
+      )}
+    />
+  );
+
   return (
     <>
       <InvitedContainer theme={props.theme}>
@@ -208,6 +297,10 @@ export default function InvitedGroups(props: any) {
             <Search
               placeholder="input search text"
               onSearch={onSearch}
+              onChange={(e) => {
+                setSearchTeamName(e.target.value);
+                refetch();
+              }}
               allowClear
               style={{ width: 300, float: 'right' }}
             />
@@ -241,32 +334,11 @@ export default function InvitedGroups(props: any) {
               </Col>
             )}
 
-            {teamList?.data.totalElements > 0 &&
-              teamList?.data.content.map((item, index) => (
-                <Col key={item.id} span={8}>
-                  <Card
-                    style={{ width: '100%' }}
-                    onClick={() => navigateToTeam(item)}
-                    actions={[
-                      // eslint-disable-next-line react/jsx-key
-                      [
-                        item.type === 'PRIVATE' ? (
-                          <FaLock />
-                        ) : (
-                          <FaGlobeAfrica />
-                        ),
-                      ],
-                      // eslint-disable-next-line react/jsx-key
-                      [<IoIosDocument />, <span>{item.documents.length}</span>],
-                    ]}
-                    className="teams-card"
-                  >
-                    <Skeleton loading={isLoading || isFetching} active>
-                      <Meta title={item.name} description={item.description} />
-                    </Skeleton>
-                  </Card>
-                </Col>
-              ))}
+            {teamList?.data?.totalElements > 0 && (
+              <div className="cardList" style={{ width: '100%' }}>
+                {cardListTeam}
+              </div>
+            )}
 
             {teamList?.data.totalElements === 0 && viewAs === 'list' && (
               <Col span={24}>

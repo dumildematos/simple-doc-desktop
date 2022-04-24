@@ -2,12 +2,12 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { TeamAddForm } from 'renderer/models/TeamModel';
 import { Request, RequestVersion } from '../utils/request/request';
 
-const listTeamsRequest = (page: number) => {
+const listTeamsRequest = (page: number, name: string | null) => {
   const token = localStorage.getItem('access_token');
   return Request({
-    url: `/${RequestVersion}/teams/user/?page=${
+    url: `/${RequestVersion}/teams/user?page=${
       page === 1 ? 0 : page - 1
-    }&size=6`,
+    }&size=6&name=${name === undefined ? '' : name}`,
     method: 'GET',
     data: null,
     headers: {
@@ -17,12 +17,28 @@ const listTeamsRequest = (page: number) => {
     },
   });
 };
-const listInvitedTeamsRequest = (page: number) => {
+const listInvitedTeamsRequest = (page: number, name: string | null) => {
   const token = localStorage.getItem('access_token');
   return Request({
     url: `/${RequestVersion}/teams/user/invited?page=${
       page === 1 ? 0 : page - 1
-    }&size=6`,
+    }&size=6&name=${!name ? '' : name}`,
+    method: 'GET',
+    data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const listPublicTeamRequest = (page: number, name: string | null) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/teams/public?page=${
+      page === 1 ? 0 : page - 1
+    }&size=6&name=${!name ? '' : name}`,
     method: 'GET',
     data: null,
     headers: {
@@ -86,28 +102,50 @@ const createTeam = (data: TeamAddForm) => {
 export const getUserTeams = (
   onSuccess: () => void,
   onError: () => void,
-  page: number
-) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useQuery(['list-user-teams', page], () => listTeamsRequest(page), {
-    onSuccess,
-    onError,
-    // refetchInterval: 1000,
-  });
-};
-export const getUserInvitedTeams = (
-  onSuccess: () => void,
-  onError: () => void,
-  page: number
+  page: number,
+  name: string | null
 ) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useQuery(
-    ['list-user-invited-teams', page],
-    () => listInvitedTeamsRequest(page),
+    ['list-user-teams', page, name],
+    () => listTeamsRequest(page, name),
     {
       onSuccess,
       onError,
       // refetchInterval: 1000,
+    }
+  );
+};
+export const getUserInvitedTeams = (
+  onSuccess: () => void,
+  onError: () => void,
+  page: number,
+  name: string | null
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useQuery(
+    ['list-user-invited-teams', page, name],
+    () => listInvitedTeamsRequest(page, name),
+    {
+      onSuccess,
+      onError,
+      // refetchInterval: 1000,
+    }
+  );
+};
+export const onListPublicTeams = (
+  onSuccess: () => void,
+  onError: () => void,
+  page: number,
+  name: string | null
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useQuery(
+    ['list-user-public-teams', page, name],
+    () => listPublicTeamRequest(page, name),
+    {
+      onSuccess,
+      onError,
     }
   );
 };
