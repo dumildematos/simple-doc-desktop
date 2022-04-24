@@ -1,40 +1,30 @@
 import { useContext, useEffect, useState } from 'react';
-import { useParams, withRouter } from 'react-router';
+import { useParams } from 'react-router';
 import {
   Affix,
   Avatar,
   Button,
-  Checkbox,
   Col,
   Divider,
   Drawer,
-  Dropdown,
   Form,
   Input,
   Layout,
   List,
-  Menu,
   Modal,
-  PageHeader,
   Row,
   Select,
   Skeleton,
+  Space,
   Tooltip,
 } from 'antd';
+import Draggable from 'react-draggable';
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  LeftOutlined,
-  DownOutlined,
   UserOutlined,
-  DownloadOutlined,
   EyeOutlined,
-  SendOutlined,
   MessageFilled,
   UserAddOutlined,
-  LockOutlined,
-  AntDesignOutlined,
-  DeleteOutlined,
+  AppstoreFilled,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -45,11 +35,12 @@ import { onAddContributor } from 'renderer/services/DocumentService';
 import { AddContributorForm } from 'renderer/models/DocumentModel';
 import { MessageShow } from 'renderer/utils/messages/Messages';
 import { onDeleteDocumentContributor, onListDocumentContributor } from 'renderer/services/ContributorService';
+import React from 'react';
+import { FlowEditor } from './tools/flow';
 const { Option } = Select;
 
 
 const EditorContainer = styled.div`
-  /* background: red !important; */
   width: 100%;
   height: 100vh;
   padding: 0;
@@ -62,6 +53,13 @@ const EditorContainer = styled.div`
     right: 5rem;
     z-index: 1;
     width: 24px;
+  }
+  .tools-drawer {
+    .ant-drawer-body {
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
   }
   .ant-row {
     &.main {
@@ -119,7 +117,12 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 export default function EditableDocPage({ theme }) {
   const { isRouted , team, documentOnWork } = useContext(MainContext);
   const [isModalListContributorsVisible, setModalListContributorsVisible] = useState(false);
-
+  const [draggableToolModal, setDraggableToolModal] = useState({
+    visible: false,
+    disabled: true,
+    bounds: { left: 0, top: 0, bottom: 0, right: 0 },
+  });
+  const draggleRef = React.createRef();
   const [form] = Form.useForm();
   const { id: documentId } = useParams();
   useEffect(() => {
@@ -128,7 +131,8 @@ export default function EditableDocPage({ theme }) {
   }, [isRouted]);
   const history = useHistory();
   console.log(team)
-  const [visible, setVisible] = useState(false);
+  const [visibleChat, setVisibleChat] = useState(false);
+  const [visibleTools, setVisibleTools] = useState(false);
   const [ listContributors , setListContrinutors ] = useState({
     initLoading: true,
     loading: false,
@@ -136,7 +140,7 @@ export default function EditableDocPage({ theme }) {
     list: [],
   });
 
-  console.log(documentOnWork)
+
 
 
   const onSuccessAddContributor = () => {
@@ -178,11 +182,17 @@ export default function EditableDocPage({ theme }) {
     }
   };
 
-  const showDrawer = () => {
-    setVisible(true);
+  const showDrawerChat = () => {
+    setVisibleChat(true);
   };
-  const onClose = () => {
-    setVisible(false);
+  const onCloseChat = () => {
+    setVisibleChat(false);
+  };
+  const showDrawerTools = () => {
+    setVisibleTools(true);
+  };
+  const onCloseTools = () => {
+    setVisibleTools(false);
   };
 
 
@@ -216,11 +226,41 @@ export default function EditableDocPage({ theme }) {
     setModalListContributorsVisible(false);
   };
 
-  const removeContributorFromDoc = (contrId: number) => {
-    console.log({ contrId, docId: documentId })
-    // removeContributor({ contrId, documentId })
+
+
+  const showToolsModal = () => {
+    setVisibleTools(false);
+    setDraggableToolModal({ visible: true})
   }
 
+  const handleOkToolsModal = e => {
+    setDraggableToolModal({
+      visible: false,
+    });
+  };
+
+ const handleCancelToolsModal = e => {
+    setDraggableToolModal({
+      visible: false,
+    });
+    setVisibleTools(true);
+  };
+
+  const onStartTollsModal = (event, uiData) => {
+    const { clientWidth, clientHeight } = window.document.documentElement;
+    const targetRect = draggleRef.current?.getBoundingClientRect();
+    if (!targetRect) {
+      return;
+    }
+    setDraggableToolModal({
+      bounds: {
+        left: -targetRect.left + uiData.x,
+        right: clientWidth - (targetRect.right - uiData.x),
+        top: -targetRect.top + uiData.y,
+        bottom: clientHeight - (targetRect.bottom - uiData.y),
+      },
+    });
+  };
 
 
   return (
@@ -302,13 +342,24 @@ export default function EditableDocPage({ theme }) {
             </Form>
           </Modal>
 
+          <Affix style={{ position: 'fixed', top: '80%', right: '3%' }}>
+            <Button
+              style={{ color: 'var(--purple-1)', fontSize: '1.7rem' }}
+              size="middle"
+              shape="circle"
+              type="link"
+              onClick={showDrawerTools}
+            >
+              <AppstoreFilled />
+            </Button>
+          </Affix>
           <Affix style={{ position: 'fixed', top: '90%', right: '3%' }}>
             <Button
               style={{ color: 'var(--purple-1)', fontSize: '1.7rem' }}
               size="middle"
               shape="circle"
               type="link"
-              onClick={showDrawer}
+              onClick={showDrawerChat}
             >
               <MessageFilled />
             </Button>
@@ -317,8 +368,8 @@ export default function EditableDocPage({ theme }) {
           <Drawer
             title="Basic Drawer"
             placement="right"
-            onClose={onClose}
-            visible={visible}
+            onClose={onCloseChat}
+            visible={visibleChat}
           >
 
             <Row>
@@ -355,6 +406,43 @@ export default function EditableDocPage({ theme }) {
               </Col>
             </Row>
           </Drawer>
+          <Drawer
+            title="Tools"
+            placement="right"
+            onClose={onCloseTools}
+            visible={visibleTools}
+            className="tools-drawer"
+          >
+
+            <Row>
+              <Col>
+                <Button block style={{ marginTop: '5px' }} onClick={showToolsModal}>Flow Editor</Button>
+                <Button block style={{ marginTop: '5px' }}>Mind Editor</Button>
+                <Button block style={{ marginTop: '5px' }}>Koni Editor</Button>
+              </Col>
+            </Row>
+
+          </Drawer>
+          <Drawer
+            title={` Drawer`}
+            placement="right"
+            size={'large'}
+            onClose={handleCancelToolsModal}
+            visible={draggableToolModal.visible}
+            extra={
+              <Space>
+                <Button onClick={handleCancelToolsModal}>Cancel</Button>
+                <Button type="primary" onClick={handleCancelToolsModal}>
+                  OK
+                </Button>
+              </Space>
+            }
+          >
+            <FlowEditor />
+            {/* <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p> */}
+          </Drawer>
         </Content>
         <Modal title="Contribuidores" visible={isModalListContributorsVisible} onOk={handleOkModalContrinutors} onCancel={handleCancelModalContributors} zIndex={1000000} footer={[]}>
         <List
@@ -378,6 +466,9 @@ export default function EditableDocPage({ theme }) {
           )}
         />
       </Modal>
+
+
+
       </EditorContainer>
     </>
   );

@@ -163,3 +163,9 @@ ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.dropdown-
     height: 104px;
   } */
 }
+#J_FlowContainer_1 {
+  height: 100%!important;
+}
+#J_FlowContainer_1  .graph-container {
+  height: 100%!important;
+}
