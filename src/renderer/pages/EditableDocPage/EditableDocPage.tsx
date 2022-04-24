@@ -37,6 +37,7 @@ import { MessageShow } from 'renderer/utils/messages/Messages';
 import { onDeleteDocumentContributor, onListDocumentContributor } from 'renderer/services/ContributorService';
 import React from 'react';
 import { FlowEditor } from './tools/flow';
+import { saveAs } from 'file-saver';
 const { Option } = Select;
 
 
@@ -100,7 +101,8 @@ const EditorContainer = styled.div`
           .square {
             width: 70px;
             height: 70px !important;
-            background: green;
+            background: grimport { type } from '../../models/UserModels';
+een;
             svg {
               width: 100%;
             }
@@ -114,14 +116,37 @@ const EditorContainer = styled.div`
 const { Header, Content } = Layout;
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
+
+
+
 export default function EditableDocPage({ theme }) {
   const { isRouted , team, documentOnWork } = useContext(MainContext);
   const [isModalListContributorsVisible, setModalListContributorsVisible] = useState(false);
   const [draggableToolModal, setDraggableToolModal] = useState({
     visible: false,
     disabled: true,
-    bounds: { left: 0, top: 0, bottom: 0, right: 0 },
+    type: '',
   });
+  const toolsList = [
+    {
+      avatar: '',
+      title: 'Flow Editor',
+      desc: 'Mil palavras não são tão boas quanto uma imagem, e um fluxograma é uma boa maneira de expressar a ideia de um algoritmo',
+      type: 'flow',
+    },
+      {
+      avatar: '',
+      title: 'Mind Editor',
+      desc: 'O mapa cerebral é uma ferramenta de pensamento gráfico eficaz para expressar o pensamento divergente. É simples, mas muito eficaz. É uma ferramenta de pensamento prático.',
+      type: 'mind',
+    },
+      {
+      avatar: '',
+      title: 'Flow Editor',
+      desc: 'O diagrama de topologia refere-se ao diagrama de estrutura de rede composto por dispositivos de nós de rede e meios de comunicação.',
+      type: 'koni',
+    }
+  ];
   const draggleRef = React.createRef();
   const [form] = Form.useForm();
   const { id: documentId } = useParams();
@@ -228,16 +253,12 @@ export default function EditableDocPage({ theme }) {
 
 
 
-  const showToolsModal = () => {
+  const showToolsModal = (type) => {
     setVisibleTools(false);
-    setDraggableToolModal({ visible: true})
+    setDraggableToolModal({ visible: true , type:type})
   }
 
-  const handleOkToolsModal = e => {
-    setDraggableToolModal({
-      visible: false,
-    });
-  };
+
 
  const handleCancelToolsModal = e => {
     setDraggableToolModal({
@@ -246,22 +267,13 @@ export default function EditableDocPage({ theme }) {
     setVisibleTools(true);
   };
 
-  const onStartTollsModal = (event, uiData) => {
-    const { clientWidth, clientHeight } = window.document.documentElement;
-    const targetRect = draggleRef.current?.getBoundingClientRect();
-    if (!targetRect) {
-      return;
-    }
-    setDraggableToolModal({
-      bounds: {
-        left: -targetRect.left + uiData.x,
-        right: clientWidth - (targetRect.right - uiData.x),
-        top: -targetRect.top + uiData.y,
-        bottom: clientHeight - (targetRect.bottom - uiData.y),
-      },
-    });
-  };
 
+
+  const openTool = (type: string) => {
+    if(type === 'flow') {
+      showToolsModal(type)
+    }
+  }
 
   return (
     <>
@@ -413,14 +425,35 @@ export default function EditableDocPage({ theme }) {
             visible={visibleTools}
             className="tools-drawer"
           >
-
+{/*
             <Row>
               <Col>
                 <Button block style={{ marginTop: '5px' }} onClick={showToolsModal}>Flow Editor</Button>
                 <Button block style={{ marginTop: '5px' }}>Mind Editor</Button>
                 <Button block style={{ marginTop: '5px' }}>Koni Editor</Button>
               </Col>
-            </Row>
+            </Row> */}
+              <List
+                className="demo-loadmore-list"
+                loading={false}
+                itemLayout="horizontal"
+                // loadMore={loadMore}
+                dataSource={toolsList}
+                renderItem={item => (
+                  <List.Item
+                    actions={[<a key="list-loadmore-more" onClick={() => openTool(item.type)}>create</a>]}
+                  >
+                    <Skeleton avatar title={false} loading={false} active>
+                      <List.Item.Meta
+                        avatar={<Avatar src={item.avatar} />}
+                        title={<a href="https://ant.design">{item.title}</a>}
+                        description={item.desc}
+                      />
+                    </Skeleton>
+                  </List.Item>
+                )}
+              />
+
 
           </Drawer>
           <Drawer
@@ -435,13 +468,19 @@ export default function EditableDocPage({ theme }) {
                 <Button type="primary" onClick={handleCancelToolsModal}>
                   OK
                 </Button>
+                <Button type="primary" onClick={() => {
+                  let canvas = document.getElementById("canvas_1");
+                  canvas.toBlob(function(blob) {
+                      saveAs(blob, "flow.png");
+                  });
+                }}>
+                  Save as PNG
+                </Button>
               </Space>
             }
           >
-            <FlowEditor />
-            {/* <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p> */}
+            { draggableToolModal.type === 'flow' && <FlowEditor /> }
+
           </Drawer>
         </Content>
         <Modal title="Contribuidores" visible={isModalListContributorsVisible} onOk={handleOkModalContrinutors} onCancel={handleCancelModalContributors} zIndex={1000000} footer={[]}>

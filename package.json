@@ -221,6 +221,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@react-icons/all-files": "^4.1.0",
+    "@types/file-saver": "^2.0.5",
     "@xstyled/styled-components": "^3.0.3",
     "antd": "^4.16.13",
     "antd-img-crop": "^4.2.0",
@@ -230,6 +231,7 @@
     "electron-log": "^4.4.1",
     "electron-updater": "^4.6.1",
     "emoji-picker-react": "^3.4.8",
+    "file-saver": "^2.0.5",
     "gg-editor": "^2.0.2",
     "history": "4.x.x",
     "i18next": "^21.2.3",
