@@ -128,7 +128,7 @@ export default function Explorer(props: any) {
       defineTeam(team);
       setTimeout(() => {
         history.push(`/group/${team.id}`);
-      }, 1000);
+      }, 100);
     }
   };
 

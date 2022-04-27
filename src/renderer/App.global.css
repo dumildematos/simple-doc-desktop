@@ -169,3 +169,11 @@ ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.dropdown-
 #J_FlowContainer_1  .graph-container {
   height: 100%!important;
 }
+
+
+.tools-list .ant-list-item-meta-description {
+    font-size: 12px;
+}
+.tools-list  .ant-list-item{
+  cursor: pointer!important;
+}

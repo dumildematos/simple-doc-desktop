@@ -25,6 +25,7 @@ import {
   MessageFilled,
   UserAddOutlined,
   AppstoreFilled,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -62,6 +63,7 @@ const EditorContainer = styled.div`
       justify-content: center;
     }
   }
+
   .ant-row {
     &.main {
       height: 100%;
@@ -129,20 +131,20 @@ export default function EditableDocPage({ theme }) {
   });
   const toolsList = [
     {
-      avatar: '',
+      avatar: 'https://play-lh.googleusercontent.com/kaox1VteLsWAuNxPxhm8t4llaoyFhxzDjo9g4Hdf92bKdT_Sn6Yrdku6rApuc5ktirw',
       title: 'Flow Editor',
       desc: 'Mil palavras não são tão boas quanto uma imagem, e um fluxograma é uma boa maneira de expressar a ideia de um algoritmo',
       type: 'flow',
     },
       {
-      avatar: '',
+      avatar: 'https://seeklogo.com/images/P/postman-logo-F43375A2EB-seeklogo.com.png',
       title: 'Mind Editor',
       desc: 'O mapa cerebral é uma ferramenta de pensamento gráfico eficaz para expressar o pensamento divergente. É simples, mas muito eficaz. É uma ferramenta de pensamento prático.',
       type: 'mind',
     },
       {
-      avatar: '',
-      title: 'Flow Editor',
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png?20200221181224',
+      title: 'Koni Editor',
       desc: 'O diagrama de topologia refere-se ao diagrama de estrutura de rede composto por dispositivos de nós de rede e meios de comunicação.',
       type: 'koni',
     }
@@ -434,18 +436,19 @@ export default function EditableDocPage({ theme }) {
               </Col>
             </Row> */}
               <List
-                className="demo-loadmore-list"
+                className="tools-list"
                 loading={false}
                 itemLayout="horizontal"
                 // loadMore={loadMore}
                 dataSource={toolsList}
                 renderItem={item => (
                   <List.Item
-                    actions={[<a key="list-loadmore-more" onClick={() => openTool(item.type)}>create</a>]}
+                    // actions={[<a key="list-loadmore-more" onClick={() => openTool(item.type)}>create</a>]}
+                    onClick={() => openTool(item.type)}
                   >
                     <Skeleton avatar title={false} loading={false} active>
                       <List.Item.Meta
-                        avatar={<Avatar src={item.avatar} />}
+                        avatar={<Avatar shape="square" size={64} src={item.avatar} />}
                         title={<a href="https://ant.design">{item.title}</a>}
                         description={item.desc}
                       />
