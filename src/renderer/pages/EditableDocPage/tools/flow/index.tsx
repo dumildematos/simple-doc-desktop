@@ -25,9 +25,14 @@ const ContainerBox = styled.div`
         height: 100%;
         .ant-col {
           height: 100%;
+          &.ant-col-16 {
+            div {
+              height: 100%;
+            }
+          }
         }
       }
-      #J_FlowContainer_1 {
+      #J_FlowContainer_8 {
         height: 100% !important;
         .graph-container {
           height: 100% !important;

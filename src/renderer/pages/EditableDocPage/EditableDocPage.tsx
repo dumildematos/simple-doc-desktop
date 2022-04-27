@@ -104,8 +104,7 @@ const EditorContainer = styled.div`
           .square {
             width: 70px;
             height: 70px !important;
-            background: grimport { type } from '../../models/UserModels';
-een;
+            background: green;
             svg {
               width: 100%;
             }
@@ -474,15 +473,15 @@ export default function EditableDocPage({ theme }) {
                 </Button>
                 <Button type="primary" onClick={() => {
                   if(draggableToolModal.type === 'flow') {
-                    let canvas = document.getElementById("canvas_1");
+                    let canvas = document.getElementsByClassName('graph-container')[0].getElementsByTagName('canvas')[0];
                     canvas?.toBlob(function(blob: string | Blob) {
                         saveAs(blob, "flow.png");
                     });
                   }
                   if(draggableToolModal.type === 'mind') {
-                    let canvas = document.getElementById("canvas_7");
+                    let canvas = document.getElementsByClassName('graph-container')[0].getElementsByTagName('canvas')[0];
                     canvas?.toBlob(function(blob: string | Blob) {
-                        saveAs(blob, "flow.png");
+                        saveAs(blob, "mind.png");
                     });
                   }
                 }}>

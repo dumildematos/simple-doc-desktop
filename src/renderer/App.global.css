@@ -163,13 +163,6 @@ ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.dropdown-
     height: 104px;
   } */
 }
-#J_FlowContainer_1, #J_MindContainer_4 {
-  height: 100%!important;
-}
-#J_FlowContainer_1  .graph-container, #J_MindContainer_4 .graph-container{
-  height: 100%!important;
-}
-
 
 .tools-list .ant-list-item-meta-description {
     font-size: 12px;
