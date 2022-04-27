@@ -40,6 +40,7 @@ import React from 'react';
 import { FlowEditor } from './tools/flow';
 import { saveAs } from 'file-saver';
 import { MindEditor } from './tools/mind';
+import { KoniEditor } from './tools/koni';
 const { Option } = Select;
 
 
@@ -472,18 +473,12 @@ export default function EditableDocPage({ theme }) {
                   OK
                 </Button>
                 <Button type="primary" onClick={() => {
-                  if(draggableToolModal.type === 'flow') {
+
                     let canvas = document.getElementsByClassName('graph-container')[0].getElementsByTagName('canvas')[0];
                     canvas?.toBlob(function(blob: string | Blob) {
-                        saveAs(blob, "flow.png");
+                        saveAs(blob, `${draggableToolModal.type}.png`);
                     });
-                  }
-                  if(draggableToolModal.type === 'mind') {
-                    let canvas = document.getElementsByClassName('graph-container')[0].getElementsByTagName('canvas')[0];
-                    canvas?.toBlob(function(blob: string | Blob) {
-                        saveAs(blob, "mind.png");
-                    });
-                  }
+
                 }}>
                   Save as PNG
                 </Button>
@@ -492,6 +487,7 @@ export default function EditableDocPage({ theme }) {
           >
             { draggableToolModal.type === 'flow' && <FlowEditor /> }
             { draggableToolModal.type === 'mind' && <MindEditor /> }
+            { draggableToolModal.type === 'koni' && <KoniEditor /> }
 
           </Drawer>
         </Content>
