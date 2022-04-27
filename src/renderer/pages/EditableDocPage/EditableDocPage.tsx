@@ -39,6 +39,7 @@ import { onDeleteDocumentContributor, onListDocumentContributor } from 'renderer
 import React from 'react';
 import { FlowEditor } from './tools/flow';
 import { saveAs } from 'file-saver';
+import { MindEditor } from './tools/mind';
 const { Option } = Select;
 
 
@@ -272,7 +273,7 @@ export default function EditableDocPage({ theme }) {
 
 
   const openTool = (type: string) => {
-    if(type === 'flow') {
+    if(type) {
       showToolsModal(type)
     }
   }
@@ -472,10 +473,18 @@ export default function EditableDocPage({ theme }) {
                   OK
                 </Button>
                 <Button type="primary" onClick={() => {
-                  let canvas = document.getElementById("canvas_1");
-                  canvas.toBlob(function(blob) {
-                      saveAs(blob, "flow.png");
-                  });
+                  if(draggableToolModal.type === 'flow') {
+                    let canvas = document.getElementById("canvas_1");
+                    canvas?.toBlob(function(blob: string | Blob) {
+                        saveAs(blob, "flow.png");
+                    });
+                  }
+                  if(draggableToolModal.type === 'mind') {
+                    let canvas = document.getElementById("canvas_7");
+                    canvas?.toBlob(function(blob: string | Blob) {
+                        saveAs(blob, "flow.png");
+                    });
+                  }
                 }}>
                   Save as PNG
                 </Button>
@@ -483,6 +492,7 @@ export default function EditableDocPage({ theme }) {
             }
           >
             { draggableToolModal.type === 'flow' && <FlowEditor /> }
+            { draggableToolModal.type === 'mind' && <MindEditor /> }
 
           </Drawer>
         </Content>

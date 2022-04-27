@@ -30,7 +30,7 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
+    "productName": "SimpleDoc",
     "appId": "org.erb.ElectronReact",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
@@ -89,8 +89,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "simple-doc-desktop",
+      "repo": "simple-doc-desktop"
     }
   },
   "repository": {
@@ -98,9 +98,9 @@
     "url": "git+https://github.com/dumildematos/simple-doc-desktop.git"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Dumilde Matos",
+    "email": "dumildejosematos@gmail.com",
+    "url": "https://simpledoc.io"
   },
   "license": "MIT",
   "bugs": {
@@ -117,7 +117,7 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://simpledoc.io",
   "jest": {
     "testURL": "http://localhost/",
     "testEnvironment": "jsdom",
