@@ -18,7 +18,6 @@ import {
   Space,
   Tooltip,
 } from 'antd';
-import Draggable from 'react-draggable';
 import {
   UserOutlined,
   EyeOutlined,
@@ -132,19 +131,19 @@ export default function EditableDocPage({ theme }) {
   });
   const toolsList = [
     {
-      avatar: 'https://play-lh.googleusercontent.com/kaox1VteLsWAuNxPxhm8t4llaoyFhxzDjo9g4Hdf92bKdT_Sn6Yrdku6rApuc5ktirw',
+      avatar: 'https://www.syncfusion.com/blogs/wp-content/uploads/2019/07/Creating-flow-chart.jpg',
       title: 'Flow Editor',
       desc: 'Mil palavras não são tão boas quanto uma imagem, e um fluxograma é uma boa maneira de expressar a ideia de um algoritmo',
       type: 'flow',
     },
       {
-      avatar: 'https://seeklogo.com/images/P/postman-logo-F43375A2EB-seeklogo.com.png',
+      avatar: 'https://media.istockphoto.com/vectors/mind-map-concept-vector-id1133618660?k=20&m=1133618660&s=612x612&w=0&h=K65ClCy00lJLKZZpRxKwSGl3kTs16lsvQf0SLfoSo1A=',
       title: 'Mind Editor',
       desc: 'O mapa cerebral é uma ferramenta de pensamento gráfico eficaz para expressar o pensamento divergente. É simples, mas muito eficaz. É uma ferramenta de pensamento prático.',
       type: 'mind',
     },
       {
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png?20200221181224',
+      avatar: 'https://cutewallpaper.org/21/cisco-wallpaper/Cisco-Live-KEMOSABE.jpg',
       title: 'Koni Editor',
       desc: 'O diagrama de topologia refere-se ao diagrama de estrutura de rede composto por dispositivos de nós de rede e meios de comunicação.',
       type: 'koni',

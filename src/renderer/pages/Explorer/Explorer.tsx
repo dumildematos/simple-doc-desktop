@@ -12,6 +12,7 @@ import {
   Card,
   Col,
   Divider,
+  Empty,
   Input,
   List,
   Row,
@@ -92,19 +93,17 @@ const ExplorerContainer = styled.div`
 `;
 
 export default function Explorer(props: any) {
-  const { defineBackButton , defineTeam} = useContext(MainContext);
+  const { defineBackButton, defineTeam } = useContext(MainContext);
   const [currentPag, setCurrentPag] = useState(1);
   const [searchTeamName, setSearchTeamName] = useState('');
   const history = useHistory();
-
 
   const onSearch = (value) => {
     setSearchTeamName(value);
     refetch();
   };
 
-  const onSuccessListTeams = (data) => {
-  };
+  const onSuccessListTeams = (data) => {};
   const onErrorListTeams = () => {};
 
   const {
@@ -226,47 +225,17 @@ export default function Explorer(props: any) {
             />
           </Col>
         </Row>
-        {/* <Row> */}
-        {/* <Col span={24}> */}
-        {/* <MContainer>
-            <div className="coverCardList">
-              <Card bordered={false}>
 
-              </Card>
-            </div>
-
-          </MContainer> */}
-        {/* </Col> */}
         {teamList?.data?.totalElements > 0 && (
           <div className="cardList" style={{ width: '100%' }}>
             {cardListTeam}
           </div>
         )}
-        {/* </Row> */}
-        {/* <Row>
-          <Col span={8}>
-            <Card
-              style={{ width: 300 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              }
-              actions={[
-                <SettingOutlined key="setting" />,
-                <EditOutlined key="edit" />,
-                <EllipsisOutlined key="ellipsis" />,
-              ]}
-            >
-              <Meta
-                avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
+        {teamList?.data.totalElements === 0 && (
+          <Col span={24}>
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
           </Col>
-        </Row> */}
+        )}
       </ExplorerContainer>
     </>
   );

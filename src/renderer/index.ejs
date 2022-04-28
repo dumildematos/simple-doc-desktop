@@ -6,19 +6,18 @@
 </head>
 <body>
   <div id="root"></div>
-  <div class="loader"></div>
-  
+
 </body>
 <script>
-  
+
   const checkLoaded = () => {
     return document.readyState === "complete" || document.readyState === "interactive";
   }
-  
+
   const loader = document.querySelector('.loader');
   const showLoader = () => loader.classList.remove('loader--hide');
   const hideLoader = () => loader.classList.add('loader--hide');
-  
+
   // if(!checkLoaded()){
     //   hideLoader()
     //   console.log('mostrar')
@@ -27,7 +26,7 @@
       //   console.log('fechar')
       //   showLoader()
       // }
-      
+
       window.electron.ipcRenderer.once('ipc-example', (arg) => {
         // eslint-disable-next-line no-console
         console.log(arg);
@@ -38,7 +37,7 @@
         }
         hideLoader()
       });
-      
+
       window.electron.ipcRenderer.myPing();
     </script>
     </html>

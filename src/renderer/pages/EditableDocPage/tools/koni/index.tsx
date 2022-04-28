@@ -38,7 +38,12 @@ const ContainerBox = styled.div`
   }
 
   .editorContent {
+    height: 100%;
     :global {
+      .koni,
+      .graph-container {
+        height: 100%;
+      }
       .graph-container canvas {
         vertical-align: middle;
       }
