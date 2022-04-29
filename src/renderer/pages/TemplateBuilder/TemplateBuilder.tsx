@@ -165,8 +165,7 @@ export default function TemplateBuilder(props: any) {
 
   const onOkayModalCreate = () => {
     setIsVisibleModalCreate(false);
-    if(formTemplateName){
-
+    if (formTemplateName) {
       const reqParam = {
         name: formTemplateName,
         content: '[{}]',
@@ -175,10 +174,9 @@ export default function TemplateBuilder(props: any) {
       };
       createTemplate(reqParam);
       setformTemplateName('');
-    }else {
+    } else {
       MessageShow('error', 'Action in progress');
     }
-    
   };
   const onCancelModalCreate = () => {
     setIsVisibleModalCreate(false);
