@@ -1,5 +1,20 @@
-import { Empty, Button } from 'antd';
+import {
+  AuditOutlined,
+  DeleteFilled,
+  ExclamationCircleOutlined,
+  FileTextOutlined,
+} from '@ant-design/icons';
+import { HiOutlineDocumentAdd } from '@react-icons/all-files/hi/HiOutlineDocumentAdd';
+import { Empty, Button, Col, Row, Menu, Modal, Dropdown, Input } from 'antd';
+import Search from 'antd/lib/transfer/search';
+import { useState } from 'react';
+import {
+  onCreateTemplate,
+  onGetUserTemplates,
+} from 'renderer/services/TemplateService';
+import { MessageShow } from 'renderer/utils/messages/Messages';
 import styled from 'styled-components';
+const { confirm } = Modal;
 const TemplateBuilderContainer = styled.div`
   /* background: red !important; */
   width: 100%;
@@ -13,6 +28,7 @@ const TemplateBuilderContainer = styled.div`
     &.main {
       height: 100%;
     }
+
     .ant-col {
       border-radius: 3px;
       background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
@@ -36,48 +52,225 @@ const TemplateBuilderContainer = styled.div`
       .ant-avatar-group {
       }
       &.doc-ls {
-        padding: 0;
-        .ant-card {
-          border: 1px solid var(--purple-1);
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin: 5px;
+        cursor: pointer;
+        &:hover {
+          background: #97959526;
+          transition: 1s;
         }
-        .doc-item {
-          background-color: blue;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          .square {
-            width: 70px;
-            height: 70px !important;
-            background: green;
-            svg {
-              width: 100%;
-            }
+        &.disable {
+          background: #f3f3f3;
+          span.anticon {
+            color: #a9a1a4;
           }
-        }
       }
     }
   }
 `;
 
 export default function TemplateBuilder(props: any) {
+  const [listReqParams, setLisReqParams] = useState({
+    size: 9999,
+    page: 1,
+    name: '',
+  });
+  const [isVisibleModalCreate, setIsVisibleModalCreate] = useState(false);
+  const [formTemplateName, setformTemplateName] = useState('Untitled');
+
+  const onReqSuccess = (data: any) => {
+    console.log(data);
+    console.log(data.data);
+    // eslint-disable-next-line no-empty
+    if (data.status > 200) {
+    }
+  };
+
+  const onReqError = (error: any) => {
+    console.log(error);
+  };
+
+  const { data: templateList, refetch } = onGetUserTemplates(
+    onReqSuccess,
+    onReqError,
+    listReqParams
+  );
+
+  const onCreateSuccess = (data: any) => {
+    console.log(data);
+    refetch();
+  };
+
+  const onCreateError = (error: any) => {
+    console.log(error);
+  };
+
+  const { mutate: createTemplate } = onCreateTemplate(
+    onCreateSuccess,
+    onCreateError
+  );
+
+  const onSearch = (value) => {
+    setLisReqParams({ name: value });
+    refetch();
+  };
+
+  const templateClickMenu = (e: any, id: number) => {
+    if (e.key === 'delete') {
+      confirm({
+        title: 'Are you sure delete this task?',
+        icon: <ExclamationCircleOutlined />,
+        content: 'Some descriptions',
+        okText: 'Yes',
+        okType: 'danger',
+        cancelText: 'No',
+        onOk() {
+          // deleteDocument({ docId: id, teamId: team.id });
+          // if (team.docs === 0) {
+          //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          //   // deleteTeam(team.id);
+          // } else {
+          //   MessageShow('error', 'Action in progress');
+          // }
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
+    }
+  };
+
+  const templateMenu = (id) => (
+    <Menu onClick={(e) => templateClickMenu(e, id)}>
+      {/* <Menu.Item key="1">Rename</Menu.Item> */}
+      <Menu.Item key="delete" danger icon={<DeleteFilled />}>
+        Delete
+      </Menu.Item>
+    </Menu>
+  );
+
+  const openTemplate = (template: any) => {};
+
+  const onOkayModalCreate = () => {
+    setIsVisibleModalCreate(false);
+    const reqParam = {
+      name: formTemplateName,
+      content: '[{}]',
+      price: '0.00',
+      categoryId: null,
+    };
+    createTemplate(reqParam);
+    setformTemplateName('Untitled');
+    MessageShow('success', 'Action in progress');
+  };
+  const onCancelModalCreate = () => {
+    setIsVisibleModalCreate(false);
+  };
+
+  const onCreatingName = (e: any) => {
+    // console.log(e.target.value);
+    setformTemplateName(e.target.value);
+  };
+
   return (
     <>
       <TemplateBuilderContainer>
-        <Empty
-          image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-          imageStyle={{
-            height: 60,
-            marginTop: '25%',
-            marginRight: 'auto'
-          }}
-          description={
-            <span>
-              Customize <a href="#API">Description</a>
-            </span>
-          }
+        <Row justify="start">
+          <Col span={24}>
+            <h1 style={{ fontSize: '2rem' }}>Template Builder</h1>
+            <p>Encontre equipes de trabalho públicos</p>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={8} style={{ float: 'right' }}>
+            <Search
+              placeholder="input search text"
+              onSearch={onSearch}
+              onChange={(e) => {
+                setLisReqParams({
+                  page: listReqParams.page,
+                  size: listReqParams.size,
+                  name: e.target.value,
+                });
+                refetch();
+              }}
+              allowClear
+              style={{ width: '300', float: 'right' }}
+            />
+          </Col>
+          <Col span={8} offset={8}>
+            <Button
+              type="primary"
+              style={{ float: 'right' }}
+              // className="btn-action-pmd"
+              onClick={() => {
+                setIsVisibleModalCreate(true);
+                // getCategoryList();
+                // modalSelecTypeShowModal();
+              }}
+            >
+              <p>
+                New Template &nbsp;
+                <AuditOutlined />
+              </p>
+            </Button>
+          </Col>
+        </Row>
+        {templateList?.status === 200 &&
+          templateList?.data.totalElements === 0 && (
+            <Empty
+              image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+              imageStyle={{
+                height: 60,
+                marginTop: '5%',
+                marginRight: 'auto',
+              }}
+              description={
+                <span>
+                  Customize <a href="#API">Description</a>
+                </span>
+              }
+            >
+              <Button type="primary">Create Now</Button>
+            </Empty>
+          )}
+        <Row>
+          {templateList?.status === 200 &&
+            templateList?.data.totalElements > 0 &&
+            templateList.data.content.map((template: any) => {
+              return (
+                <Dropdown
+                  overlay={templateMenu(template.id)}
+                  trigger={['contextMenu']}
+                >
+                  <Col span={4} key={template.id} className="doc-ls">
+                    <div onClick={() => openTemplate(template)}>
+                      <Button type="link" block style={{ fontSize: '2rem' }}>
+                        <AuditOutlined />
+                      </Button>
+                    </div>
+                    {template.name}
+                  </Col>
+                </Dropdown>
+              );
+            })}
+        </Row>
+        <Modal
+          title="Basic Modal"
+          visible={isVisibleModalCreate}
+          onOk={onOkayModalCreate}
+          onCancel={onCancelModalCreate}
         >
-          <Button type="primary">Create Now</Button>
-        </Empty>
+          <Input
+            placeholder="Basic usage"
+            value={formTemplateName}
+            onChange={onCreatingName}
+          />
+        </Modal>
       </TemplateBuilderContainer>
     </>
   );

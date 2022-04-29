@@ -15,6 +15,36 @@ const listTemplateByCategory = (categoryId: number) => {
   });
 };
 
+const listUserTemplatesRequest = (param: any) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/template/me/list?page=${
+      param.page === 1 ? 0 : param.page - 1
+    }&size=${param.size}&name=${!param.name ? '' : param.name}`,
+    method: 'GET',
+    data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const createTemplateRequest = (data: any) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/template/create`,
+    method: 'POST',
+    data,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 // eslint-disable-next-line import/prefer-default-export
 export const onGetTemplates = (
   onSuccess: () => void,
@@ -31,4 +61,47 @@ export const onGetTemplates = (
       enabled: !!categoryId,
     }
   );
+};
+
+export const onGetUserTemplates = (
+  onSuccess: () => void,
+  onError: () => void,
+  params: any
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useQuery(
+    ['list-user-templates', params],
+    () => listUserTemplatesRequest(params),
+    {
+      onSuccess,
+      onError,
+    }
+  );
+};
+
+export const onCreateTemplate = (
+  onSuccess: () => void,
+  onError: () => void
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(createTemplateRequest, {
+    onMutate: async (newteam) => {
+      await queryClient.cancelQueries('list-user-templates');
+      const previousTeamList = queryClient.getQueryData('list-user-templates');
+      queryClient.setQueryData('list-user-templatess', (oldQueryData) => {
+        console.log(oldQueryData, newteam);
+        // return {
+        //   ...oldQueryData,
+        //   data: [...oldQueryData.data, newteam],
+        // };
+      });
+      return {
+        previousTeamList,
+      };
+    },
+    onSuccess,
+    onError,
+  });
 };

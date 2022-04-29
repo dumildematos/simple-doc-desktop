@@ -114,7 +114,7 @@ export default function Home({ theme, setTheme }) {
         />
         <Layout
             className="site-layout home-layout"
-            style={{ padding: 0, background: 'cyan'}}
+            style={{ padding: 0}}
           >
            <Header
               className="site-layout-background nav"
@@ -133,7 +133,7 @@ export default function Home({ theme, setTheme }) {
                 }
               )}
               {
-                backButton && backButton.state && (
+                backButton?.state && (
                   <PageHeader
                       className="site-page-header"
                       title={backButton.title}
@@ -164,33 +164,31 @@ export default function Home({ theme, setTheme }) {
                 background: !isRouted ? 'theme.boxBg' : 'transparent',
               }}
             >
-        <div>
-
-          <Switch>
-
-            <Route exact path={["/", "/my-teams"]}>
-              <Groups t={t} theme={theme} setPath={setCurrentPath}  />
-            </Route>
-            <Route exact path={`/group/:id`}>
-              <Group t={t} theme={theme}  />
-            </Route>
-            <Route exact path="/explorer">
-              <Explorer t={t} theme={theme} setPath={setCurrentPath}  />
-            </Route>
-            <Route exact path="/invited-teams">
-              <InvitedGroups t={t} theme={theme} setPath={setCurrentPath}  />
-            </Route>
-            <Route exact path={`/marketplace`}>
-              <Marketplace t={t} theme={theme} setPath={setCurrentPath}  />
-            </Route>
-            <Route exact path="/template-builder">
-              <TemplateBuilder setPath={setCurrentPath}  />
-            </Route>
-            <Route exact path="/page-doc/:id">
-                <EditableDocPage theme={theme} />
-              </Route>
-          </Switch>
-        </div>
+              <div>
+                <Switch>
+                  <Route exact path={["/", "/my-teams"]}>
+                    <Groups t={t} theme={theme} setPath={setCurrentPath}  />
+                  </Route>
+                  <Route exact path={`/group/:id`}>
+                    <Group t={t} theme={theme}  />
+                  </Route>
+                  <Route exact path="/explorer">
+                    <Explorer t={t} theme={theme} setPath={setCurrentPath}  />
+                  </Route>
+                  <Route exact path="/invited-teams">
+                    <InvitedGroups t={t} theme={theme} setPath={setCurrentPath}  />
+                  </Route>
+                  <Route exact path={`/marketplace`}>
+                    <Marketplace t={t} theme={theme} setPath={setCurrentPath}  />
+                  </Route>
+                  <Route exact path="/template-builder">
+                    <TemplateBuilder setPath={setCurrentPath}  />
+                  </Route>
+                  <Route exact path="/page-doc/:id">
+                      <EditableDocPage theme={theme} />
+                    </Route>
+                </Switch>
+              </div>
             </Content>
         </Layout>
     </Layout>

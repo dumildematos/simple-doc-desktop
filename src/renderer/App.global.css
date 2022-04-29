@@ -170,3 +170,13 @@ ul.ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical.dropdown-
 .tools-list  .ant-list-item{
   cursor: pointer!important;
 }
+      .fl-name {
+        display: flex;
+        padding: 10px;
+      }
+      .fl-name .ant-radio-group.ant-radio-group-outline {
+        margin-left:5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }

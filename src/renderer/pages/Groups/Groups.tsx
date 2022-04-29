@@ -94,7 +94,7 @@ const ModalLayout = styled(Modal)`
   }
 `;
 const { Paragraph } = Typography;
-const hasAcessToken = localStorage.getItem('access_token');
+
 export default function Groups({ theme, t, setPath }) {
   const history = useHistory();
 
@@ -213,12 +213,29 @@ export default function Groups({ theme, t, setPath }) {
         };
       })
     );
+    // defineBackButton({
+    //   state: false,
+    //   title: '',
+    //   subtitle: '',
+    //   prevPath: '/',
+    // });
   };
 
   const onError = (data) => {
-    localStorage.clear();
-    window.location.href = '/';
-    console.log(data);
+    Modal.info({
+      title: 'This is a notification message',
+      content: (
+        <div>
+          <p>some messages...some messages...</p>
+          <p>some messages...some messages...</p>
+        </div>
+      ),
+      onOk() {
+        localStorage.clear();
+        window.location.href = '/';
+        console.log(data);
+      },
+    });
   };
 
   const {
@@ -229,6 +246,9 @@ export default function Groups({ theme, t, setPath }) {
     error,
     refetch: reFetchTeams,
   } = getUserTeams(onSuccess, onError, currentPag);
+
+  if (isLoading) {
+  }
 
   const onCreateSuccess = (data) => {
     // console.log(data)
@@ -387,7 +407,7 @@ export default function Groups({ theme, t, setPath }) {
             <Card.Meta
               title={
                 <a>
-                  {item.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />}  {' '}
+                  {item.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />}{' '}
                   {item.name}
                 </a>
               }
@@ -413,7 +433,7 @@ export default function Groups({ theme, t, setPath }) {
               >
                 {item.contributors.map((member, i) => (
                   <Tooltip
-                  title={`${member.firstName} ${member.lastName}`}
+                    title={`${member.firstName} ${member.lastName}`}
                     placement="top"
                     key={getKey(item.id, i)}
                   >

@@ -103,7 +103,15 @@ export default function Explorer(props: any) {
     refetch();
   };
 
-  const onSuccessListTeams = (data) => {};
+  const onSuccessListTeams = (data) => {
+
+    // defineBackButton({
+    //   title: '',
+    //   subtitle: '',
+    //   prevPath: '/',
+    // });
+
+  };
   const onErrorListTeams = () => {};
 
   const {

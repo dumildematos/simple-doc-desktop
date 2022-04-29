@@ -29,6 +29,7 @@ import {
   DownOutlined,
   ExclamationCircleOutlined,
   FileFilled,
+  FileProtectOutlined,
   FileTextOutlined,
   FormOutlined,
   SmileOutlined,
@@ -37,7 +38,10 @@ import {
 import Picker from 'emoji-picker-react';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { onListCategory } from 'renderer/services/CategoryService';
-import { onGetTemplates } from 'renderer/services/TemplateService';
+import {
+  onGetTemplates,
+  onGetUserTemplates,
+} from 'renderer/services/TemplateService';
 import {
   getDocumentsOfTeam,
   onCreateDocument,
@@ -114,7 +118,7 @@ const GroupContainer = styled.div`
         }
         &.disable {
           background: #f3f3f3;
-          span.anticon.anticon-file-text {
+          span.anticon {
             color: #a9a1a4;
           }
         }
@@ -178,6 +182,9 @@ const ModalLayout = styled(Modal)`
         color: ${(props: { theme: { modalInputColor: any } }) =>
           props.theme.modalInputColor} !important;
       }
+      .useTemplateBx {
+        background: #fff;
+      }
     }
     .ant-modal-footer {
       border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
@@ -199,12 +206,18 @@ export default function Group(props: any) {
     useContext(MainContext);
   const [currentCollapsedId, setCollpasedId] = useState(0);
   const [treeTemplate, setTreeTemplate] = useState([]);
+  const [treeUserTemplate, setUserTreeTemplate] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState([]);
   const [isModalEditTeam, setModalEditTeam] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
   const [bannerInput, setBannerInput] = useState([]);
   const [formEditTeam] = useForm();
   const { id: teamId } = useParams();
+  const [userTemplReqParams, setUserTemplReqParams] = useState({
+    size: 9999,
+    page: 1,
+    name: '',
+  });
   const history = useHistory();
 
   const [isModalSelectTypeDoc, setIsModalSelectTypeDoc] = useState(false);
@@ -251,7 +264,9 @@ export default function Group(props: any) {
   );
 
   const onCreateDocumentSuccess = () => {
+    MessageShow('success', 'Action in progress');
     refetchDocuments();
+    setIsModalSelectTypeDoc(false);
   };
   const onCreateDocumentError = () => {};
 
@@ -285,14 +300,14 @@ export default function Group(props: any) {
   const onChangeCollapse = (key: number) => {
     if (key) {
       setCollpasedId(Number(key));
-      console.log(currentCollapsedId);
+      // console.log(currentCollapsedId);
       getTemplateList();
     }
   };
 
   const onSelectTree = (keys: React.Key[], info: any) => {
     // console.log('Trigger Select', keys, info);
-    console.log('Trigger Select', info);
+    // console.log('Trigger Select', info);
     setSelectedTemplate([info]);
   };
 
@@ -340,6 +355,26 @@ export default function Group(props: any) {
     onSuccesEditTeam,
     onErrorEditTeam
   );
+
+  const onTempListSuccess = (data: any) => {
+    setUserTreeTemplate(
+      data?.data.content.map((template: { name: string; id: number }) => {
+        return {
+          title:
+            template.name.length >= 10
+              ? `${template.name.substring(0, template.name.length - 10)}...`
+              : template.name,
+          key: template.id,
+          icon: <FileTextOutlined />,
+          content: template.content,
+        };
+      })
+    );
+  };
+  const onTempListError = (error: any) => {};
+
+  const { data: userTemplateList, refetch: refetchUserTemplates } =
+    onGetUserTemplates(onTempListSuccess, onTempListError, userTemplReqParams);
 
   const onDeleteSuccess = () => {
     MessageShow('success', 'Action in progress');
@@ -459,9 +494,17 @@ export default function Group(props: any) {
       </Menu.Item>
     </Menu>
   );
+  const [documentName, setDcumentName] = useState('Untitled');
+  const [documenType, setDcumentType] = useState('PRIVATE');
 
   const onEditFileName = (e) => {
-    console.log(e);
+    // console.log(e);
+    setDcumentName(e.target.value);
+  };
+
+  const onChangeDocumentType = (e) => {
+    // console.log('radio checked', e.target.value);
+    setDcumentType(e.target.value);
   };
 
   return (
@@ -586,7 +629,6 @@ export default function Group(props: any) {
                     <Col
                       span={4}
                       key={document.id}
-                      className="doc-ls"
                       className={
                         document.creator === user?.username ||
                         isContributor(document.contributors)
@@ -596,7 +638,11 @@ export default function Group(props: any) {
                     >
                       <div onClick={() => openDocument(document)}>
                         <Button type="link" block style={{ fontSize: '2rem' }}>
-                          <FileTextOutlined />
+                          {document.type === 'PUBLIC' ? (
+                            <FileTextOutlined />
+                          ) : (
+                            <FileProtectOutlined />
+                          )}
                         </Button>
                       </div>
                       {document.name}
@@ -614,7 +660,37 @@ export default function Group(props: any) {
         visible={isModalSelectTypeDoc}
         onOk={modalSelecTypeHandleOk}
         onCancel={modalSelecTypeHandleCancel}
-        footer={null}
+        footer={[
+          <Button
+            type="default"
+            onClick={() => {
+              setIsModalSelectTypeDoc(false);
+            }}
+          >
+            Cancel
+          </Button>,
+          <Button
+            type="primary"
+            disabled={selectedTemplate.length === 0}
+            onClick={() => {
+              console.log(selectedTemplate);
+              // console.log(teamId);
+
+              const form: CreateDocument = {
+                name: documentName,
+                content: '{[]}',
+                type: documenType,
+                teamId: Number(teamId),
+                templateId: selectedTemplate?.node
+                  ? selectedTemplate.node.key
+                  : null,
+              };
+              createDocument(form);
+            }}
+          >
+            Create
+          </Button>,
+        ]}
         width={800}
         bodyStyle={{
           maxHeight: '400px',
@@ -629,55 +705,41 @@ export default function Group(props: any) {
                 placeholder="input with clear icon"
                 allowClear
                 onChange={onEditFileName}
-                value={
-                  selectedTemplate.length > 0
-                    ? selectedTemplate[0]?.node?.title
-                    : 'Untitled'
-                }
+                value={documentName}
               />
-            </div>
-            {selectedTemplate.length > 0 && selectedTemplate[0]?.node
-              ? selectedTemplate[0]?.node?.content
-              : 'empty'}
-          </Col>
-          <Col
-            flex="200px"
-            className="collapseSelect"
-            style={{ overflow: 'auto' }}
-          >
-            <div className="useTemplateBx">
-              <Button
-                type="primary"
-                block
-                disabled={selectedTemplate.length === 0}
-                onClick={() => {
-                  console.log(selectedTemplate);
-                  // console.log(teamId);
-
-                  const form: CreateDocument = {
-                    name: 'Untitled',
-                    content: '{[]}',
-                    type: 'PRIVATE',
-                    teamId: Number(teamId),
-                    templateId: selectedTemplate?.node
-                      ? selectedTemplate.node.key
-                      : null,
-                  };
-                  createDocument(form);
-                }}
+              <Radio.Group
+                defaultValue="PRIVATE"
+                onChange={onChangeDocumentType}
+                value={documenType}
               >
-                Create
-              </Button>
+                <Radio value="PUBLIC">Público</Radio>
+                <Radio value="PRIVATE">Privado</Radio>
+              </Radio.Group>
             </div>
+            <div>
+              {selectedTemplate.length > 0 && selectedTemplate[0]?.node
+                ? selectedTemplate[0]?.node?.content
+                : 'empty'}
+            </div>
+          </Col>
+          <Col flex="200px" className="collapseSelect" style={{ overflow: 'hidden' }}>
             <Collapse
               accordion
               bordered={false}
               defaultActiveKey={['1']}
-              style={{ height: '100%', overflowY: 'scroll' }}
+              style={{ height: '100%', overflow: 'auto' }}
               onChange={(e) => onChangeCollapse(e)}
             >
               <Panel header="My Templates" key="0">
                 {/* {text} */}
+                {/* userTemplateList */}
+                <DirectoryTree
+                  multiple
+                  defaultExpandAll
+                  onSelect={onSelectTree}
+                  onExpand={onExpand}
+                  treeData={treeUserTemplate}
+                />
               </Panel>
               {lstCategory?.data.content.map((item) => (
                 <Panel header={item.name} key={item.id}>

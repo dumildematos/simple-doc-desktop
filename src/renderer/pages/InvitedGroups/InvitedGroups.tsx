@@ -172,6 +172,9 @@ export default function InvitedGroups(props: any) {
         };
       })
     );
+    // defineBackButton({
+    //   state: false,
+    // });
   };
   const onErrorListTeams = () => {};
   const {

@@ -50,7 +50,7 @@ const deleteDocumentRequest = (data: any) => {
 const listDcomentsByTeam = (teamId: number) => {
   const token = localStorage.getItem('access_token');
   return Request({
-    url: `/${RequestVersion}/team/document/list?page=0&size=3&teamId=${teamId}`,
+    url: `/${RequestVersion}/team/document/list?page=0&size=20&teamId=${teamId}`,
     method: 'GET',
     data: null,
     headers: {
