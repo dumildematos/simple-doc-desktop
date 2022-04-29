@@ -10,6 +10,7 @@ import Search from 'antd/lib/transfer/search';
 import { useState } from 'react';
 import {
   onCreateTemplate,
+  onDeleteTemplate,
   onGetUserTemplates,
 } from 'renderer/services/TemplateService';
 import { MessageShow } from 'renderer/utils/messages/Messages';
@@ -80,13 +81,13 @@ export default function TemplateBuilder(props: any) {
     name: '',
   });
   const [isVisibleModalCreate, setIsVisibleModalCreate] = useState(false);
-  const [formTemplateName, setformTemplateName] = useState('Untitled');
+  const [formTemplateName, setformTemplateName] = useState('');
 
   const onReqSuccess = (data: any) => {
-    console.log(data);
     console.log(data.data);
     // eslint-disable-next-line no-empty
-    if (data.status > 200) {
+    if (data.status > 200 || !data) {
+      console.log(data);
     }
   };
 
@@ -102,6 +103,7 @@ export default function TemplateBuilder(props: any) {
 
   const onCreateSuccess = (data: any) => {
     console.log(data);
+    MessageShow('success', 'Action in progress');
     refetch();
   };
 
@@ -110,6 +112,11 @@ export default function TemplateBuilder(props: any) {
   };
 
   const { mutate: createTemplate } = onCreateTemplate(
+    onCreateSuccess,
+    onCreateError
+  );
+
+  const { mutate: deleteTemplate } = onDeleteTemplate(
     onCreateSuccess,
     onCreateError
   );
@@ -129,6 +136,7 @@ export default function TemplateBuilder(props: any) {
         okType: 'danger',
         cancelText: 'No',
         onOk() {
+          deleteTemplate(id);
           // deleteDocument({ docId: id, teamId: team.id });
           // if (team.docs === 0) {
           //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -157,15 +165,20 @@ export default function TemplateBuilder(props: any) {
 
   const onOkayModalCreate = () => {
     setIsVisibleModalCreate(false);
-    const reqParam = {
-      name: formTemplateName,
-      content: '[{}]',
-      price: '0.00',
-      categoryId: null,
-    };
-    createTemplate(reqParam);
-    setformTemplateName('Untitled');
-    MessageShow('success', 'Action in progress');
+    if(formTemplateName){
+
+      const reqParam = {
+        name: formTemplateName,
+        content: '[{}]',
+        price: '0.00',
+        categoryId: null,
+      };
+      createTemplate(reqParam);
+      setformTemplateName('');
+    }else {
+      MessageShow('error', 'Action in progress');
+    }
+    
   };
   const onCancelModalCreate = () => {
     setIsVisibleModalCreate(false);
