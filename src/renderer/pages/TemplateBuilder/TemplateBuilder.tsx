@@ -7,7 +7,9 @@ import {
 import { HiOutlineDocumentAdd } from '@react-icons/all-files/hi/HiOutlineDocumentAdd';
 import { Empty, Button, Col, Row, Menu, Modal, Dropdown, Input } from 'antd';
 import Search from 'antd/lib/transfer/search';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useHistory } from 'react-router';
+import { MainContext } from 'renderer/contexts/MainContext';
 import {
   onCreateTemplate,
   onDeleteTemplate,
@@ -75,6 +77,9 @@ const TemplateBuilderContainer = styled.div`
 `;
 
 export default function TemplateBuilder(props: any) {
+  const { team, defineBackButton, defineCurrentTemplate, defineTeam } =
+    useContext(MainContext);
+  const history = useHistory();
   const [listReqParams, setLisReqParams] = useState({
     size: 9999,
     page: 1,
@@ -161,14 +166,25 @@ export default function TemplateBuilder(props: any) {
     </Menu>
   );
 
-  const openTemplate = (template: any) => {};
+  const openTemplate = (template: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    // defineBackButton({
+    //   state: true,
+    //   title: template.name,
+    //   subtitle: '',
+    //   prevPath: window.location.pathname,
+    // });
+    defineCurrentTemplate(template);
+    history.push(`/page-template/${template.id}`);
+    setTimeout(() => {}, 0);
+  };
 
   const onOkayModalCreate = () => {
     setIsVisibleModalCreate(false);
     if (formTemplateName) {
       const reqParam = {
         name: formTemplateName,
-        content: '[{}]',
+        content: JSON.stringify({ ops: [{ insert: 'New template' }] }),
         price: '0.00',
         categoryId: null,
       };

@@ -45,6 +45,20 @@ const createTemplateRequest = (data: any) => {
   });
 };
 
+const updateTemplateRequest = (data: any) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/template/${data.id}`,
+    method: 'PUT',
+    data,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 const deleteTemplate = (id: any) => {
   const token = localStorage.getItem('access_token');
   return Request({
@@ -101,6 +115,30 @@ export const onCreateTemplate = (
   const queryClient = useQueryClient();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(createTemplateRequest, {
+    onMutate: async (newteam) => {
+      await queryClient.cancelQueries('list-user-templates');
+      const previousTeamList = queryClient.getQueryData('list-user-templates');
+      queryClient.setQueryData('list-user-templatess', (oldQueryData) => {
+        console.log(oldQueryData, newteam);
+        // return {
+        //   ...oldQueryData,
+        //   data: [...oldQueryData.data, newteam],
+        // };
+      });
+      return {
+        previousTeamList,
+      };
+    },
+    onSuccess,
+    onError,
+  });
+};
+
+export const onEditTemplate = (onSuccess: () => void, onError: () => void) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(updateTemplateRequest, {
     onMutate: async (newteam) => {
       await queryClient.cancelQueries('list-user-templates');
       const previousTeamList = queryClient.getQueryData('list-user-templates');

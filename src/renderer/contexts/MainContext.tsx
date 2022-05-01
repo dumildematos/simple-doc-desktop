@@ -21,6 +21,7 @@ type Page = {
   backButton: any;
   team: any;
   documentOnWork: any;
+  currentTemplate: any;
   defineBackButton: (state: any) => void;
   defineRoutedState: (state: boolean) => void;
   definePageInfo: (data: any) => void;
@@ -35,6 +36,7 @@ type Page = {
   defineTeam: (data: any) => void;
   defineDocument: (data: any) => void;
   logout: () => void;
+  defineCurrentTemplate: (template: any) => void;
 };
 
 type Node = {
@@ -52,6 +54,14 @@ export function MainContextProvider({ children }: Node) {
   const [visibleDocSidebar, setVisibleDocSidebar] = useState(false);
   const [currentPath, setCurrentPath] = useState('');
   const [theme, setTheme] = useState('light');
+  const [currentTemplate, setCurrentTemplate] = useState({
+    id: 1,
+    category: null,
+    createdAt: null,
+    name: '',
+    price: '',
+    content: '',
+  });
   const [accessToken, setAccessToken] = useState(undefined);
   const [refreshToken, setRefreshToken] = useState(undefined);
   const [user, setUser] = useState({});
@@ -109,6 +119,10 @@ export function MainContextProvider({ children }: Node) {
     setCurrentPath(path);
   };
 
+  const defineCurrentTemplate = (template: any) => {
+    setCurrentTemplate(template);
+  };
+
   const defineTheme = (name: string) => {
     setTheme(name);
   };
@@ -157,6 +171,8 @@ export function MainContextProvider({ children }: Node) {
         defineTeam,
         documentOnWork,
         defineDocument,
+        defineCurrentTemplate,
+        currentTemplate,
       }}
     >
       {children}

@@ -152,10 +152,10 @@ export default function EditableDocPage({ theme }) {
   const draggleRef = React.createRef();
   const [form] = Form.useForm();
   const { id: documentId } = useParams();
-  useEffect(() => {
-    inPage = isRouted;
-    // console.log(inPage);
-  }, [isRouted]);
+  // useEffect(() => {
+  //   // inPage = isRouted;
+  //   // console.log(inPage);
+  // }, [isRouted]);
   const history = useHistory();
   console.log(team)
   const [visibleChat, setVisibleChat] = useState(false);

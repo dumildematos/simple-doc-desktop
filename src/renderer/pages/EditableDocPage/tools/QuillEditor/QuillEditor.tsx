@@ -134,9 +134,13 @@ export default function QuillEditor({ id }) {
       if (currentContrinutor) {
         if (currentContrinutor?.username !== documentOnWork.creator) {
           if (documentOnWork.type === 'PUBLIC') {
-            quill.disable(false);
-          } else if (currentContrinutor?.role !== 'WRITER') {
-            quill.disable(true);
+            quill.enable();
+          } else {
+            if (currentContrinutor?.role !== 'WRITER') {
+              quill.disable(true);
+            }else {
+              quill.enable();
+            }
           }
         }
       } else {
@@ -196,8 +200,8 @@ export default function QuillEditor({ id }) {
       // cursors._cursors[data.cursors.id]._el = cursors._cursors[user?.id]._el
       // cursors._cursors[data.cursors.id]._flagEl = cursors._cursors[user?.id]._flagEl
 
-      cursors.createCursor(data.cursors.id, data.cursors.name, random_rgba())
-      quill.on('selection-change', selectionChangeHandler(cursors));
+      // cursors.createCursor(data.cursors.id, data.cursors.name, random_rgba())
+      // quill.on('selection-change', selectionChangeHandler(cursors));
       // cursor.createCursor(user?.id, user?.firstname, random_rgba());
     });
 

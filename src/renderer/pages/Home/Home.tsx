@@ -23,6 +23,7 @@ import InvitedGroups from '../InvitedGroups/InvitedGroups';
 import TemplateBuilder from '../TemplateBuilder/TemplateBuilder';
 import EditableDocPage from '../EditableDocPage/EditableDocPage';
 import Navbar from 'renderer/components/Navbar/Navbar';
+import { EditableTemplatePage } from '../EditableDocPage/EditableTemplatePage';
 
 const { Header, Content } = Layout;
 const localtoken = localStorage.getItem('access_token');
@@ -87,16 +88,7 @@ export default function Home({ theme, setTheme }) {
     });
   };
 
-  const openGroup = (group: any) => {
-    console.log(group);
-  };
 
-  const showDrawer = () => {
-    defineDocSideBar(true);
-  };
-  const onCloseDrawer = () => {
-    defineDocSideBar(false);
-  };
 
   return (
     <>
@@ -186,7 +178,10 @@ export default function Home({ theme, setTheme }) {
                   </Route>
                   <Route exact path="/page-doc/:id">
                       <EditableDocPage theme={theme} />
-                    </Route>
+                  </Route>
+                  <Route exact path="/page-template/:id">
+                      <EditableTemplatePage theme={theme} />
+                  </Route>
                 </Switch>
               </div>
             </Content>
