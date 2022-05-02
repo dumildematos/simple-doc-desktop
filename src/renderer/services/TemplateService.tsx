@@ -4,7 +4,7 @@ import { Request, RequestVersion } from '../utils/request/request';
 const listTemplateByCategory = (categoryId: number) => {
   const token = localStorage.getItem('access_token');
   return Request({
-    url: `/${RequestVersion}/template/list?page=0&size=9999&categoryId=${categoryId}`,
+    url: `/${RequestVersion}/template/marketplace/free?page=0&size=9999&categoryId=${categoryId}`,
     method: 'GET',
     data: null,
     headers: {
@@ -21,6 +21,24 @@ const listUserTemplatesRequest = (param: any) => {
     url: `/${RequestVersion}/template/me/list?page=${
       param.page === 1 ? 0 : param.page - 1
     }&size=${param.size}&name=${!param.name ? '' : param.name}`,
+    method: 'GET',
+    data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const listMarketplaceTemplatesRequest = (param: any) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/template/marketplace?page=${
+      param.page === 1 ? 0 : param.page - 1
+    }&size=${param.size}&categoryId=${param.categoryId}&name=${
+      !param.name ? '' : param.name
+    }`,
     method: 'GET',
     data: null,
     headers: {
@@ -103,6 +121,23 @@ export const onGetUserTemplates = (
     {
       onSuccess,
       onError,
+    }
+  );
+};
+
+export const onGetMarketplaceTemplates = (
+  onSuccess: () => void,
+  onError: () => void,
+  params: any
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useQuery(
+    ['list-marketplace-templates', params],
+    () => listMarketplaceTemplatesRequest(params),
+    {
+      onSuccess,
+      onError,
+      enabled: params.categoryId !== 1,
     }
   );
 };

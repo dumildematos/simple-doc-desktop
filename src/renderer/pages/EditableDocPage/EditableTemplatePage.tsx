@@ -175,7 +175,6 @@ export const EditableTemplatePage = (props: any) => {
           shape="circle"
           type="link"
           onClick={()=> {
-            console.log(quill.getContents())
             const templateData = {
               id: currentTemplate.id,
               category: currentTemplate.category,
