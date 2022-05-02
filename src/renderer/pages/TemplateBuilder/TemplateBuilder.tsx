@@ -186,6 +186,7 @@ export default function TemplateBuilder(props: any) {
         name: formTemplateName,
         content: JSON.stringify({ ops: [{ insert: 'New template' }] }),
         price: '0.00',
+        cover: "",
         categoryId: null,
       };
       createTemplate(reqParam);

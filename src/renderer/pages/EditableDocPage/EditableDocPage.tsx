@@ -160,12 +160,7 @@ export default function EditableDocPage({ theme }) {
   console.log(team)
   const [visibleChat, setVisibleChat] = useState(false);
   const [visibleTools, setVisibleTools] = useState(false);
-  const [ listContributors , setListContrinutors ] = useState({
-    initLoading: true,
-    loading: false,
-    data: [],
-    list: [],
-  });
+
 
 
 
