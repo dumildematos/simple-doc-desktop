@@ -35,7 +35,6 @@ const localtoken = localStorage.getItem('access_token');
 export default function Home({ theme, setTheme }) {
 
   const history = useHistory();
-  const location = useLocation();
 
   if(!localtoken){
     console.log('No access')
@@ -47,10 +46,8 @@ export default function Home({ theme, setTheme }) {
   const {
     isRouted,
     defineRoutedState,
-    defineDocSideBar,
     definedEditorIsOpened,
     backButton,
-    defineBackButton,
   } = useContext(MainContext);
 
   const [currentPath, setCurrentPath] = useState('/');
@@ -62,134 +59,110 @@ export default function Home({ theme, setTheme }) {
     collapsed: false,
   });
 
-  const [hashes, setHash] = useState({
-    tags: ['Tag 1', 'Tag 2', 'Tag 3'],
-    inputVisible: false,
-    inputValue: '',
-  });
-
   const toggle = () => {
     setCollapse({
       collapsed: !collapse.collapsed,
     });
   };
 
-  const handleInputConfirm = () => {
-    const { inputValue } = hashes;
-    let { tags } = hashes;
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      tags = [...tags, inputValue];
-    }
-    console.log(tags);
-    setHash({
-      tags,
-      inputVisible: false,
-      inputValue: '',
-    });
-  };
-
-
-
   return (
     <>
-    <MainLayout theme={theme} isRouted={isRouted} collapse={collapse}>
-    <Router>
+      <MainLayout theme={theme} isRouted={isRouted} collapse={collapse}>
+        <Router>
+          <Layout className="main-layout">
+            <Sidemenu
+                  t={t}
+                  theme={theme}
+                  setTheme={setTheme}
+                  collapse={collapse}
+                  navURL={url}
 
-    <Layout className="main-layout">
-      <Sidemenu
-            t={t}
-            theme={theme}
-            setTheme={setTheme}
-            collapse={collapse}
-            navURL={url}
+              />
+              <Layout
+                  className="site-layout home-layout"
+                  style={{ padding: 0}}
+                >
+                <Header
+                    className="site-layout-background nav"
+                    style={{
+                      position: 'fixed',
+                      zIndex: 1,
+                      width: '100%',
+                      padding: 0,
+                    }}
+                  >
+                    {React.createElement(
+                      collapse.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                      {
+                        className: 'trigger',
+                        onClick: toggle,
+                      }
+                    )}
+                    {
+                      backButton?.state && (
+                        <PageHeader
+                            className="site-page-header"
+                            title={backButton.title}
+                            subTitle={backButton.subtitle}
+                            onBack={() => {
+                              // window.history.back();
+                              // defineBackButton({
+                              //   state: false,
+                              //   title: '',
+                              //   subtitle: '',
+                              //   prevPath: '/'
+                              // });
+                              defineRoutedState(false);
+                              definedEditorIsOpened(false);
+                              history.push(backButton.prevPath);
+                            }}
+                          />
+                      )
+                    }
 
-        />
-        <Layout
-            className="site-layout home-layout"
-            style={{ padding: 0}}
-          >
-           <Header
-              className="site-layout-background nav"
-              style={{
-                position: 'fixed',
-                zIndex: 1,
-                width: '100%',
-                padding: 0,
-              }}
-            >
-              {React.createElement(
-                collapse.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-                {
-                  className: 'trigger',
-                  onClick: toggle,
-                }
-              )}
-              {
-                backButton?.state && (
-                  <PageHeader
-                      className="site-page-header"
-                      title={backButton.title}
-                      subTitle={backButton.subtitle}
-                      onBack={() => {
-                        // window.history.back();
-                        // defineBackButton({
-                        //   state: false,
-                        //   title: '',
-                        //   subtitle: '',
-                        //   prevPath: '/'
-                        // });
-                        defineRoutedState(false);
-                        definedEditorIsOpened(false);
-                        history.push(backButton.prevPath);
-                      }}
-                    />
-                )
-              }
-
-              <Navbar collapse={collapse} />
-            </Header>
-            <Content
-              className="site-layout-background"
-              style={{
-                margin: 0,
-                minHeight: 280,
-                background: !isRouted ? 'theme.boxBg' : 'transparent',
-              }}
-            >
-              <div>
-                <Switch>
-                  <Route exact path={["/", "/my-teams"]}>
-                    <Groups t={t} theme={theme} setPath={setCurrentPath}  />
-                  </Route>
-                  <Route exact path={`/group/:id`}>
-                    <Group t={t} theme={theme}  />
-                  </Route>
-                  <Route exact path="/explorer">
-                    <Explorer t={t} theme={theme} setPath={setCurrentPath}  />
-                  </Route>
-                  <Route exact path="/invited-teams">
-                    <InvitedGroups t={t} theme={theme} setPath={setCurrentPath}  />
-                  </Route>
-                  <Route exact path={`/marketplace`}>
-                    <Marketplace t={t} theme={theme} setPath={setCurrentPath}  />
-                  </Route>
-                  <Route exact path="/template-builder">
-                    <TemplateBuilder setPath={setCurrentPath}  />
-                  </Route>
-                  <Route exact path="/page-doc/:id">
-                      <EditableDocPage theme={theme} />
-                  </Route>
-                  <Route exact path="/page-template/:id">
-                      <EditableTemplatePage theme={theme} />
-                  </Route>
-                </Switch>
-              </div>
-            </Content>
-        </Layout>
-    </Layout>
-      </Router>
-    </MainLayout>
-
+                    <Navbar collapse={collapse} />
+                  </Header>
+                  <Content
+                    className="site-layout-background"
+                    style={{
+                      margin: 0,
+                      minHeight: 280,
+                      background: !isRouted ? 'theme.boxBg' : 'transparent',
+                    }}
+                  >
+                    <div>
+                      <Switch>
+                        <Route exact path={["/", "/my-teams"]}>
+                          <Groups t={t} theme={theme}  />
+                        </Route>
+                        <Route exact path={`/group/:id`}>
+                          <Group t={t} theme={theme}  />
+                        </Route>
+                        <Route exact path="/explorer">
+                          <Explorer t={t} theme={theme} setPath={setCurrentPath}  />
+                        </Route>
+                        <Route exact path="/invited-teams">
+                          <InvitedGroups t={t} theme={theme} setPath={setCurrentPath}  />
+                        </Route>
+                        <Route exact path={`/marketplace`}>
+                          <Marketplace t={t} theme={theme} setPath={setCurrentPath}  />
+                        </Route>
+                        <Route exact path="/template-builder">
+                          <TemplateBuilder setPath={setCurrentPath}  />
+                        </Route>
+                        <Route exact path="/page-doc/:id">
+                            <EditableDocPage t={t} theme={theme} />
+                        </Route>
+                        <Route exact path="/page-template/:id">
+                            <EditableTemplatePage theme={theme} />
+                        </Route>
+                      </Switch>
+                    </div>
+                  </Content>
+              </Layout>
+          </Layout>
+        </Router>
+      </MainLayout>
     </>
   );
 }

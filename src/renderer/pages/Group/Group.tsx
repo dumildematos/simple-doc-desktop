@@ -264,7 +264,7 @@ export default function Group(props: any) {
   );
 
   const onCreateDocumentSuccess = () => {
-    MessageShow('success', 'Action in progress');
+    MessageShow('success', props.t('comum.successfully_created'));
     refetchDocuments();
     setIsModalSelectTypeDoc(false);
   };
@@ -300,14 +300,11 @@ export default function Group(props: any) {
   const onChangeCollapse = (key: number) => {
     if (key) {
       setCollpasedId(Number(key));
-      // console.log(currentCollapsedId);
       getTemplateList();
     }
   };
 
   const onSelectTree = (keys: React.Key[], info: any) => {
-    // console.log('Trigger Select', keys, info);
-    // console.log('Trigger Select', info);
     setSelectedTemplate([info]);
   };
 
@@ -377,7 +374,7 @@ export default function Group(props: any) {
     onGetUserTemplates(onTempListSuccess, onTempListError, userTemplReqParams);
 
   const onDeleteSuccess = () => {
-    MessageShow('success', 'Action in progress');
+    MessageShow('success', props.t('comum.successfully_deleted'));
     refetchDocuments();
   };
   const onDeleteError = () => {};
@@ -464,20 +461,14 @@ export default function Group(props: any) {
   const documentMenuClick = (e: any, id: number) => {
     if (e.key === 'delete') {
       confirm({
-        title: 'Are you sure delete this task?',
+        title: props.t('comum.are_you_sure_delete_this_register'),
         icon: <ExclamationCircleOutlined />,
-        content: 'Some descriptions',
-        okText: 'Yes',
+        content: props.t('comum.if_deleted_the_register_wont_be_recoverd'),
+        okText: props.t('comum.yes'),
         okType: 'danger',
-        cancelText: 'No',
+        cancelText: props.t('comum.no'),
         onOk() {
           deleteDocument({ docId: id, teamId: team.id });
-          // if (team.docs === 0) {
-          //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          //   // deleteTeam(team.id);
-          // } else {
-          //   MessageShow('error', 'Action in progress');
-          // }
         },
         onCancel() {
           console.log('Cancel');
@@ -490,7 +481,7 @@ export default function Group(props: any) {
     <Menu onClick={(e) => documentMenuClick(e, id)}>
       {/* <Menu.Item key="1">Rename</Menu.Item> */}
       <Menu.Item key="delete" danger icon={<DeleteFilled />}>
-        Delete
+        {props.t('comum.delete')}
       </Menu.Item>
     </Menu>
   );
@@ -529,7 +520,7 @@ export default function Group(props: any) {
               style={{ height: 'auto' }}
             >
               <Col>
-                <h3>Detalhes da equipe</h3>
+                <h3>{props.t('comum.team_details')}</h3>
               </Col>
               <Col>
                 <Button
@@ -544,20 +535,17 @@ export default function Group(props: any) {
             </Row>
           </div>
           <Row style={{ height: 'auto' }}>
-            {/* <Col span={24}>
-              <h4>{team.name}</h4>
-            </Col> */}
             <Col span={24}>
               <p>{team.description}</p>
             </Col>
           </Row>
           <Row style={{ height: 'auto' }}>
             <Col span={24}>
-              <h3>Membros</h3>
+              <h3>{props.t('comum.members')}</h3>
             </Col>
             <Col span={24}>
               <Avatar.Group maxCount={6}>
-                {team.contributors.length > 0 &&
+                {team?.contributors?.length > 0 &&
                   team.contributors.map((contributor) => (
                     <Tooltip
                       key={contributor.id}
@@ -580,21 +568,6 @@ export default function Group(props: any) {
             <Col>{/* <h4>Detalhes da equipe</h4> */}</Col>
 
             <Col>
-              {/* <Button
-                type="link"
-                size="small"
-                className="btn-action-pmd"
-                onClick={() => {
-                  openLocalFile();
-                  // getCategoryList();
-                  // modalSelecTypeShowModal();
-                }}
-              >
-                <p>
-                  Open Document &nbsp;
-                  <HiOutlineDocumentAdd />
-                </p>
-              </Button> */}
               <Button
                 type="link"
                 size="small"
@@ -605,7 +578,7 @@ export default function Group(props: any) {
                 }}
               >
                 <p>
-                  New Document &nbsp;
+                  {props.t('comum.new_document')}&nbsp;
                   <HiOutlineDocumentAdd />
                 </p>
               </Button>
@@ -656,7 +629,6 @@ export default function Group(props: any) {
 
       <Modal
         className="modal-new-doc"
-        title="Novo Documento"
         visible={isModalSelectTypeDoc}
         onOk={modalSelecTypeHandleOk}
         onCancel={modalSelecTypeHandleCancel}
@@ -667,7 +639,7 @@ export default function Group(props: any) {
               setIsModalSelectTypeDoc(false);
             }}
           >
-            Cancel
+            {props.t('comum.cancel')}
           </Button>,
           <Button
             type="primary"
@@ -688,7 +660,7 @@ export default function Group(props: any) {
               createDocument(form);
             }}
           >
-            Create
+            {props.t('comum.create')}
           </Button>,
         ]}
         width={800}
@@ -712,17 +684,23 @@ export default function Group(props: any) {
                 onChange={onChangeDocumentType}
                 value={documenType}
               >
-                <Radio value="PUBLIC">Público</Radio>
-                <Radio value="PRIVATE">Privado</Radio>
+                <Radio value="PUBLIC">{props.t('comum.public')}</Radio>
+                <Radio value="PRIVATE">{props.t('comum.private')}</Radio>
               </Radio.Group>
             </div>
             <div>
-              {selectedTemplate.length > 0 && selectedTemplate[0]?.node
-                ? selectedTemplate[0]?.node?.content
-                : 'empty'}
+              {selectedTemplate.length > 0 && selectedTemplate[0]?.node ? (
+                selectedTemplate[0]?.node?.content
+              ) : (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              )}
             </div>
           </Col>
-          <Col flex="200px" className="collapseSelect" style={{ overflow: 'hidden' }}>
+          <Col
+            flex="200px"
+            className="collapseSelect"
+            style={{ overflow: 'hidden' }}
+          >
             <Collapse
               accordion
               bordered={false}
@@ -730,7 +708,7 @@ export default function Group(props: any) {
               style={{ height: '100%', overflow: 'auto' }}
               onChange={(e) => onChangeCollapse(e)}
             >
-              <Panel header="My Templates" key="0">
+              <Panel header={props.t('comum.my_templates')} key="0">
                 {/* {text} */}
                 {/* userTemplateList */}
                 <DirectoryTree
@@ -760,9 +738,9 @@ export default function Group(props: any) {
       <ModalLayout
         theme={props.theme}
         visible={isModalEditTeam}
-        title="Create a new collection"
-        okText="Create"
-        cancelText="Cancel"
+        title={props.t('home.modal_create_team.create_new_team_work')}
+        okText={props.t('comum.create')}
+        cancelText={props.t('comum.cancel')}
         onCancel={onCancelEditteam}
         onOk={() => {
           formEditTeam
@@ -773,7 +751,7 @@ export default function Group(props: any) {
               formEditTeam.resetFields();
             })
             .catch((info) => {
-              console.log('Validate Failed:', info);
+              // console.log('Validate Failed:', info);
             });
         }}
       >
@@ -799,12 +777,12 @@ export default function Group(props: any) {
             <Col flex="auto">
               <Form.Item
                 name="title"
-                label="Nome da equipe"
+                label={props.t('home.modal_create_team.team_name')}
                 initialValue={team.name}
                 rules={[
                   {
                     required: true,
-                    message: 'Please input the title of collection!',
+                    message: props.t('home.modal_create_team.required_field'),
                   },
                 ]}
               >
@@ -815,27 +793,31 @@ export default function Group(props: any) {
 
           <Form.Item
             name="type"
-            label="Selecione o tipo"
+            label={props.t('home.modal_create_team.team_visibility')}
             initialValue={team.type}
             rules={[
               {
                 required: true,
-                message: 'Please input the title of collection!',
+                message: props.t('home.modal_create_team.required_field'),
               },
             ]}
           >
             <Radio.Group defaultValue="PRIVATE" buttonStyle="solid">
-              <Radio.Button value="PUBLIC">Público</Radio.Button>
-              <Radio.Button value="PRIVATE">Privado</Radio.Button>
+              <Radio.Button value="PUBLIC">
+                {props.t('comum.public')}
+              </Radio.Button>
+              <Radio.Button value="PRIVATE">
+                {props.t('comum.private')}
+              </Radio.Button>
             </Radio.Group>
           </Form.Item>
           <Form.Item
             name="banner"
-            label="Cover do grupo"
+            label={props.t('home.modal_create_team.image_cover')}
             rules={[
               {
                 required: !(bannerInput.length > 0),
-                message: 'Please input the title of collection!',
+                message: props.t('home.modal_create_team.required_field'),
               },
             ]}
           >
@@ -852,17 +834,19 @@ export default function Group(props: any) {
           </Form.Item>
           <Form.Item
             name="description"
-            label="Descrição"
+            label={props.t('comum.description')}
             initialValue={team.description}
             rules={[
               {
                 required: true,
-                message: 'Please input the title of collection!',
+                message: props.t('home.modal_create_team.required_field'),
               },
             ]}
           >
             <TextArea
-              placeholder="textarea with clear icon"
+              placeholder={props.t(
+                'home.modal_create_team.write_teams_drescription'
+              )}
               allowClear
               showCount
               maxLength={400}

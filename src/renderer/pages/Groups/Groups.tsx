@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   Card,
@@ -8,15 +8,12 @@ import {
   Input,
   Radio,
   Row,
-  Skeleton,
   Modal,
   Space,
   Table,
   Pagination,
-  Select,
   Menu,
   Dropdown,
-  Alert,
   Empty,
   Upload,
   Avatar,
@@ -30,12 +27,9 @@ import {
   TableOutlined,
   SmileOutlined,
   DownOutlined,
-  EllipsisOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import { FaUsers } from '@react-icons/all-files/fa/FaUsers';
-import { IoIosDocument } from '@react-icons/all-files/io/IoIosDocument';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { MainContext } from 'renderer/contexts/MainContext';
 import Picker from 'emoji-picker-react';
@@ -49,12 +43,10 @@ import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import ImgCrop from 'antd-img-crop';
 import { MessageShow } from 'renderer/utils/messages/Messages';
-import list from 'antd/lib/list';
 
 import moment from 'moment';
-const { Meta } = Card;
+
 const { TextArea } = Input;
-const { Option } = Select;
 const { confirm } = Modal;
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
@@ -95,7 +87,7 @@ const ModalLayout = styled(Modal)`
 `;
 const { Paragraph } = Typography;
 
-export default function Groups({ theme, t, setPath }) {
+export default function Groups({ theme, t }) {
   const history = useHistory();
 
   const {
@@ -112,7 +104,7 @@ export default function Groups({ theme, t, setPath }) {
 
   const tableColumns = [
     {
-      title: 'Name',
+      title: t('comum.name'),
       dataIndex: 'title',
       key: 'title',
       // eslint-disable-next-line react/display-name
@@ -128,17 +120,22 @@ export default function Groups({ theme, t, setPath }) {
       ) => <a>{text}</a>,
     },
     {
-      title: 'Tipo',
+      title: t('comum.visibility'),
       dataIndex: 'type',
       key: 'type',
     },
     {
-      title: 'Documentos',
+      title: t('comum.members'),
+      dataIndex: 'members',
+      key: 'members',
+    },
+    {
+      title: t('comum.documents'),
       dataIndex: 'docs',
       key: 'docs',
     },
     {
-      title: 'Action',
+      title: t('comum.action'),
       key: 'action',
       render: (
         text: any,
@@ -156,13 +153,13 @@ export default function Groups({ theme, t, setPath }) {
         }
       ) => (
         <Space size="middle">
-          <a onClick={() => navigateToTeam(record)}>Entrar</a>
+          <a onClick={() => navigateToTeam(record)}>{t('comum.enter')}</a>
           <a
             onClick={() => {
               showDeleteConfirm(record);
             }}
           >
-            Delete
+            {t('comum.delete')}
           </a>
         </Space>
       ),
@@ -174,23 +171,23 @@ export default function Groups({ theme, t, setPath }) {
   const [currentPag, setCurrentPag] = useState(1);
 
   const onCreateError = () => {
-    MessageShow('error', 'Action in progress');
+    MessageShow('error', t('comum.an_error_occurred_in_the_operation'));
   };
 
   function showDeleteConfirm(team) {
     confirm({
-      title: 'Are you sure delete this task?',
+      title: t('comum.are_you_sure_delete_this_register'),
       icon: <ExclamationCircleOutlined />,
-      content: 'Some descriptions',
-      okText: 'Yes',
+      content: t('comum.if_deleted_the_register_wont_be_recoverd'),
+      okText: t('comum.yes'),
       okType: 'danger',
-      cancelText: 'No',
+      cancelText: t('comum.no'),
       onOk() {
         if (team.docs === 0) {
           // eslint-disable-next-line @typescript-eslint/no-use-before-define
           deleteTeam(team.id);
         } else {
-          MessageShow('error', 'Action in progress');
+          MessageShow('error', t('comum.an_error_occurred_in_the_operation'));
         }
       },
       onCancel() {
@@ -207,6 +204,7 @@ export default function Groups({ theme, t, setPath }) {
           id: team.id,
           key: team.id,
           title: team.name,
+          members: team.contributors.length,
           desc: team.description,
           type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
           docs: team.documents.length,
@@ -247,12 +245,9 @@ export default function Groups({ theme, t, setPath }) {
     refetch: reFetchTeams,
   } = getUserTeams(onSuccess, onError, currentPag);
 
-  if (isLoading) {
-  }
-
   const onCreateSuccess = (data) => {
     // console.log(data)
-    MessageShow('success', 'Action in progress');
+    MessageShow('success', t('comum.successfully_created'));
     reFetchTeams();
   };
 
@@ -538,9 +533,9 @@ export default function Groups({ theme, t, setPath }) {
         <ModalLayout
           theme={theme}
           visible={isModalVisible}
-          title="Create a new collection"
-          okText="Create"
-          cancelText="Cancel"
+          title={t('home.modal_create_team.create_new_team_work')}
+          okText={t('comum.create')}
+          cancelText={t('comum.cancel')}
           onCancel={onCancel}
           onOk={() => {
             form
@@ -577,11 +572,11 @@ export default function Groups({ theme, t, setPath }) {
               <Col flex="auto">
                 <Form.Item
                   name="title"
-                  label="Nome da equipe"
+                  label={t('home.modal_create_team.team_name')}
                   rules={[
                     {
                       required: true,
-                      message: 'Please input the title of collection!',
+                      message: t('home.modal_create_team.required_field'),
                     },
                   ]}
                 >
@@ -592,27 +587,27 @@ export default function Groups({ theme, t, setPath }) {
 
             <Form.Item
               name="type"
-              label="Selecione o tipo"
+              label={t('home.modal_create_team.team_visibility')}
               initialValue="PRIVATE"
               rules={[
                 {
                   required: true,
-                  message: 'Please input the title of collection!',
+                  message: t('home.modal_create_team.required_field'),
                 },
               ]}
             >
               <Radio.Group defaultValue="PRIVATE" buttonStyle="solid">
-                <Radio.Button value="PUBLIC">Público</Radio.Button>
-                <Radio.Button value="PRIVATE">Privado</Radio.Button>
+                <Radio.Button value="PUBLIC">{t('comum.public')}</Radio.Button>
+                <Radio.Button value="PRIVATE">{t('comum.private')}</Radio.Button>
               </Radio.Group>
             </Form.Item>
             <Form.Item
               name="banner"
-              label="Cover do grupo"
+              label={t('home.modal_create_team.image_cover')}
               rules={[
                 {
                   required: !(bannerInput.length > 0),
-                  message: 'Please input the title of collection!',
+                  message: t('home.modal_create_team.required_field'),
                 },
               ]}
             >
@@ -629,16 +624,18 @@ export default function Groups({ theme, t, setPath }) {
             </Form.Item>
             <Form.Item
               name="description"
-              label="Descrição"
+              label={t('comum.description')}
               rules={[
                 {
                   required: true,
-                  message: 'Please input the title of collection!',
+                  message: t('home.modal_create_team.required_field'),
                 },
               ]}
             >
               <TextArea
-                placeholder="textarea with clear icon"
+                placeholder={t(
+                  'home.modal_create_team.write_teams_drescription'
+                )}
                 allowClear
                 showCount
                 maxLength={400}

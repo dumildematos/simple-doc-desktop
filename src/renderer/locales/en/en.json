@@ -18,6 +18,21 @@
       "profile":  "Profile",
       "logout": "Terminar Sessão"
     },
+    "side_menu": {
+      "my_teams": "My Teams",
+      "inited_teams": "Invited Teams",
+      "explorer": "Explorer",
+      "marketplace": "Marketplace",
+      "template_builder": "Template Builder"
+    },
+    "modal_create_team": {
+      "create_new_team_work": "Create new Work Team",
+      "team_name": "Team Name",
+      "team_visibility": "Team Visibility",
+      "image_cover": "Image Cover",
+      "write_teams_drescription": "Write team´s description ",
+      "required_field": "Required field, please fill."
+    },
     "settings": {
       "setting": "Settings",
       "general": "Gerenal",
@@ -27,5 +42,35 @@
         "dark": "Dark"
       }
     }
+  },
+  "comum": {
+    "description": "Description",
+    "create": "Create",
+    "cancel": "Cancel",
+    "public": "Public",
+    "private": "Private",
+    "successfully_created": "Successfully Created!",
+    "successfully_deleted": "SuccessFully deleted!",
+    "an_error_occurred_in_the_operation": "An error occurred in the operation",
+    "name": "Name",
+    "visibility": "Visibility",
+    "documents": "Documents",
+    "members": "Members",
+    "action": "Action",
+    "enter": "Enter",
+    "delete": "Delete",
+    "are_you_sure_delete_this_register": "Are youre sure?",
+    "if_deleted_the_register_wont_be_recoverd": "If you delete the record it will not be recovered.",
+    "yes": "Yes",
+    "no": "No",
+    "team_details": "Team details",
+    "new_document": "New Document",
+    "my_templates": "My Templates",
+    "add_contributor": "Add contributor",
+    "user_email": "User email",
+    "contributor_permission": "Permission",
+    "required_field": "Required field, please fill.",
+    "writer": "Writer",
+    "reader": "Reader"
   }
 }

@@ -23,12 +23,6 @@ const { Sider } = Layout;
 const { SubMenu } = Menu;
 const hasLogin = localStorage.getItem('hasLogin');
 
-// window.addEventListener('online', updateOnlineStatus);
-// window.addEventListener('offline', updateOnlineStatus);
-
-// const updateOnlineStatus = () => {
-//   return navigator.onLine ? 'success' : 'error';
-// };
 export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
   const history = useHistory();
 
@@ -90,7 +84,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
   const MenuDropDown = (
     <Menu onClick={userMenu}>
       <Menu.Item key="1">{t('home.user_dropdown_menu.profile')}</Menu.Item>
-      <Menu.Item key="2">Notificações</Menu.Item>
+      {/* <Menu.Item key="2">Notificações</Menu.Item> */}
       {/* <Menu.Item key="2" icon={<DownOutlined />} disabled>
         <a
           target="_blank"
@@ -156,19 +150,21 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
           // }}
         >
           <Menu.Item key="1" icon={<TeamOutlined />}>
-            <Link to="/">My Teams</Link>
+            <Link to="/">{t('home.side_menu.my_teams')}</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserSwitchOutlined />}>
-            <Link to="/invited-teams">Invited Teams</Link>
+            <Link to="/invited-teams">{t('home.side_menu.inited_teams')}</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<SearchOutlined />}>
-            <Link to="/explorer">Explorer</Link>
+            <Link to="/explorer">{t('home.side_menu.explorer')}</Link>
           </Menu.Item>
           <Menu.Item key="4" icon={<ShopOutlined />}>
-            <Link to="/marketplace">Marketplace</Link>
+            <Link to="/marketplace">{t('home.side_menu.marketplace')}</Link>
           </Menu.Item>
           <Menu.Item key="5" icon={<AppstoreAddOutlined />}>
-            <Link to="/template-builder">Template Builder</Link>
+            <Link to="/template-builder">
+              {t('home.side_menu.template_builder')}
+            </Link>
           </Menu.Item>
         </Menu>
       </Sider>

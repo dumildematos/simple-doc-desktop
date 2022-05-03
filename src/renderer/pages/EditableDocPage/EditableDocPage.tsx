@@ -121,7 +121,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 
 
-export default function EditableDocPage({ theme }) {
+export default function EditableDocPage({ theme , t }) {
   const { isRouted , team, documentOnWork } = useContext(MainContext);
   const [isModalListContributorsVisible, setModalListContributorsVisible] = useState(false);
   const [draggableToolModal, setDraggableToolModal] = useState({
@@ -298,7 +298,7 @@ export default function EditableDocPage({ theme }) {
           <QuillEditor id={documentId} />
 
           <Modal
-            title="Basic Modal"
+            title={t('comum.add_contributor')}
             visible={isModalVisible}
             onCancel={handleCancel}
             onOk={() => {
@@ -310,7 +310,7 @@ export default function EditableDocPage({ theme }) {
                   formAddContributor(values);
                 })
                 .catch((info) => {
-                  console.log('Validate Failed:', info);
+                  // console.log('Validate Failed:', info);
                 });
             }}
           >
@@ -324,28 +324,28 @@ export default function EditableDocPage({ theme }) {
             >
               <Form.Item
                 name="username"
-                label="Email do utilizador"
+                label={t('comum.user_email')}
                 rules={[
-                  { required: true, message: 'Please input your Username!' },
+                  { required: true, message: t('comum.required_field') },
                 ]}
               >
                 <Input
                   prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="Username"
+                  placeholder={t('comum.user_email')}
                 />
               </Form.Item>
               <Form.Item
                 name="role"
-                label="Regra"
+                label={t('comum.contributor_permission')}
                 rules={[
-                  { required: true, message: 'Please input your Password!' },
+                  { required: true, message: t('comum.required_field') },
                 ]}
                 initialValue="WRITER"
               >
                 <Select defaultValue="WRITER" style={{ width: 120 }}>
-                  <Option value="WRITER">Editor</Option>
-                  <Option value="REVISER">Revisor</Option>
-                  <Option value="READER">Leitor</Option>
+                  <Option value="WRITER">{t('comum.writer')}</Option>
+                  {/* <Option value="REVISER">Revisor</Option> */}
+                  <Option value="READER">{t('comum.reader')}</Option>
                 </Select>
               </Form.Item>
             </Form>
@@ -387,7 +387,7 @@ export default function EditableDocPage({ theme }) {
               className="site-description-item-profile-p"
               style={{ marginBottom: 24 }}
             >
-              Membros
+              {t('comum.members')}
             </p>
               </Col>
             </Row>
@@ -404,7 +404,9 @@ export default function EditableDocPage({ theme }) {
                 </Avatar.Group>
               </Col>
               <Col>
-                <Button onClick={showModalLIstContributors} type="link" shape="circle" icon={<EyeOutlined />} />
+              {
+                lsContributors?.data.length > 0 && <Button onClick={showModalLIstContributors} type="link" shape="circle" icon={<EyeOutlined />} />
+              }
               </Col>
             </Row>
             <Divider />
@@ -422,14 +424,7 @@ export default function EditableDocPage({ theme }) {
             visible={visibleTools}
             className="tools-drawer"
           >
-{/*
-            <Row>
-              <Col>
-                <Button block style={{ marginTop: '5px' }} onClick={showToolsModal}>Flow Editor</Button>
-                <Button block style={{ marginTop: '5px' }}>Mind Editor</Button>
-                <Button block style={{ marginTop: '5px' }}>Koni Editor</Button>
-              </Col>
-            </Row> */}
+
               <List
                 className="tools-list"
                 loading={false}

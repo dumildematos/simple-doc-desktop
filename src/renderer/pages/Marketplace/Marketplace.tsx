@@ -1,4 +1,5 @@
-import { Row, Col, Input, Tabs, Card, Empty, Modal } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Row, Col, Input, Tabs, Card, Empty, Modal, Button } from 'antd';
 import {
   Key,
   ReactChild,
@@ -9,9 +10,11 @@ import {
 } from 'react';
 import { onListCategory } from 'renderer/services/CategoryService';
 import {
+  onCreateTemplate,
   onGetMarketplaceTemplates,
   onGetTemplates,
 } from 'renderer/services/TemplateService';
+import { MessageShow } from 'renderer/utils/messages/Messages';
 import styled from 'styled-components';
 import imgBanner from './marketplace1.jpg';
 const { Search } = Input;
@@ -87,6 +90,7 @@ const MarketPlaceContainer = styled.div`
 `;
 const { TabPane } = Tabs;
 const { Meta } = Card;
+const { confirm } = Modal;
 
 export default function Marketplace(props: any) {
   const [isModalBuyTemplateVisible, setIsModalBuyTemplateVisible] =
@@ -120,6 +124,23 @@ export default function Marketplace(props: any) {
     onSuccessCategoryList,
     onErrorategoryList,
     true
+  );
+
+  const onCreateSuccess = (data: any) => {
+    MessageShow('success', 'Action in progress');
+    setTimeout(() => {
+      setIsModalBuyTemplateVisible(false);
+    }, 2000);
+    // console.log(data);
+  };
+
+  const onCreateError = (error: any) => {
+    console.log(error);
+  };
+
+  const { mutate: createTemplate } = onCreateTemplate(
+    onCreateSuccess,
+    onCreateError
   );
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -273,17 +294,64 @@ export default function Marketplace(props: any) {
           </Col>
         </Row>
         <Modal
-          title="Basic Modal"
+          title=""
           visible={isModalBuyTemplateVisible}
           onOk={handleOk}
           onCancel={handleCancel}
           footer={false}
         >
-          <p>{`${selectedTemplate.category[0].name} - ${
-            selectedTemplate.price === '0.00' ? 'Free' : `${selectedTemplate.price} $`
-          }`}</p>
-          <p>{selectedTemplate.description}</p>
-          <p>Some contents...</p>
+          <Row justify="space-between" align="middle">
+            <Col span={8}>
+              <h2>{selectedTemplate?.name}</h2>
+              {/* <span>{selectedTemplate?.category ? selectedTemplate?.category.[0].name  : ''} </span> */}
+            </Col>
+            <Col span={4}>
+              <p>
+                {selectedTemplate.price === '0.00'
+                  ? 'Free'
+                  : `${selectedTemplate.price} $`}
+              </p>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <p>{selectedTemplate.description}</p>
+            </Col>
+          </Row>
+          <Row justify="end">
+            <Col>
+              <Button
+                type="primary"
+                style={{ float: 'right' }}
+                onClick={() => {
+                  if (selectedTemplate.price === '0.00') {
+                    createTemplate({
+                      name: selectedTemplate.name,
+                      content: selectedTemplate.content,
+                      price: selectedTemplate.price,
+                      description: selectedTemplate.description,
+                      cover: selectedTemplate.cover,
+                      categoryId: null,
+                    });
+                  }else {
+                    confirm({
+                      title: 'Do you Want to delete these items?',
+                      icon: <ExclamationCircleOutlined />,
+                      content: 'Some descriptions',
+                      onOk() {
+                        console.log('OK');
+                      },
+                      onCancel() {
+                        console.log('Cancel');
+                      },
+                    });
+                  }
+                }}
+              >
+                Get Template
+              </Button>
+            </Col>
+          </Row>
         </Modal>
       </MarketPlaceContainer>
     </>

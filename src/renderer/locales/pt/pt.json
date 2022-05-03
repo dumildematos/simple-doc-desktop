@@ -5,6 +5,21 @@
       "profile":  "Perfil",
       "logout": "Terminar Sessão"
     },
+    "side_menu": {
+      "my_teams": "Minhas Equipes",
+      "inited_teams": "Equipes convidadas",
+      "explorer": "Explorar",
+      "marketplace": "Mercado",
+      "template_builder": "Construtor de Template"
+    },
+    "modal_create_team": {
+      "create_new_team_work": "Criar nova equipe de Trabalho",
+      "team_name": "Nome da Equipe",
+      "team_visibility": "Visibilidade da Equipe",
+      "image_cover": "Imagem de Capa",
+      "write_teams_drescription": "Escreva a descrição da equipe",
+      "required_field": "Campo Obrigatorio, porfavor Preencha."
+    },
     "settings": {
       "setting": "Definições",
       "general": "Geral",
@@ -17,5 +32,35 @@
         "title": "Aplicação"
       }
     }
+  },
+  "comum": {
+    "description": "Descrição",
+    "create": "Criar",
+    "cancel": "Cancelar",
+    "public": "Público",
+    "private": "Privado",
+    "successfully_created": "Criado com sucesso!",
+    "successfully_deleted": "Sucesso ao eliminar!",
+    "an_error_occurred_in_the_operation": "Ocorreu um erro na operação",
+    "name": "Nome",
+    "visibility": "Visbilidade",
+    "documents": "Documentos",
+    "members": "Membros",
+    "action": "Operação",
+    "enter": "Entrar",
+    "delete": "Eliminar",
+    "are_you_sure_delete_this_register": "Tem a certeza que quer eliminar este registto?",
+    "if_deleted_the_register_wont_be_recoverd": "Se eliminado, o registro não poderá ser recuperado.",
+    "yes": "Sim",
+    "no": "Não",
+    "team_details": "Detalhes da equipe",
+    "new_document": "Novo Documento",
+    "my_templates": "Meus Templates",
+    "add_contributor": "Adicionar contruibuidor",
+    "user_email": "Email do utilizador",
+    "contributor_permission": "Permissão",
+    "required_field": "Campo Obrigatorio, porfavor Preencha.",
+    "writer": "Escrita",
+    "reader": "Leitura"
   }
 }
