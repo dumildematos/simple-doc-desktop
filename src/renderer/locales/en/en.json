@@ -71,6 +71,8 @@
     "contributor_permission": "Permission",
     "required_field": "Required field, please fill.",
     "writer": "Writer",
-    "reader": "Reader"
+    "reader": "Reader",
+    "all": "All",
+    "free": "Free"
   }
 }

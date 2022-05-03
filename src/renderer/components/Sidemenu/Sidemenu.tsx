@@ -20,10 +20,9 @@ import { MainContext } from 'renderer/contexts/MainContext';
 import ModalSettings from './ModalSettings';
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 const hasLogin = localStorage.getItem('hasLogin');
 
-export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
+export default function Sidemenu({ collapse, t, setTheme, theme  }) {
   const history = useHistory();
 
   if (hasLogin === 'true') {
@@ -140,14 +139,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme, navURL }) {
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          theme="light"
-          // onSelect={() => {
-          //   defineBackButton({
-          //     state: false,
-          //     title: '',
-          //     subtitle: '',
-          //   });
-          // }}
+          theme={theme}
         >
           <Menu.Item key="1" icon={<TeamOutlined />}>
             <Link to="/">{t('home.side_menu.my_teams')}</Link>

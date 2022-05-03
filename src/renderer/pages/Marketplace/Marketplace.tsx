@@ -203,7 +203,7 @@ export default function Marketplace(props: any) {
         <Row>
           <Col span={24} style={{ height: '100%', overflowY: 'auto' }}>
             <Tabs tabPosition="left" onChange={changeTab}>
-              <TabPane tab="Tab 1" key="1">
+              <TabPane tab={props.t('comum.all')} key="1">
                 <Row>
                   {templateList?.data?.content.map(
                     (template: { id: Key | null | undefined }) => (
@@ -223,7 +223,7 @@ export default function Marketplace(props: any) {
                         >
                           <Meta
                             title={`${template.name}`}
-                            description={`${template.category[0].name} - ${
+                            description={`${template?.category[0]?.name} - ${
                               template.price === '0.00'
                                 ? 'Free'
                                 : `${template.price} $`
@@ -273,7 +273,7 @@ export default function Marketplace(props: any) {
                                 title={`${template.name}`}
                                 description={`${template.category[0].name} - ${
                                   template.price === '0.00'
-                                    ? 'Free'
+                                    ? props.t('comum.free')
                                     : `${template.price} $`
                                 }`}
                               />
@@ -308,7 +308,7 @@ export default function Marketplace(props: any) {
             <Col span={4}>
               <p>
                 {selectedTemplate.price === '0.00'
-                  ? 'Free'
+                  ? props.t('comum.free')
                   : `${selectedTemplate.price} $`}
               </p>
             </Col>
@@ -339,10 +339,10 @@ export default function Marketplace(props: any) {
                       icon: <ExclamationCircleOutlined />,
                       content: 'Some descriptions',
                       onOk() {
-                        console.log('OK');
+                        // console.log('OK');
                       },
                       onCancel() {
-                        console.log('Cancel');
+                        // console.log('Cancel');
                       },
                     });
                   }

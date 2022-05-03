@@ -89,7 +89,7 @@ const { Paragraph } = Typography;
 
 export default function Groups({ theme, t }) {
   const history = useHistory();
-
+  console.log(t)
   const {
     isRouted,
     defineRoutedState,

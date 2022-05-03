@@ -61,6 +61,8 @@
     "contributor_permission": "Permissão",
     "required_field": "Campo Obrigatorio, porfavor Preencha.",
     "writer": "Escrita",
-    "reader": "Leitura"
+    "reader": "Leitura",
+    "all": "Todos",
+    "free": "Grátis"
   }
 }

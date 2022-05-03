@@ -130,7 +130,6 @@ export default function ModalSettings({
               <Radio.Group
                 value={theme}
                 onChange={changeTheme}
-                optionType="button"
                 buttonStyle="solid"
               >
                 <Radio.Button

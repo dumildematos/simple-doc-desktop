@@ -53,7 +53,7 @@ export default function Home({ theme, setTheme }) {
   const [currentPath, setCurrentPath] = useState('/');
 
   const { t, i18n } = useTranslation();
-
+  // console.log(i18n.format())
 
   const [collapse, setCollapse] = useState({
     collapsed: false,
@@ -75,7 +75,6 @@ export default function Home({ theme, setTheme }) {
                   theme={theme}
                   setTheme={setTheme}
                   collapse={collapse}
-                  navURL={url}
 
               />
               <Layout
