@@ -123,7 +123,7 @@ export default function App() {
                 ) : (<Redirect to="/home" />) }
               </Route>
               <Route exact path={['/home', '/index.html', `${location.pathname}`]}>
-                <Home theme={Apptheme} setTheme={setTheme} />
+                <Home theme={themes[Apptheme]} setTheme={setTheme} />
               </Route>
 
             </Switch>

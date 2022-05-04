@@ -15,15 +15,17 @@ import {
   TeamOutlined,
   UserSwitchOutlined,
 } from '@ant-design/icons';
-import styled from 'styled-components';
+import styled, { ThemeContext, useTheme } from 'styled-components';
 import { MainContext } from 'renderer/contexts/MainContext';
 import ModalSettings from './ModalSettings';
 
 const { Sider } = Layout;
 const hasLogin = localStorage.getItem('hasLogin');
 
-export default function Sidemenu({ collapse, t, setTheme, theme  }) {
+export default function Sidemenu({ collapse, t, setTheme, theme }) {
   const history = useHistory();
+  const themeContext = useContext(ThemeContext);
+  console.log({ themeContext });
 
   if (hasLogin === 'true') {
     console.log('show my teams');
@@ -39,9 +41,10 @@ export default function Sidemenu({ collapse, t, setTheme, theme  }) {
     defineUser,
     defineAcesstoken,
     defineRefreshtoken,
+    theme: ThemeName,
     defineBackButton,
   } = useContext(MainContext);
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem('user') || '');
   const [settingModal, setSettingModal] = useState({
     loading: false,
     visible: false,
@@ -139,10 +142,10 @@ export default function Sidemenu({ collapse, t, setTheme, theme  }) {
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          theme={theme}
+          theme={ThemeName}
         >
           <Menu.Item key="1" icon={<TeamOutlined />}>
-            <Link to="/">{t('home.side_menu.my_teams')}</Link>
+            <Link to="/"> {t('home.side_menu.my_teams')}</Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<UserSwitchOutlined />}>
             <Link to="/invited-teams">{t('home.side_menu.inited_teams')}</Link>

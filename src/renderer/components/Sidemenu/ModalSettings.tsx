@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Checkbox, Col, Modal, Radio, Row, Select, Tabs } from 'antd';
 import { AppleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { MainContext } from 'renderer/contexts/MainContext';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -61,6 +62,7 @@ export default function ModalSettings({
   theme,
 }) {
   const { i18n } = useTranslation();
+  const { defineTheme } = useContext(MainContext);
   const [settingTheme, setSettingTheme] = useState({});
   console.log(theme);
   const showModal = () => {
@@ -88,6 +90,7 @@ export default function ModalSettings({
   const changeTheme = (e: any) => {
     // console.log(e.target.value);
     setTheme(e.target.value);
+    defineTheme(e.target.value);
   };
 
   const onChangeApplicationSettingCheck = (checkedValues: any) => {
