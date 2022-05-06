@@ -6,18 +6,9 @@ const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const mensagem = (type: string, text: string) => {
   message.destroy();
-  const hide = message[type](text, 0);
   setTimeout(() => {
     message.destroy();
   }, 2500);
-  // if (type === 'loading') {
-  //   setTimeout(hide, 2500);
-  // }
-  // message.loading({ content: 'Loading...', key });
-  // setTimeout(() => {
-  //   message.success({ content: 'Loaded!', key, duration: 2 });
-  // }, 1000);
-  // info();
 };
 
 // eslint-disable-next-line import/prefer-default-export
@@ -25,6 +16,20 @@ export const MessageShow = (type: string, text: string) => {
   mensagem(type, text);
 };
 
+export function RequestAlert(title: string, description: string) {
+  Modal.warning({
+    title,
+    content: (
+      <div>
+        <p>{description}</p>
+      </div>
+    ),
+    onOk() {
+      localStorage.clear();
+      window.location.href = '/';
+    },
+  });
+}
 const info = (type: string) => {
   Modal.info({
     content: (

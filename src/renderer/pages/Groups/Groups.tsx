@@ -42,7 +42,7 @@ import { TeamAddForm } from 'renderer/models/TeamModel';
 import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import ImgCrop from 'antd-img-crop';
-import { MessageShow } from 'renderer/utils/messages/Messages';
+import { MessageShow, RequestAlert } from 'renderer/utils/messages/Messages';
 
 import moment from 'moment';
 
@@ -89,7 +89,7 @@ const { Paragraph } = Typography;
 
 export default function Groups({ theme, t }) {
   const history = useHistory();
-  console.log(t)
+  // console.log(t)
   const {
     isRouted,
     defineRoutedState,
@@ -198,42 +198,33 @@ export default function Groups({ theme, t }) {
 
   const onSuccess = (data) => {
     console.log(data);
-    setTableLIstTeam(
-      data?.data?.content.map((team) => {
-        return {
-          id: team.id,
-          key: team.id,
-          title: team.name,
-          members: team.contributors.length,
-          desc: team.description,
-          type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
-          docs: team.documents.length,
-        };
-      })
-    );
-    // defineBackButton({
-    //   state: false,
-    //   title: '',
-    //   subtitle: '',
-    //   prevPath: '/',
-    // });
+    if (data && data.status === 200) {
+      setTableLIstTeam(
+        data?.data?.content.map((team) => {
+          return {
+            id: team.id,
+            key: team.id,
+            title: team.name,
+            members: team.contributors.length,
+            desc: team.description,
+            type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
+            docs: team.documents.length,
+          };
+        })
+      );
+    } else {
+      RequestAlert(
+        t('comum.there_was_a_problem_with_the_request'),
+        t('comum.click_okay_to_fix')
+      );
+    }
   };
 
   const onError = (data) => {
-    Modal.info({
-      title: 'This is a notification message',
-      content: (
-        <div>
-          <p>some messages...some messages...</p>
-          <p>some messages...some messages...</p>
-        </div>
-      ),
-      onOk() {
-        localStorage.clear();
-        window.location.href = '/';
-        console.log(data);
-      },
-    });
+    RequestAlert(
+      t('comum.there_was_a_problem_with_the_request'),
+      t('comum.click_okay_to_fix')
+    );
   };
 
   const {
@@ -286,17 +277,8 @@ export default function Groups({ theme, t }) {
     };
 
     createTeam(team);
-
-    // setTeams([...teams, ...createdTeam]);
-    // teamArray.push();
     setIsModalVisible(false);
     setChosenEmoji(null);
-  };
-
-  const setRoutState = (item: any) => {
-    console.log('clicked');
-    defineRoutedState(true);
-    definePageInfo(item.id);
   };
 
   const onEmojiClick = (
@@ -311,7 +293,6 @@ export default function Groups({ theme, t }) {
   };
 
   const handleMenuClick = (e: any) => {
-    // console.log('click', e);
     console.log(chosenEmoji);
   };
 
@@ -321,7 +302,6 @@ export default function Groups({ theme, t }) {
   };
 
   const menu = (
-    // <Button type="primary" shape="circle" icon={<SearchOutlined />} />
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1">
         <div>
@@ -349,10 +329,6 @@ export default function Groups({ theme, t }) {
         history.push(`/group/${team.id}`);
       }, 1000);
     }
-  };
-
-  const onShowPageSizeChange = (current, pageSize) => {
-    console.log(current, pageSize);
   };
 
   const onChangeBanner = ({ fileList: newFileList }) => {
@@ -491,12 +467,12 @@ export default function Groups({ theme, t }) {
                 overflowY: 'hidden',
               }}
             >
-              {teamList?.data?.totalElements === 0 && (
+              {teamList?.status === 200 && teamList?.data?.totalElements === 0 && (
                 <Col span={24}>
                   <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 </Col>
               )}
-              {teamList?.data?.totalElements > 0 && (
+              {teamList?.status === 200 && teamList?.data?.totalElements > 0 && (
                 <div className="cardList" style={{ width: '100%' }}>
                   {cardListTeam}
                 </div>
@@ -504,7 +480,8 @@ export default function Groups({ theme, t }) {
             </Row>
           </>
         )}
-        {teamList?.data?.totalElements > 0 &&
+        {teamList?.status === 200 &&
+          teamList?.data?.totalElements > 0 &&
           viewAs === 'grid' &&
           teamList?.data && (
             <Row style={{ marginTop: '2rem' }}>
@@ -518,18 +495,22 @@ export default function Groups({ theme, t }) {
               </Col>
             </Row>
           )}
-        {teamList?.data?.totalElements === 0 && viewAs === 'list' && (
-          <Col span={24}>
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-          </Col>
-        )}
-        {teamList?.data?.totalElements > 0 && viewAs === 'list' && (
-          <Row className="cards-container" style={{ paddingTop: '10px' }}>
+        {teamList?.status === 200 &&
+          teamList?.data?.totalElements === 0 &&
+          viewAs === 'list' && (
             <Col span={24}>
-              <Table columns={tableColumns} dataSource={tabledTeamList} />
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
             </Col>
-          </Row>
-        )}
+          )}
+        {teamList?.status === 200 &&
+          teamList?.data?.totalElements > 0 &&
+          viewAs === 'list' && (
+            <Row className="cards-container" style={{ paddingTop: '10px' }}>
+              <Col span={24}>
+                <Table columns={tableColumns} dataSource={tabledTeamList} />
+              </Col>
+            </Row>
+          )}
         <ModalLayout
           theme={theme}
           visible={isModalVisible}
@@ -598,7 +579,9 @@ export default function Groups({ theme, t }) {
             >
               <Radio.Group defaultValue="PRIVATE" buttonStyle="solid">
                 <Radio.Button value="PUBLIC">{t('comum.public')}</Radio.Button>
-                <Radio.Button value="PRIVATE">{t('comum.private')}</Radio.Button>
+                <Radio.Button value="PRIVATE">
+                  {t('comum.private')}
+                </Radio.Button>
               </Radio.Group>
             </Form.Item>
             <Form.Item

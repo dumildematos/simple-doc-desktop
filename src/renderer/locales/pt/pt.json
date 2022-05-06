@@ -63,6 +63,10 @@
     "writer": "Escrita",
     "reader": "Leitura",
     "all": "Todos",
-    "free": "Grátis"
+    "free": "Grátis",
+    "there_was_a_problem_with_the_request":"Ocorreu algum problema na requisição",
+    "click_okay_to_fix": "Clique no botão OK para corrigir.",
+    "warning": "Aviso",
+    "you_do_not_have_permission_to_open_this_file": "Não possui permissão para abrir este documento!"
   }
 }

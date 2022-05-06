@@ -73,6 +73,11 @@
     "writer": "Writer",
     "reader": "Reader",
     "all": "All",
-    "free": "Free"
+    "free": "Free",
+    "there_was_a_problem_with_the_request":"There was a problem with the request",
+    "click_okay_to_fix": "Click OK button to fix.",
+    "warning": "Warning",
+    "you_do_not_have_permission_to_open_this_file": "You do not have permission to open this document!"
+
   }
 }

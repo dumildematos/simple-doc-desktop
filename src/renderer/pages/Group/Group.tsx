@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Avatar,
   Button,
@@ -18,20 +18,16 @@ import {
   Upload,
   Empty,
 } from 'antd';
-import { Link, useHistory, useParams, withRouter } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { BsPencil } from '@react-icons/all-files/bs/BsPencil';
 import { HiOutlineDocumentAdd } from '@react-icons/all-files/hi/HiOutlineDocumentAdd';
 import {
-  AntDesignOutlined,
-  CarryOutOutlined,
   DeleteFilled,
   DownOutlined,
   ExclamationCircleOutlined,
-  FileFilled,
   FileProtectOutlined,
   FileTextOutlined,
-  FormOutlined,
   SmileOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -48,14 +44,12 @@ import {
   onDeleteDocument,
 } from 'renderer/services/DocumentService';
 import { CreateDocument } from 'renderer/models/DocumentModel';
-import { ipcRenderer } from 'electron';
 import { useForm } from 'antd/lib/form/Form';
 import ImgCrop from 'antd-img-crop';
 import TextArea from 'antd/lib/input/TextArea';
-import menu from 'antd/lib/menu';
 import { TeamAddForm } from 'renderer/models/TeamModel';
 import { onEditTeam } from 'renderer/services/TeamsService';
-import { MessageShow } from 'renderer/utils/messages/Messages';
+import { MessageShow, RequestAlert } from 'renderer/utils/messages/Messages';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
@@ -66,7 +60,7 @@ const GroupContainer = styled.div`
   width: 100%;
   height: 100vh;
   padding: 50px;
-  background: ${(props: { theme: { cardBg: any } }) => props.theme.boxBg};
+  background ${(props) => props.theme.cardBg};
   margin: 0;
   .ant-row {
     &.main {
@@ -84,7 +78,7 @@ const GroupContainer = styled.div`
     }
     .ant-col {
       border-radius: 3px;
-      background: ${(props: { theme: { cardBg: any } }) => props.theme.cardBg};
+      background: ${(props) => props.theme.cardBg};
       &.main {
         height: 100%;
       }
@@ -96,8 +90,7 @@ const GroupContainer = styled.div`
       h4,
       h3,
       p {
-        color: ${(props: { theme: { cardTexColor: any } }) =>
-          props.theme.cardTexColor} !important;
+        color: ${(props) => props.theme.cardTexColor} !important;
       }
       p {
         font-size: 0.8rem;
@@ -158,29 +151,28 @@ const GroupContainer = styled.div`
 
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
-    background: ${(props: { theme: { modalBg: any } }) => props.theme.modalBg};
+    background: ${(props: { theme: { modalBg: any } }) => theme.modalBg};
     .ant-modal-header {
-      background: ${(props: { theme: { modalBg: any } }) =>
-        props.theme.modalBg};
+      background: ${(props: { theme: { modalBg: any } }) => theme.modalBg};
       border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
-        props.theme.modalInnerBorderColor};
+        theme.modalInnerBorderColor};
       .ant-modal-title {
         color: ${(props: { theme: { modalInputColor: any } }) =>
-          props.theme.modalInputColor} !important;
+          theme.modalInputColor} !important;
       }
     }
     .ant-modal-body {
       label {
         color: ${(props: { theme: { modalInputColor: any } }) =>
-          props.theme.modalInputColor} !important;
+          theme.modalInputColor} !important;
       }
       .ant-input {
         background: ${(props: { theme: { modalBgInput: any } }) =>
-          props.theme.modalBgInput} !important;
+          theme.modalBgInput} !important;
         border: ${(props: { theme: { modalInputBorder: any } }) =>
-          props.theme.modalInputBorder};
+          theme.modalInputBorder};
         color: ${(props: { theme: { modalInputColor: any } }) =>
-          props.theme.modalInputColor} !important;
+          theme.modalInputColor} !important;
       }
       .useTemplateBx {
         background: #fff;
@@ -188,7 +180,7 @@ const ModalLayout = styled(Modal)`
     }
     .ant-modal-footer {
       border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
-        props.theme.modalInnerBorderColor};
+        theme.modalInnerBorderColor};
       button.ant-btn.ant-btn-primary {
         background-color: var(--purple-1);
         border: none;
@@ -199,7 +191,7 @@ const ModalLayout = styled(Modal)`
 
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-export default function Group(props: any) {
+export default function Group({ theme, t }) {
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
   const { team, defineBackButton, defineDocument, defineTeam } =
@@ -222,8 +214,21 @@ export default function Group(props: any) {
 
   const [isModalSelectTypeDoc, setIsModalSelectTypeDoc] = useState(false);
 
-  const onSuccessCategoryList = () => {};
-  const onErrorategoryList = () => {};
+  const onSuccessCategoryList = (data) => {
+    if (data && data.status === 200) {
+    } else {
+      RequestAlert(
+        props?.t('comum.there_was_a_problem_with_the_request'),
+        props?.t('comum.click_okay_to_fix')
+      );
+    }
+  };
+  const onErrorategoryList = () => {
+    RequestAlert(
+      props?.t('comum.there_was_a_problem_with_the_request'),
+      props?.t('comum.click_okay_to_fix')
+    );
+  };
 
   const { data: lstCategory, refetch: getCategoryList } = onListCategory(
     onSuccessCategoryList,
@@ -233,19 +238,26 @@ export default function Group(props: any) {
 
   const onSuccessTemplate = (data: any) => {
     // console.log(data);
-    setTreeTemplate(
-      data?.data.content.map((template: { name: string; id: number }) => {
-        return {
-          title:
-            template.name.length >= 10
-              ? `${template.name.substring(0, template.name.length - 10)}...`
-              : template.name,
-          key: template.id,
-          icon: <FileTextOutlined />,
-          content: template.content,
-        };
-      })
-    );
+    if (data && data.status === 200) {
+      setTreeTemplate(
+        data?.data.content.map((template: { name: string; id: number }) => {
+          return {
+            title:
+              template.name.length >= 10
+                ? `${template.name.substring(0, template.name.length - 10)}...`
+                : template.name,
+            key: template.id,
+            icon: <FileTextOutlined />,
+            content: template.content,
+          };
+        })
+      );
+    } else {
+      RequestAlert(
+        props?.t('comum.there_was_a_problem_with_the_request'),
+        props?.t('comum.click_okay_to_fix')
+      );
+    }
   };
 
   const { refetch: getTemplateList } = onGetTemplates(
@@ -254,8 +266,22 @@ export default function Group(props: any) {
     currentCollapsedId
   );
 
-  const onDocumentListSuccess = () => {};
-  const onDocumentListError = () => {};
+  const onDocumentListSuccess = (data: any) => {
+    // eslint-disable-next-line no-empty
+    if (data && data.status === 200) {
+    } else {
+      RequestAlert(
+        props?.t('comum.there_was_a_problem_with_the_request'),
+        props?.t('comum.click_okay_to_fix')
+      );
+    }
+  };
+  const onDocumentListError = () => {
+    RequestAlert(
+      props?.t('comum.there_was_a_problem_with_the_request'),
+      props?.t('comum.click_okay_to_fix')
+    );
+  };
 
   const { data: documentList, refetch: refetchDocuments } = getDocumentsOfTeam(
     onDocumentListSuccess,
@@ -264,11 +290,13 @@ export default function Group(props: any) {
   );
 
   const onCreateDocumentSuccess = () => {
-    MessageShow('success', props.t('comum.successfully_created'));
+    MessageShow('success', t('comum.successfully_created'));
     refetchDocuments();
     setIsModalSelectTypeDoc(false);
   };
-  const onCreateDocumentError = () => {};
+  const onCreateDocumentError = () => {
+    MessageShow('error', t('comum.an_error_occurred_in_the_operation'));
+  };
 
   const { mutate: createDocument } = onCreateDocument(
     onCreateDocumentSuccess,
@@ -335,8 +363,8 @@ export default function Group(props: any) {
       }, 0);
     } else {
       notification.warning({
-        message: 'Alerta',
-        description: 'Você não possui permissão para abrir este documento',
+        message: t('comum.warning'),
+        description: t('comum.you_do_not_have_permission_to_open_this_file'),
       });
     }
   };
@@ -374,7 +402,7 @@ export default function Group(props: any) {
     onGetUserTemplates(onTempListSuccess, onTempListError, userTemplReqParams);
 
   const onDeleteSuccess = () => {
-    MessageShow('success', props.t('comum.successfully_deleted'));
+    MessageShow('success', t('comum.successfully_deleted'));
     refetchDocuments();
   };
   const onDeleteError = () => {};
@@ -388,17 +416,12 @@ export default function Group(props: any) {
   const openLocalFile = () => {
     // window.electron.ipcRenderer.openDialog();
   };
-  // window.electron.ipcRenderer.on('opened-file', (args) => {
-  //   console.log(args)
-  // });
+
 
   const onEmojiClick = (
     _event: any,
     emojiObject: React.SetStateAction<any>
   ) => {
-    // console.log(emojiObject);
-    // console.log(formEditTeam.getFieldValue('title'));
-    // console.log(formEditTeam);
     formEditTeam.setFieldsValue(
       formEditTeam.getFieldValue('title') + emojiObject.emoji
     );
@@ -461,12 +484,12 @@ export default function Group(props: any) {
   const documentMenuClick = (e: any, id: number) => {
     if (e.key === 'delete') {
       confirm({
-        title: props.t('comum.are_you_sure_delete_this_register'),
+        title: t('comum.are_you_sure_delete_this_register'),
         icon: <ExclamationCircleOutlined />,
-        content: props.t('comum.if_deleted_the_register_wont_be_recoverd'),
-        okText: props.t('comum.yes'),
+        content: t('comum.if_deleted_the_register_wont_be_recoverd'),
+        okText: t('comum.yes'),
         okType: 'danger',
-        cancelText: props.t('comum.no'),
+        cancelText: t('comum.no'),
         onOk() {
           deleteDocument({ docId: id, teamId: team.id });
         },
@@ -481,7 +504,7 @@ export default function Group(props: any) {
     <Menu onClick={(e) => documentMenuClick(e, id)}>
       {/* <Menu.Item key="1">Rename</Menu.Item> */}
       <Menu.Item key="delete" danger icon={<DeleteFilled />}>
-        {props.t('comum.delete')}
+        {t('comum.delete')}
       </Menu.Item>
     </Menu>
   );
@@ -499,7 +522,7 @@ export default function Group(props: any) {
   };
 
   return (
-    <GroupContainer theme={props.theme}>
+    <GroupContainer theme={theme}>
       <Row
         justify="space-between"
         className="main"
@@ -520,7 +543,7 @@ export default function Group(props: any) {
               style={{ height: 'auto' }}
             >
               <Col>
-                <h3>{props.t('comum.team_details')}</h3>
+                <h3>{t('comum.team_details')}</h3>
               </Col>
               <Col>
                 <Button
@@ -541,7 +564,7 @@ export default function Group(props: any) {
           </Row>
           <Row style={{ height: 'auto' }}>
             <Col span={24}>
-              <h3>{props.t('comum.members')}</h3>
+              <h3>{t('comum.members')}</h3>
             </Col>
             <Col span={24}>
               <Avatar.Group maxCount={6}>
@@ -578,20 +601,22 @@ export default function Group(props: any) {
                 }}
               >
                 <p>
-                  {props.t('comum.new_document')}&nbsp;
+                  {t('comum.new_document')}&nbsp;
                   <HiOutlineDocumentAdd />
                 </p>
               </Button>
             </Col>
           </Row>
           <Row style={{ height: 'auto', maxHeight: '90%', overflowY: 'auto' }}>
-            {documentList?.data.numberOfElements === 0 && (
-              <Col span={24}>
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-              </Col>
-            )}
+            {documentList?.status === 200 &&
+              documentList?.data.numberOfElements === 0 && (
+                <Col span={24}>
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                </Col>
+              )}
 
-            {documentList?.data.numberOfElements > 0 &&
+            {documentList?.status === 200 &&
+              documentList?.data.numberOfElements > 0 &&
               documentList?.data.content.map((document) => {
                 return (
                   <Dropdown
@@ -639,7 +664,7 @@ export default function Group(props: any) {
               setIsModalSelectTypeDoc(false);
             }}
           >
-            {props.t('comum.cancel')}
+            {t('comum.cancel')}
           </Button>,
           <Button
             type="primary"
@@ -660,7 +685,7 @@ export default function Group(props: any) {
               createDocument(form);
             }}
           >
-            {props.t('comum.create')}
+            {t('comum.create')}
           </Button>,
         ]}
         width={800}
@@ -684,8 +709,8 @@ export default function Group(props: any) {
                 onChange={onChangeDocumentType}
                 value={documenType}
               >
-                <Radio value="PUBLIC">{props.t('comum.public')}</Radio>
-                <Radio value="PRIVATE">{props.t('comum.private')}</Radio>
+                <Radio value="PUBLIC">{t('comum.public')}</Radio>
+                <Radio value="PRIVATE">{t('comum.private')}</Radio>
               </Radio.Group>
             </div>
             <div>
@@ -708,7 +733,7 @@ export default function Group(props: any) {
               style={{ height: '100%', overflow: 'auto' }}
               onChange={(e) => onChangeCollapse(e)}
             >
-              <Panel header={props.t('comum.my_templates')} key="0">
+              <Panel header={t('comum.my_templates')} key="0">
                 {/* {text} */}
                 {/* userTemplateList */}
                 <DirectoryTree
@@ -719,28 +744,29 @@ export default function Group(props: any) {
                   treeData={treeUserTemplate}
                 />
               </Panel>
-              {lstCategory?.data.content.map((item) => (
-                <Panel header={item.name} key={item.id}>
-                  <DirectoryTree
-                    multiple
-                    defaultExpandAll
-                    onSelect={onSelectTree}
-                    onExpand={onExpand}
-                    treeData={treeTemplate}
-                  />
-                </Panel>
-              ))}
+              {lstCategory?.status === 200 &&
+                lstCategory?.data.content.map((item) => (
+                  <Panel header={item.name} key={item.id}>
+                    <DirectoryTree
+                      multiple
+                      defaultExpandAll
+                      onSelect={onSelectTree}
+                      onExpand={onExpand}
+                      treeData={treeTemplate}
+                    />
+                  </Panel>
+                ))}
             </Collapse>
           </Col>
         </Row>
       </Modal>
 
       <ModalLayout
-        theme={props.theme}
+        theme={theme}
         visible={isModalEditTeam}
-        title={props.t('home.modal_create_team.create_new_team_work')}
-        okText={props.t('comum.create')}
-        cancelText={props.t('comum.cancel')}
+        title={t('home.modal_create_team.create_new_team_work')}
+        okText={t('comum.create')}
+        cancelText={t('comum.cancel')}
         onCancel={onCancelEditteam}
         onOk={() => {
           formEditTeam
@@ -777,12 +803,12 @@ export default function Group(props: any) {
             <Col flex="auto">
               <Form.Item
                 name="title"
-                label={props.t('home.modal_create_team.team_name')}
+                label={t('home.modal_create_team.team_name')}
                 initialValue={team.name}
                 rules={[
                   {
                     required: true,
-                    message: props.t('home.modal_create_team.required_field'),
+                    message: t('home.modal_create_team.required_field'),
                   },
                 ]}
               >
@@ -793,31 +819,27 @@ export default function Group(props: any) {
 
           <Form.Item
             name="type"
-            label={props.t('home.modal_create_team.team_visibility')}
+            label={t('home.modal_create_team.team_visibility')}
             initialValue={team.type}
             rules={[
               {
                 required: true,
-                message: props.t('home.modal_create_team.required_field'),
+                message: t('home.modal_create_team.required_field'),
               },
             ]}
           >
             <Radio.Group defaultValue="PRIVATE" buttonStyle="solid">
-              <Radio.Button value="PUBLIC">
-                {props.t('comum.public')}
-              </Radio.Button>
-              <Radio.Button value="PRIVATE">
-                {props.t('comum.private')}
-              </Radio.Button>
+              <Radio.Button value="PUBLIC">{t('comum.public')}</Radio.Button>
+              <Radio.Button value="PRIVATE">{t('comum.private')}</Radio.Button>
             </Radio.Group>
           </Form.Item>
           <Form.Item
             name="banner"
-            label={props.t('home.modal_create_team.image_cover')}
+            label={t('home.modal_create_team.image_cover')}
             rules={[
               {
                 required: !(bannerInput.length > 0),
-                message: props.t('home.modal_create_team.required_field'),
+                message: t('home.modal_create_team.required_field'),
               },
             ]}
           >
@@ -834,19 +856,17 @@ export default function Group(props: any) {
           </Form.Item>
           <Form.Item
             name="description"
-            label={props.t('comum.description')}
+            label={t('comum.description')}
             initialValue={team.description}
             rules={[
               {
                 required: true,
-                message: props.t('home.modal_create_team.required_field'),
+                message: t('home.modal_create_team.required_field'),
               },
             ]}
           >
             <TextArea
-              placeholder={props.t(
-                'home.modal_create_team.write_teams_drescription'
-              )}
+              placeholder={t('home.modal_create_team.write_teams_drescription')}
               allowClear
               showCount
               maxLength={400}
