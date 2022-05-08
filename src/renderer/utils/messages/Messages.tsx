@@ -6,6 +6,7 @@ const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
 const mensagem = (type: string, text: string) => {
   message.destroy();
+  message[type](text, 0);
   setTimeout(() => {
     message.destroy();
   }, 2500);
