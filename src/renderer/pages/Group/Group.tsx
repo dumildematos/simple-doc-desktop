@@ -151,28 +151,29 @@ const GroupContainer = styled.div`
 
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
-    background: ${(props: { theme: { modalBg: any } }) => theme.modalBg};
+    background: ${(props) => props.theme.modalBg};
     .ant-modal-header {
-      background: ${(props: { theme: { modalBg: any } }) => theme.modalBg};
+      background: ${(props: { theme: { modalBg: any } }) =>
+        props.theme.modalBg};
       border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
-        theme.modalInnerBorderColor};
+        props.theme.modalInnerBorderColor};
       .ant-modal-title {
         color: ${(props: { theme: { modalInputColor: any } }) =>
-          theme.modalInputColor} !important;
+          props.theme.modalInputColor} !important;
       }
     }
     .ant-modal-body {
       label {
         color: ${(props: { theme: { modalInputColor: any } }) =>
-          theme.modalInputColor} !important;
+          props.theme.modalInputColor} !important;
       }
       .ant-input {
         background: ${(props: { theme: { modalBgInput: any } }) =>
-          theme.modalBgInput} !important;
+          props.theme.modalBgInput} !important;
         border: ${(props: { theme: { modalInputBorder: any } }) =>
-          theme.modalInputBorder};
+          props.theme.modalInputBorder};
         color: ${(props: { theme: { modalInputColor: any } }) =>
-          theme.modalInputColor} !important;
+          props.theme.modalInputColor} !important;
       }
       .useTemplateBx {
         background: #fff;
@@ -180,7 +181,7 @@ const ModalLayout = styled(Modal)`
     }
     .ant-modal-footer {
       border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
-        theme.modalInnerBorderColor};
+        props.theme.modalInnerBorderColor};
       button.ant-btn.ant-btn-primary {
         background-color: var(--purple-1);
         border: none;
@@ -218,15 +219,15 @@ export default function Group({ theme, t }) {
     if (data && data.status === 200) {
     } else {
       RequestAlert(
-        props?.t('comum.there_was_a_problem_with_the_request'),
-        props?.t('comum.click_okay_to_fix')
+        t('comum.there_was_a_problem_with_the_request'),
+        t('comum.click_okay_to_fix')
       );
     }
   };
   const onErrorategoryList = () => {
     RequestAlert(
-      props?.t('comum.there_was_a_problem_with_the_request'),
-      props?.t('comum.click_okay_to_fix')
+      t('comum.there_was_a_problem_with_the_request'),
+      t('comum.click_okay_to_fix')
     );
   };
 
@@ -254,8 +255,8 @@ export default function Group({ theme, t }) {
       );
     } else {
       RequestAlert(
-        props?.t('comum.there_was_a_problem_with_the_request'),
-        props?.t('comum.click_okay_to_fix')
+        t('comum.there_was_a_problem_with_the_request'),
+        t('comum.click_okay_to_fix')
       );
     }
   };
@@ -268,19 +269,23 @@ export default function Group({ theme, t }) {
 
   const onDocumentListSuccess = (data: any) => {
     // eslint-disable-next-line no-empty
-    if (data && data.status === 200) {
-    } else {
-      RequestAlert(
-        props?.t('comum.there_was_a_problem_with_the_request'),
-        props?.t('comum.click_okay_to_fix')
-      );
+    if (data) {
+      if (data.status === 200) {
+      } else {
+        RequestAlert(
+          t('comum.there_was_a_problem_with_the_request'),
+          t('comum.click_okay_to_fix')
+        );
+      }
     }
   };
-  const onDocumentListError = () => {
-    RequestAlert(
-      props?.t('comum.there_was_a_problem_with_the_request'),
-      props?.t('comum.click_okay_to_fix')
-    );
+  const onDocumentListError = (error: any) => {
+    if (error) {
+      RequestAlert(
+        t('comum.there_was_a_problem_with_the_request'),
+        t('comum.click_okay_to_fix')
+      );
+    }
   };
 
   const { data: documentList, refetch: refetchDocuments } = getDocumentsOfTeam(
@@ -410,12 +415,6 @@ export default function Group({ theme, t }) {
     onDeleteSuccess,
     onDeleteError
   );
-
-  const handleDocRightClick = (document) => {};
-
-  const openLocalFile = () => {
-    // window.electron.ipcRenderer.openDialog();
-  };
 
 
   const onEmojiClick = (
