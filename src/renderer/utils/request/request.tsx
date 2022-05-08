@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-const client = axios.create({ baseURL: 'http://localhost:8080/api' });
+const springBootClient = axios.create({ baseURL: 'http://localhost:8080/api' });
+const mongoClient = axios.create({ baseURL: 'http://localhost:8002' });
 
 export const Request = ({ ...options }) => {
-  const accessToken = localStorage.getItem('access_token');
-
-  client.defaults.headers = {
+  springBootClient.defaults.headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
   };
@@ -15,7 +14,21 @@ export const Request = ({ ...options }) => {
     return error;
   };
 
-  return client(options).then(onSuccess).catch(onError);
+  return springBootClient(options).then(onSuccess).catch(onError);
+};
+
+export const RequestMongo = ({ ...options }) => {
+  mongoClient.defaults.headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+  };
+
+  const onSuccess = (response: any) => response;
+  const onError = (error: any) => {
+    return error;
+  };
+
+  return mongoClient(options).then(onSuccess).catch(onError);
 };
 
 export const RequestVersion = 'v1';

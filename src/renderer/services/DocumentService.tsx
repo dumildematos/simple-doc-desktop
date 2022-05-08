@@ -3,7 +3,7 @@ import {
   AddContributorForm,
   CreateDocument,
 } from 'renderer/models/DocumentModel';
-import { Request, RequestVersion } from '../utils/request/request';
+import { Request, RequestMongo, RequestVersion } from '../utils/request/request';
 
 const createDocument = (data: CreateDocument) => {
   const token = localStorage.getItem('access_token');
@@ -43,6 +43,17 @@ const deleteDocumentRequest = (data: any) => {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const deleteMongoDocumentRequest = (data: any) => {
+  return RequestMongo({
+    url: `/document/${Number(data.docId)}`,
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
     },
   });
 };
@@ -99,6 +110,30 @@ export const onDeleteDocument = (onSuccess: () => void, onError: () => void) => 
   const queryClient = useQueryClient();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(deleteDocumentRequest, {
+    onMutate: async (newteam) => {
+      await queryClient.cancelQueries('list-teams-document');
+      const previousTeamList = queryClient.getQueryData('list-teams-document');
+      queryClient.setQueryData('list-teams-document', (oldQueryData) => {
+        console.log(oldQueryData, newteam);
+        // return {
+        //   ...oldQueryData,
+        //   data: [...oldQueryData.data, newteam],
+        // };
+      });
+      return {
+        previousTeamList,
+      };
+    },
+    onSuccess,
+    onError,
+  });
+};
+
+export const onDeleteDocumentMongo = (onSuccess: () => void, onError: () => void) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(deleteMongoDocumentRequest, {
     onMutate: async (newteam) => {
       await queryClient.cancelQueries('list-teams-document');
       const previousTeamList = queryClient.getQueryData('list-teams-document');

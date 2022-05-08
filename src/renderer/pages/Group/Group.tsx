@@ -42,6 +42,7 @@ import {
   getDocumentsOfTeam,
   onCreateDocument,
   onDeleteDocument,
+  onDeleteDocumentMongo,
 } from 'renderer/services/DocumentService';
 import { CreateDocument } from 'renderer/models/DocumentModel';
 import { useForm } from 'antd/lib/form/Form';
@@ -416,6 +417,12 @@ export default function Group({ theme, t }) {
     onDeleteError
   );
 
+  const onSuccessDeleteFromMongo = () => {};
+  const onErrorDeleteFromMongo = () => {};
+  const { mutate: deleteMongoDocument } = onDeleteDocumentMongo(
+    onSuccessDeleteFromMongo,
+    onErrorDeleteFromMongo
+  );
 
   const onEmojiClick = (
     _event: any,
@@ -491,6 +498,7 @@ export default function Group({ theme, t }) {
         cancelText: t('comum.no'),
         onOk() {
           deleteDocument({ docId: id, teamId: team.id });
+          deleteMongoDocument({ docId: id });
         },
         onCancel() {
           console.log('Cancel');
