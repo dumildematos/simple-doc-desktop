@@ -13,6 +13,7 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import { MainContext, MainContextProvider } from './contexts/MainContext';
+import SignUp from './pages/SignUp/SignUp';
 
 const LightTheme = {
   boxBg: '#dee3ed',
@@ -121,6 +122,9 @@ export default function App() {
                 { !accessToken ? (
                   <Login />
                 ) : (<Redirect to="/home" />) }
+              </Route>
+              <Route exact path={['/', '/index.html', '/signup', ""]}>
+                  <SignUp />
               </Route>
               <Route exact path={['/home', '/index.html', `${location.pathname}`]}>
                 <Home theme={themes[Apptheme]} setTheme={setTheme} />

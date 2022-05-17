@@ -9,6 +9,7 @@ import {
   Checkbox,
   Image,
   Alert,
+  DatePicker,
 } from 'antd';
 import styled from '@xstyled/styled-components';
 import { FaLinkedinIn } from '@react-icons/all-files/fa/FaLinkedinIn';
@@ -155,7 +156,7 @@ const FooterBox = styled.footerBox`
 
 type RequiredMark = boolean | 'optional';
 
-const Login = (props: any) => {
+const SignUp = (props: any) => {
   const [form] = Form.useForm();
   const history = useHistory();
   const {
@@ -187,7 +188,17 @@ const Login = (props: any) => {
       definedEditorIsOpened(false);
       defineDocSideBar(false);
       defineCurrentPath('');
-      defineUser({});
+      defineUser({
+        authProvider: '',
+        avatar: '',
+        birthdate: '',
+        firstname: '',
+        id: 0,
+        lastname: '',
+        roles: [],
+        teams: [],
+        username: '',
+      });
       defineAcesstoken(undefined);
       defineRefreshtoken(undefined);
       // window.location.href = '/';
@@ -200,7 +211,7 @@ const Login = (props: any) => {
       // history.push(`${location.pathname}`);
       // document.location.reload();
       // document.location.replace(document.location.origin);
-      //setTimeout(() => history.push('/'), 10);
+      // setTimeout(() => history.push('/'), 10);
     }
   };
   const onDetailError = () => {};
@@ -230,13 +241,6 @@ const Login = (props: any) => {
     isError: loginError,
     isLoading,
   } = UserLoginService(onLoginSuccess, onLoginError);
-
-  const { data: userDetail, isLoading: isLoadingDetails } = getUserDataService(
-    onDetailSuccess,
-    onDetailError,
-    hasAcessToken,
-    data
-  );
 
   if (isLoading) {
     MessageShow('loading', 'Action in progress');
@@ -287,15 +291,12 @@ const Login = (props: any) => {
                               Simple <b>Doc</b>
                             </h1>
                           </header>
-                          <p>
-                            Documente seus produtos, serviços, processos e muito
-                            de forma fácil e ágil.
-                          </p>
+                          <h3>Criar Conta</h3>
                         </div>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col span={16}>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                      <Col span={24}>
                         <Form
                           layout="vertical"
                           initialValues={{ remember: true }}
@@ -303,6 +304,32 @@ const Login = (props: any) => {
                           onFinishFailed={onFinishFailed}
                           autoComplete="off"
                         >
+                          <Form.Item
+                            label="First/Last Name"
+                            style={{ marginBottom: 0 }}
+                          >
+                            <Form.Item
+                              name="firstName"
+                              rules={[{ required: true }]}
+                              style={{
+                                display: 'inline-block',
+                                width: 'calc(50% - 8px)',
+                              }}
+                            >
+                              <Input placeholder="Input birth year" />
+                            </Form.Item>
+                            <Form.Item
+                              name="lasName"
+                              rules={[{ required: true }]}
+                              style={{
+                                display: 'inline-block',
+                                width: 'calc(50% - 8px)',
+                                margin: '0 8px',
+                              }}
+                            >
+                              <Input placeholder="LastName" />
+                            </Form.Item>
+                          </Form.Item>
                           <Form.Item
                             label="Username"
                             name="username"
@@ -316,6 +343,12 @@ const Login = (props: any) => {
                             <Input />
                           </Form.Item>
                           <Form.Item
+                            label="birthday"
+                            name="date-picker"
+                          >
+                            <DatePicker />
+                          </Form.Item>
+                          <Form.Item
                             label="Palavra-passe:"
                             name="password"
                             rules={[
@@ -327,10 +360,18 @@ const Login = (props: any) => {
                           >
                             <Input.Password />
                           </Form.Item>
-                          <Form.Item name="remember" valuePropName="checked">
-                            <Checkbox>Remember me</Checkbox>
+                          <Form.Item
+                            label="Confirmar Palavra-passe:"
+                            name="confirmPassword"
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Please input your password!',
+                              },
+                            ]}
+                          >
+                            <Input.Password />
                           </Form.Item>
-
                           <Form.Item>
                             <Button
                               className="btnLogin"
@@ -387,10 +428,10 @@ const Login = (props: any) => {
                           <Button
                             type="link"
                             onClick={() => {
-                              history.push('/signup');
+                              history.push('/login');
                             }}
                           >
-                            Registra-se
+                            Login
                           </Button>
                         </span>
                       </Col>
@@ -442,4 +483,4 @@ const Login = (props: any) => {
   );
 };
 
-export default Login;
+export default SignUp;
