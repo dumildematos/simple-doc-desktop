@@ -106,7 +106,6 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default function App() {
-  const { editorOpened, isRouted, theme  } = useContext(MainContext);
   const [Apptheme, setTheme] = useState('light');
   const accessToken = localStorage.getItem('access_token');
   const queryClient = new QueryClient();
@@ -123,7 +122,7 @@ export default function App() {
                   <Login />
                 ) : (<Redirect to="/home" />) }
               </Route>
-              <Route exact path={['/', '/index.html', '/signup', ""]}>
+              <Route exact path={['/index.html', '/signup', ""]}>
                   <SignUp />
               </Route>
               <Route exact path={['/home', '/index.html', `${location.pathname}`]}>

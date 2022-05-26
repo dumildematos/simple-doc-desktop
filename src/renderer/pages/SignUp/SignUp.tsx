@@ -304,12 +304,10 @@ const SignUp = (props: any) => {
                           onFinishFailed={onFinishFailed}
                           autoComplete="off"
                         >
-                          <Form.Item
-                            label="First/Last Name"
-                            style={{ marginBottom: 0 }}
-                          >
+                          <Form.Item style={{ marginBottom: 0 }}>
                             <Form.Item
                               name="firstName"
+                              label="First Name"
                               rules={[{ required: true }]}
                               style={{
                                 display: 'inline-block',
@@ -320,6 +318,7 @@ const SignUp = (props: any) => {
                             </Form.Item>
                             <Form.Item
                               name="lasName"
+                              label="Last Name"
                               rules={[{ required: true }]}
                               style={{
                                 display: 'inline-block',
@@ -342,12 +341,33 @@ const SignUp = (props: any) => {
                           >
                             <Input />
                           </Form.Item>
-                          <Form.Item
-                            label="birthday"
-                            name="date-picker"
-                          >
-                            <DatePicker />
+
+                          <Form.Item style={{ marginBottom: 0 }}>
+                            <Form.Item
+                              name="firstName"
+                              label="Country"
+                              rules={[{ required: true }]}
+                              style={{
+                                display: 'inline-block',
+                                width: 'calc(50% - 8px)',
+                              }}
+                            >
+                              <DatePicker />
+                            </Form.Item>
+                            <Form.Item
+                              name="lasName"
+                              label="Birthday"
+                              rules={[{ required: true }]}
+                              style={{
+                                display: 'inline-block',
+                                width: 'calc(50% - 8px)',
+                                margin: '0 8px',
+                              }}
+                            >
+                              <DatePicker />
+                            </Form.Item>
                           </Form.Item>
+
                           <Form.Item
                             label="Palavra-passe:"
                             name="password"

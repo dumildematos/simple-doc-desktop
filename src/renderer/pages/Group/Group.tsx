@@ -41,6 +41,7 @@ import {
 import {
   getDocumentsOfTeam,
   onCreateDocument,
+  onCreateDocumentMongo,
   onDeleteDocument,
   onDeleteDocumentMongo,
 } from 'renderer/services/DocumentService';
@@ -295,11 +296,14 @@ export default function Group({ theme, t }) {
     Number(teamId)
   );
 
-  const onCreateDocumentSuccess = () => {
-    MessageShow('success', t('comum.successfully_created'));
-    refetchDocuments();
-    setIsModalSelectTypeDoc(false);
+  const onCreateDocumentSuccess = async (data: any) => {
+    const docCreated = {
+      id: data.data.id,
+      data: data.data.content,
+    };
+    await saveOnMongo(docCreated);
   };
+
   const onCreateDocumentError = () => {
     MessageShow('error', t('comum.an_error_occurred_in_the_operation'));
   };
@@ -309,7 +313,18 @@ export default function Group({ theme, t }) {
     onCreateDocumentError
   );
 
-  console.log(documentList);
+  const onCreateDocOnMongoSuccess = (data: any) => {
+    MessageShow('success', t('comum.successfully_created'));
+    refetchDocuments();
+    setIsModalSelectTypeDoc(false);
+  };
+
+  const { mutate: saveOnMongo } = onCreateDocumentMongo(
+    onCreateDocOnMongoSuccess,
+    onCreateDocumentError
+  );
+
+
 
   const modalSelecTypeHandleOk = () => {
     setIsModalSelectTypeDoc(false);
@@ -402,10 +417,9 @@ export default function Group({ theme, t }) {
       })
     );
   };
-  const onTempListError = (error: any) => {};
 
-  const { data: userTemplateList, refetch: refetchUserTemplates } =
-    onGetUserTemplates(onTempListSuccess, onTempListError, userTemplReqParams);
+  // const { data: userTemplateList, refetch: refetchUserTemplates } =
+  //   onGetUserTemplates(onTempListSuccess, onTempListError, userTemplReqParams);
 
   const onDeleteSuccess = () => {
     MessageShow('success', t('comum.successfully_deleted'));
@@ -677,18 +691,19 @@ export default function Group({ theme, t }) {
             type="primary"
             disabled={selectedTemplate.length === 0}
             onClick={() => {
-              console.log(selectedTemplate);
+              console.log(selectedTemplate[0]?.node?.content);
               // console.log(teamId);
 
               const form: CreateDocument = {
                 name: documentName,
-                content: '{[]}',
+                content: selectedTemplate[0]?.node?.content,
                 type: documenType,
                 teamId: Number(teamId),
                 templateId: selectedTemplate?.node
                   ? selectedTemplate.node.key
                   : null,
               };
+              console.log(form);
               createDocument(form);
             }}
           >

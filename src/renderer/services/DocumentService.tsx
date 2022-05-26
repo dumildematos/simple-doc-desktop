@@ -58,6 +58,18 @@ const deleteMongoDocumentRequest = (data: any) => {
   });
 };
 
+const CreateDocumentMDBRequest = (data: any) => {
+  return RequestMongo({
+    url: `/document`,
+    method: 'POST',
+    data,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+};
+
 const listDcomentsByTeam = (teamId: number) => {
   const token = localStorage.getItem('access_token');
   return Request({
@@ -94,6 +106,17 @@ export const onCreateDocument = (
     onError,
   });
 };
+
+export const onCreateDocumentMongo = (
+  onSuccess: () => void,
+  onError: () => void
+) => {
+  return useMutation(CreateDocumentMDBRequest, {
+    onSuccess,
+    onError,
+  });
+};
+
 
 export const onAddContributor = (
   onSuccess: () => void,
