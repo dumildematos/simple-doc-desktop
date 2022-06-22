@@ -97,6 +97,10 @@ export default function Home({ theme, setTheme }) {
                         onClick: toggle,
                       }
                     )}
+                    {/* <button onClick={() => {
+                      Login
+                    })}>Ir pra login</button> */}
+
                     {
                       backButton?.state && (
                         <PageHeader

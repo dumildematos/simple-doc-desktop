@@ -19,7 +19,7 @@ const listCategory = () => {
 export const onListCategory = (
   onSuccess: () => void,
   onError: () => void,
-  enabled
+  enabled: boolean
 ) => {
   return useQuery('list-category', listCategory, {
     onSuccess,

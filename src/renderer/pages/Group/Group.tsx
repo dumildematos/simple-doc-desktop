@@ -153,37 +153,30 @@ const GroupContainer = styled.div`
 
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
-    background: ${(props) => props.theme.modalBg};
+    /*Group*/
+    background: ${(props) => props?.theme.modalBg};
     .ant-modal-header {
-      background: ${(props: { theme: { modalBg: any } }) =>
-        props.theme.modalBg};
-      border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
-        props.theme.modalInnerBorderColor};
+      background: ${(props) => props?.theme.modalBg};
+      border-color: ${(props) => props?.theme.modalInnerBorderColor};
       .ant-modal-title {
-        color: ${(props: { theme: { modalInputColor: any } }) =>
-          props.theme.modalInputColor} !important;
+        color: ${(props) => props?.theme.modalInputColor} !important;
       }
     }
     .ant-modal-body {
       label {
-        color: ${(props: { theme: { modalInputColor: any } }) =>
-          props.theme.modalInputColor} !important;
+        color: ${(props) => props?.theme.modalInputColor} !important;
       }
       .ant-input {
-        background: ${(props: { theme: { modalBgInput: any } }) =>
-          props.theme.modalBgInput} !important;
-        border: ${(props: { theme: { modalInputBorder: any } }) =>
-          props.theme.modalInputBorder};
-        color: ${(props: { theme: { modalInputColor: any } }) =>
-          props.theme.modalInputColor} !important;
+        background: ${(props) => props?.theme.modalBgInput} !important;
+        border: ${(props) => props?.theme.modalInputBorder};
+        color: ${(props) => props?.theme.modalInputColor} !important;
       }
       .useTemplateBx {
         background: #fff;
       }
     }
     .ant-modal-footer {
-      border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
-        props.theme.modalInnerBorderColor};
+      border-color: ${(props) => props?.theme.modalInnerBorderColor};
       button.ant-btn.ant-btn-primary {
         background-color: var(--purple-1);
         border: none;
@@ -195,6 +188,7 @@ const ModalLayout = styled(Modal)`
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 export default function Group({ theme, t }) {
+  console.log(theme)
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
   const { team, defineBackButton, defineDocument, defineTeam } =
@@ -251,7 +245,7 @@ export default function Group({ theme, t }) {
                 : template.name,
             key: template.id,
             icon: <FileTextOutlined />,
-            content: template.content,
+            content: template?.content,
           };
         })
       );

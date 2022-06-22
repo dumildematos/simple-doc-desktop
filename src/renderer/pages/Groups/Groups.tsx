@@ -50,6 +50,7 @@ const { TextArea } = Input;
 const { confirm } = Modal;
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
+    /*Groups*/
     background: ${(props: { theme: { modalBg: any } }) => props.theme.modalBg};
     .ant-modal-header {
       background: ${(props: { theme: { modalBg: any } }) =>

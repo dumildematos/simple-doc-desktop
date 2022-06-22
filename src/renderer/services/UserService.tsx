@@ -1,8 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { LoginForm, UserRegistrationModel } from 'renderer/models/UserModels';
 import { Request, RequestVersion } from '../utils/request/request';
 
 const loginUserRequest = (loginForm: LoginForm) => {
   return Request({ url: '/login', method: 'POST', data: loginForm });
+};
+
+const userRegistrationRequest = (registrationForm: UserRegistrationModel) => {
+  return Request({
+    url: `/${RequestVersion}/user/register`,
+    method: 'POST',
+    data: registrationForm,
+  });
 };
 
 const getCurrentUser = (token) => {
@@ -23,6 +32,17 @@ export const UserLoginService = (
   onError: (error: any) => void
 ) => {
   return useMutation(loginUserRequest, {
+    onSuccess,
+    onError,
+  });
+};
+
+export const onRegistUser = (
+  onSuccess: (data: any) => void,
+  onError: (error: any) => void
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(userRegistrationRequest, {
     onSuccess,
     onError,
   });

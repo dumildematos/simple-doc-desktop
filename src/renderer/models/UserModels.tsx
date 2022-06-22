@@ -24,3 +24,14 @@ export type Team = {
   name: string;
   description: string;
 };
+
+export type UserRegistrationModel = {
+  firstname: string;
+  lastname: string;
+  username: string;
+  birthday: string;
+  password: string;
+  country: string;
+  phonenumber: string;
+  role: string;
+};

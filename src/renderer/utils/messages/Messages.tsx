@@ -27,7 +27,7 @@ export function RequestAlert(title: string, description: string) {
     ),
     onOk() {
       localStorage.clear();
-      window.location.href = '/';
+      window.electron.ipcRenderer.reloadWindow();
     },
   });
 }

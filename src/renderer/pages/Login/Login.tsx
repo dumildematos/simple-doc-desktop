@@ -153,11 +153,11 @@ const FooterBox = styled.footerBox`
   background: var(--white-1);
 `;
 
-type RequiredMark = boolean | 'optional';
-
 const Login = (props: any) => {
   const [form] = Form.useForm();
+
   const history = useHistory();
+
   const {
     defineRoutedState,
     defineAcesstoken,
@@ -170,6 +170,10 @@ const Login = (props: any) => {
   } = useContext(MainContext);
   const [isLoginError, setIsLoginError] = useState(false);
   const hasAcessToken = localStorage.getItem('access_token');
+
+  const goToLogin = () => {
+    history.push('/login');
+  };
 
   const onDetailSuccess = (data: any) => {
     if (data?.status === 200) {
@@ -441,5 +445,11 @@ const Login = (props: any) => {
     </>
   );
 };
+
+// export const goToLogin = () => {
+//   // eslint-disable-next-line react-hooks/rules-of-hooks
+//   const history = useHistory();
+//   history.push('/login');
+// };
 
 export default Login;

@@ -272,7 +272,7 @@ export default function EditableDocPage({ theme , t }) {
 
   return (
     <>
-      <EditorContainer>
+      <EditorContainer theme={theme}>
         <Content
           className="site-layout-background"
           style={{

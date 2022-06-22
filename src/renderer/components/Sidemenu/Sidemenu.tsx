@@ -60,17 +60,22 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     }
 
     if (e.key === 'logout') {
-      defineRoutedState(false);
-      definePageInfo({});
-      definedEditorIsOpened(false);
-      defineDocSideBar(false);
-      defineCurrentPath('');
-      defineUser({});
-      defineAcesstoken(undefined);
-      defineRefreshtoken(undefined);
+      // defineRoutedState(false);
+      // definePageInfo({});
+      // definedEditorIsOpened(false);
+      // defineDocSideBar(false);
+      // defineCurrentPath('');
+      // defineUser({});
+      // defineAcesstoken(undefined);
+      // defineRefreshtoken(undefined);
+      // history.push('/login');
       localStorage.clear();
+      document.location.reload();
+      // history.push('/');
+      //window.electron.ipcRenderer.reloadWindow();
+      // window.location.reload();
       setTimeout(() => {
-        window.location.href = '/';
+        // window.location.href = '/';
         // history.push('/');
         // history.push(`${location.pathname}`);
         // window.location.href = window.location.origin;

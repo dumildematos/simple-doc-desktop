@@ -106,9 +106,15 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default function App() {
+
   const [Apptheme, setTheme] = useState('light');
+  const { theme  } = useContext(MainContext);
+  const [goToLogin, setGoToLogin] = useState();
   const accessToken = localStorage.getItem('access_token');
   const queryClient = new QueryClient();
+
+  console.log(themes[Apptheme]);
+  console.log(Apptheme);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -119,14 +125,14 @@ export default function App() {
             <Switch>
               <Route exact path={['/', '/index.html', '/login', "", `${location.pathname}`]}>
                 { !accessToken ? (
-                  <Login />
+                  <Login setGoToLogin={setGoToLogin} />
                 ) : (<Redirect to="/home" />) }
               </Route>
-              <Route exact path={['/index.html', '/signup', ""]}>
+              <Route exact path={['/signup', `${location.pathname}`]}>
                   <SignUp />
               </Route>
               <Route exact path={['/home', '/index.html', `${location.pathname}`]}>
-                <Home theme={themes[Apptheme]} setTheme={setTheme} />
+                <Home theme={theme} setTheme={setTheme} />
               </Route>
 
             </Switch>

@@ -13,6 +13,7 @@ const ModalContainer = styled(Modal)`
     height: 100% !important;
   }
   .ant-modal-content {
+    /*ModalSettings*/
     height: 95% !important;
     background: ${(props) => props.theme.modalBg};
     .ant-modal-header {
@@ -35,7 +36,8 @@ const ModalContainer = styled(Modal)`
       .ant-tabs.ant-tabs-left.ant-tabs-small.ant-tabs-card {
       }
       .ant-tabs-content-holder {
-        border-color: ${(props) => props.theme.modalInnerBorderColor} !important;
+        border-color: ${(props) =>
+          props.theme.modalInnerBorderColor} !important;
       }
     }
     .ant-modal-footer {
@@ -46,7 +48,6 @@ const ModalContainer = styled(Modal)`
       }
     }
   }
-
 `;
 
 const optionsWithDisabled = [
@@ -64,7 +65,6 @@ export default function ModalSettings({
   const { i18n } = useTranslation();
   const { defineTheme } = useContext(MainContext);
   const [settingTheme, setSettingTheme] = useState({});
-  console.log(theme);
   const showModal = () => {
     setSettingModal({
       loading: false,
@@ -103,7 +103,8 @@ export default function ModalSettings({
 
   return (
     <ModalContainer
-      visible={settingModal.visible}
+      theme={theme}
+      visible={settingModal?.visible}
       title={t('home.settings.setting')}
       onOk={handleOk}
       onCancel={handleCancel}

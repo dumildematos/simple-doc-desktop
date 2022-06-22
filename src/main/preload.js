@@ -5,11 +5,14 @@ contextBridge.exposeInMainWorld('electron', {
     myPing() {
       ipcRenderer.send('ipc-example', 'ping');
     },
+    reloadWindow() {
+      ipcRenderer.send('reload-window');
+    },
     openDialog() {
       ipcRenderer.send('open-file-dialog');
     },
     on(channel, func) {
-      const validChannels = ['ipc-example','opened-file'];
+      const validChannels = ['ipc-example', 'opened-file'];
       if (validChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`
         ipcRenderer.on(channel, (event, ...args) => func(...args));

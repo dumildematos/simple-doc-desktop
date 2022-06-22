@@ -7,6 +7,7 @@ import {
   Button,
   Input,
   Checkbox,
+  Select,
   Image,
   Alert,
   DatePicker,
@@ -18,15 +19,20 @@ import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
 import { useHistory } from 'react-router-dom';
 import {
   getUserDataService,
+  onRegistUser,
   UserLoginService,
 } from 'renderer/services/UserService';
-import { MessageShow } from 'renderer/utils/messages/Messages';
+import { MessageShow, RequestAlert } from 'renderer/utils/messages/Messages';
 import { useContext, useState } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
-import { LoginForm } from 'renderer/models/UserModels';
+import { LoginForm, UserRegistrationModel } from 'renderer/models/UserModels';
 import folder1 from './undraw_Add_notes_re_ln36.svg';
+import { onListCoutries } from 'renderer/services/CountryService';
+import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 
 const { Content } = Layout;
+const { Option } = Select;
 
 const LoginBox = styled.divBox`
   margin-top: 15%;
@@ -149,119 +155,69 @@ const FolderSlider = styled.divBox`
     }
   }
 `;
+const dateFormat = 'DD/MM/YYYY';
 
 const FooterBox = styled.footerBox`
   background: var(--white-1);
 `;
 
-type RequiredMark = boolean | 'optional';
-
-const SignUp = (props: any) => {
+const SignUp = () => {
   const [form] = Form.useForm();
   const history = useHistory();
-  const {
-    defineRoutedState,
-    defineAcesstoken,
-    definePageInfo,
-    definedEditorIsOpened,
-    defineRefreshtoken,
-    defineUser,
-    defineCurrentPath,
-    defineDocSideBar,
-  } = useContext(MainContext);
+  const { t, i18n } = useTranslation();
+
   const [isLoginError, setIsLoginError] = useState(false);
-  const hasAcessToken = localStorage.getItem('access_token');
 
-  const onDetailSuccess = (data: any) => {
-    if (data?.status === 200) {
-      localStorage.setItem('user', JSON.stringify(data.data));
-      localStorage.setItem('hasLogin', JSON.stringify(true));
-      setTimeout(() => {
-        // history.push('/home');
-        // history.push(`${location.pathname}`)
-        document.location.reload();
-      }, 2000);
+  const onSuccessListCountries = (data: any) => {
+    // eslint-disable-next-line no-empty
+    if (data && data.status === 200) {
+      console.log(data);
     } else {
-      localStorage.clear();
-      defineRoutedState(false);
-      definePageInfo({});
-      definedEditorIsOpened(false);
-      defineDocSideBar(false);
-      defineCurrentPath('');
-      defineUser({
-        authProvider: '',
-        avatar: '',
-        birthdate: '',
-        firstname: '',
-        id: 0,
-        lastname: '',
-        roles: [],
-        teams: [],
-        username: '',
-      });
-      defineAcesstoken(undefined);
-      defineRefreshtoken(undefined);
-      // window.location.href = '/';
-      setTimeout(() => {
-        // history.push('/home');
-        history.push(`${location.pathname}`);
-        window.location.href = window.location.origin;
-        // document.location.reload();
-      }, 2000);
-      // history.push(`${location.pathname}`);
-      // document.location.reload();
-      // document.location.replace(document.location.origin);
-      // setTimeout(() => history.push('/'), 10);
-    }
-  };
-  const onDetailError = () => {};
-
-  const onLoginSuccess = (data: any) => {
-    if (data?.data.status === 200) {
-      const accessToken = data?.data?.access_token;
-      const refreshToken = data?.data?.refresh_token;
-      if (accessToken && refreshToken) {
-        localStorage.setItem('access_token', accessToken);
-        localStorage.setItem('refresh_token', refreshToken);
-        defineAcesstoken(accessToken);
-      }
-      setIsLoginError(false);
-    } else {
-      setIsLoginError(true);
-      MessageShow('error', 'Action in progress');
+      RequestAlert(
+        t('comum.there_was_a_problem_with_the_request'),
+        t('comum.click_okay_to_fix')
+      );
     }
   };
 
-  const onLoginError = (error: any) => {
-    console.log(error.message);
+  const onErrorListCountries = (error: any) => {
+    console.log(error);
   };
+
+  const { data: lstCountries, refetch: refetchCountries } = onListCoutries(
+    onSuccessListCountries,
+    onErrorListCountries
+  );
+
+  const sucessRegistration = (data: any) => {
+    console.log(data);
+    if (data.status === 200 && !data.data.message) {
+      MessageShow('success', 'criado com sucesso');
+    } else {
+      MessageShow('warning', data.data.message);
+    }
+  };
+
+  const errorRegistration = (error: any) => {
+    console.log(error)
+    MessageShow('warning', error.message);
+  };
+
   const {
-    mutate: onUserLogin,
-    data,
-    isError: loginError,
-    isLoading,
-  } = UserLoginService(onLoginSuccess, onLoginError);
+    mutate: onCreateUser,
+    data: registredUser,
+    isLoading: isLoadingRegistration,
+    isError: isRegistationError,
+  } = onRegistUser(sucessRegistration, errorRegistration);
 
-  if (isLoading) {
-    MessageShow('loading', 'Action in progress');
-    console.log('isLoading...');
-    // if(!data){
-    //   MessageShow('error','Action in progress');
-    // }
+  if (isLoadingRegistration) {
+    MessageShow('loading', 'A carregar...');
   }
 
-  if (loginError) {
-    alert('Error');
+  if (isRegistationError) {
+    console.log('error091')
+    MessageShow('warning', registredUser.message);
   }
-
-  const onFinish = (values: any) => {
-    // console.log('Success:', values);
-    const loginForm: LoginForm = {
-      username: values.username,
-      password: values.password,
-    };
-    onUserLogin(loginForm);
-  };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
@@ -269,6 +225,25 @@ const SignUp = (props: any) => {
 
   const socialLogin = (client: string) => {
     console.log(client);
+  };
+
+  const handleChangeCountrySelect = (value: string) => {
+    console.log(`selected ${value}`);
+  };
+
+  const onFinish = (values: any) => {
+    const registUserForm: UserRegistrationModel = {
+      username: values.username,
+      password: values.password,
+      phonenumber: values.phoneNumber,
+      firstname: values.firstName,
+      lastname: values.lastName,
+      country: values.country,
+      birthday: String(moment(values.birthday).format(dateFormat)),
+      role: 'ROLE_USER',
+    };
+    console.log('Success:', registUserForm);
+    onCreateUser(registUserForm);
   };
 
   return (
@@ -317,7 +292,7 @@ const SignUp = (props: any) => {
                               <Input placeholder="Input birth year" />
                             </Form.Item>
                             <Form.Item
-                              name="lasName"
+                              name="lastName"
                               label="Last Name"
                               rules={[{ required: true }]}
                               style={{
@@ -344,7 +319,7 @@ const SignUp = (props: any) => {
 
                           <Form.Item style={{ marginBottom: 0 }}>
                             <Form.Item
-                              name="firstName"
+                              name="country"
                               label="Country"
                               rules={[{ required: true }]}
                               style={{
@@ -352,10 +327,45 @@ const SignUp = (props: any) => {
                                 width: 'calc(50% - 8px)',
                               }}
                             >
-                              <DatePicker />
+                              <Select
+                                showSearch
+                                style={{ width: '100%' }}
+                                placeholder="select one country"
+                                onChange={handleChangeCountrySelect}
+                                optionLabelProp="children"
+                                // filterOption={(input, option) =>
+                                //   (
+                                //     option!.children as unknown as string
+                                //   ).includes(input)
+                                // }
+                                // filterSort={(optionA, optionB) =>
+                                //   (optionA!.children as unknown as string)
+                                //     .toLowerCase()
+                                //     .localeCompare(
+                                //       (
+                                //         optionB!.children as unknown as string
+                                //       ).toLowerCase()
+                                //     )
+                                // }
+                              >
+                                {lstCountries?.data.map((country: any) => (
+                                  <Option
+                                    value={country.name.common}
+                                    label={country.name.common}
+                                  >
+                                    <div className="demo-option-label-item">
+                                      <span role="img" aria-label="China">
+                                        {country.flag}
+                                        {'  '}
+                                      </span>
+                                      {country.name.common}
+                                    </div>
+                                  </Option>
+                                ))}
+                              </Select>
                             </Form.Item>
                             <Form.Item
-                              name="lasName"
+                              name="birthday"
                               label="Birthday"
                               rules={[{ required: true }]}
                               style={{
@@ -364,10 +374,22 @@ const SignUp = (props: any) => {
                                 margin: '0 8px',
                               }}
                             >
-                              <DatePicker />
+                              <DatePicker
+                                style={{ width: '100%' }}
+                                format={dateFormat}
+                              />
                             </Form.Item>
                           </Form.Item>
-
+                          <Form.Item
+                            name="phoneNumber"
+                            label="Phone Number"
+                            rules={[{ required: true }]}
+                            style={{
+                              width: '100%',
+                            }}
+                          >
+                            <Input placeholder="LastName" />
+                          </Form.Item>
                           <Form.Item
                             label="Palavra-passe:"
                             name="password"
@@ -399,7 +421,7 @@ const SignUp = (props: any) => {
                               block
                               htmlType="submit"
                             >
-                              Entrar
+                              Criar Conta
                             </Button>
                           </Form.Item>
                         </Form>

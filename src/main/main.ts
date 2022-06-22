@@ -42,16 +42,25 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+ipcMain.on('reload-window', async (event, arg) => {
+  // mainWindow
+  mainWindow.reload();
+  // console.log('teste');
+});
+
 ipcMain.on('open-file-dialog', async (event, arg) => {
-dialog.showOpenDialog(mainWindow, {
-  properties: ['openFile']
-}).then(result => {
-  console.log(result.canceled)
-  console.log(result.filePaths)
-  event.sender.send('opened-file', result.filePaths);
-}).catch(err => {
-  console.log(err)
-})
+  dialog
+    .showOpenDialog(mainWindow, {
+      properties: ['openFile'],
+    })
+    .then((result) => {
+      console.log(result.canceled);
+      console.log(result.filePaths);
+      event.sender.send('opened-file', result.filePaths);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 if (process.env.NODE_ENV === 'production') {
