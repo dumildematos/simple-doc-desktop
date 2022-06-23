@@ -30,6 +30,8 @@ import folder1 from './undraw_Add_notes_re_ln36.svg';
 import { onListCoutries } from 'renderer/services/CountryService';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import phonePrefxes from '../../utils/prefixes.json';
+import countries from '../../utils/countries.json';
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -167,6 +169,16 @@ const SignUp = () => {
   const { t, i18n } = useTranslation();
 
   const [isLoginError, setIsLoginError] = useState(false);
+  console.log(phonePrefxes)
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 100 }}>
+        {phonePrefxes.countries.map((prefix) => (
+          <Option value={prefix.code}>{prefix.code}</Option>
+        ))}
+      </Select>
+    </Form.Item>
+  );
 
   const onSuccessListCountries = (data: any) => {
     // eslint-disable-next-line no-empty
@@ -184,10 +196,10 @@ const SignUp = () => {
     console.log(error);
   };
 
-  const { data: lstCountries, refetch: refetchCountries } = onListCoutries(
-    onSuccessListCountries,
-    onErrorListCountries
-  );
+  // const { data: lstCountries, refetch: refetchCountries } = onListCoutries(
+  //   onSuccessListCountries,
+  //   onErrorListCountries
+  // );
 
   const sucessRegistration = (data: any) => {
     console.log(data);
@@ -199,7 +211,7 @@ const SignUp = () => {
   };
 
   const errorRegistration = (error: any) => {
-    console.log(error)
+    console.log(error);
     MessageShow('warning', error.message);
   };
 
@@ -215,7 +227,7 @@ const SignUp = () => {
   }
 
   if (isRegistationError) {
-    console.log('error091')
+    console.log('error091');
     MessageShow('warning', registredUser.message);
   }
 
@@ -235,7 +247,7 @@ const SignUp = () => {
     const registUserForm: UserRegistrationModel = {
       username: values.username,
       password: values.password,
-      phonenumber: values.phoneNumber,
+      phonenumber: values.prefix+values.phoneNumber,
       firstname: values.firstName,
       lastname: values.lastName,
       country: values.country,
@@ -243,7 +255,8 @@ const SignUp = () => {
       role: 'ROLE_USER',
     };
     console.log('Success:', registUserForm);
-    onCreateUser(registUserForm);
+    console.log('values:', values);
+    // onCreateUser(registUserForm);
   };
 
   return (
@@ -309,6 +322,10 @@ const SignUp = () => {
                             name="username"
                             rules={[
                               {
+                                type: 'email',
+                                message: 'The input is not valid E-mail!',
+                              },
+                              {
                                 required: true,
                                 message: 'Please input your username!',
                               },
@@ -348,7 +365,7 @@ const SignUp = () => {
                                 //     )
                                 // }
                               >
-                                {lstCountries?.data.map((country: any) => (
+                                {countries.map((country: any) => (
                                   <Option
                                     value={country.name.common}
                                     label={country.name.common}
@@ -383,12 +400,17 @@ const SignUp = () => {
                           <Form.Item
                             name="phoneNumber"
                             label="Phone Number"
-                            rules={[{ required: true }]}
-                            style={{
-                              width: '100%',
-                            }}
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Please input your phone number!',
+                              },
+                            ]}
                           >
-                            <Input placeholder="LastName" />
+                            <Input
+                              addonBefore={prefixSelector}
+                              style={{ width: '100%' }}
+                            />
                           </Form.Item>
                           <Form.Item
                             label="Palavra-passe:"
@@ -399,18 +421,36 @@ const SignUp = () => {
                                 message: 'Please input your password!',
                               },
                             ]}
+                            hasFeedback
                           >
                             <Input.Password />
                           </Form.Item>
                           <Form.Item
                             label="Confirmar Palavra-passe:"
                             name="confirmPassword"
+                            dependencies={['password']}
                             rules={[
                               {
                                 required: true,
                                 message: 'Please input your password!',
                               },
+                              ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                  if (
+                                    !value ||
+                                    getFieldValue('password') === value
+                                  ) {
+                                    return Promise.resolve();
+                                  }
+                                  return Promise.reject(
+                                    new Error(
+                                      'The two passwords that you entered do not match!'
+                                    )
+                                  );
+                                },
+                              }),
                             ]}
+                            hasFeedback
                           >
                             <Input.Password />
                           </Form.Item>
