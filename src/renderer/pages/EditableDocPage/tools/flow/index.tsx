@@ -20,7 +20,6 @@ const ContainerBox = styled.div`
       flex-direction: column;
       width: 100%;
       height: 100% !important;
-      // background: green;
       .ant-row.flow-container {
         height: 100%;
         .ant-col {

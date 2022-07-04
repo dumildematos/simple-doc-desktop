@@ -24,6 +24,7 @@ import TemplateBuilder from '../TemplateBuilder/TemplateBuilder';
 import EditableDocPage from '../EditableDocPage/EditableDocPage';
 import Navbar from 'renderer/components/Navbar/Navbar';
 import { EditableTemplatePage } from '../EditableDocPage/EditableTemplatePage';
+import Profile from '../Profile/Profile';
 
 const { Header, Content } = Layout;
 const localtoken = localStorage.getItem('access_token');
@@ -157,7 +158,10 @@ export default function Home({ theme, setTheme }) {
                             <EditableDocPage t={t} theme={theme} />
                         </Route>
                         <Route exact path="/page-template/:id">
-                            <EditableTemplatePage theme={theme} />
+                          <EditableTemplatePage theme={theme} />
+                        </Route>
+                        <Route exact path="/profile">
+                          <Profile t={t} theme={theme}  />
                         </Route>
                       </Switch>
                     </div>

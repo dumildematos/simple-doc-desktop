@@ -154,22 +154,29 @@ const GroupContainer = styled.div`
 const ModalLayout = styled(Modal)`
   .ant-modal-content {
     /*Group*/
-    background: ${(props) => props?.theme.modalBg};
+    background: ${(props: { theme: { modalBg: any } }) => props.theme.modalBg};
     .ant-modal-header {
-      background: ${(props) => props?.theme.modalBg};
-      border-color: ${(props) => props?.theme.modalInnerBorderColor};
+      background: ${(props: { theme: { modalBg: any } }) =>
+        props.theme.modalBg};
+      border-color: ${(props: { theme: { modalInnerBorderColor: any } }) =>
+        props.theme.modalInnerBorderColor};
       .ant-modal-title {
-        color: ${(props) => props?.theme.modalInputColor} !important;
+        color: ${(props: { theme: { modalBg: any } }) =>
+          props.theme.modalBg}!important;
       }
     }
     .ant-modal-body {
       label {
-        color: ${(props) => props?.theme.modalInputColor} !important;
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor}!important;
       }
       .ant-input {
-        background: ${(props) => props?.theme.modalBgInput} !important;
-        border: ${(props) => props?.theme.modalInputBorder};
-        color: ${(props) => props?.theme.modalInputColor} !important;
+        background: ${(props: { theme: { modalBgInput: any } }) =>
+          props.theme.modalBgInput}!important;
+        border: ${(props: { theme: { modalInputBorder: any } }) =>
+          props.theme.modalInputBorder};
+        color: ${(props: { theme: { modalInputColor: any } }) =>
+          props.theme.modalInputColor}!important;
       }
       .useTemplateBx {
         background: #fff;
@@ -188,7 +195,7 @@ const ModalLayout = styled(Modal)`
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 export default function Group({ theme, t }) {
-  console.log(theme)
+  console.log(theme);
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
   const { team, defineBackButton, defineDocument, defineTeam } =
@@ -318,8 +325,6 @@ export default function Group({ theme, t }) {
     onCreateDocumentError
   );
 
-
-
   const modalSelecTypeHandleOk = () => {
     setIsModalSelectTypeDoc(false);
   };
@@ -412,8 +417,12 @@ export default function Group({ theme, t }) {
     );
   };
 
-  // const { data: userTemplateList, refetch: refetchUserTemplates } =
-  //   onGetUserTemplates(onTempListSuccess, onTempListError, userTemplReqParams);
+  const onTempListError = (error: any) => {
+    console.log(error)
+  }
+
+  const { data: userTemplateList, refetch: refetchUserTemplates } =
+    onGetUserTemplates(onTempListSuccess, onTempListError, userTemplReqParams);
 
   const onDeleteSuccess = () => {
     MessageShow('success', t('comum.successfully_deleted'));

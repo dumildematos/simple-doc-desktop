@@ -78,7 +78,6 @@ const MarketPlaceContainer = styled.div`
           .square {
             width: 70px;
             height: 70px !important;
-            background: green;
             svg {
               width: 100%;
             }

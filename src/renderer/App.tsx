@@ -132,7 +132,7 @@ export default function App() {
                   <SignUp />
               </Route>
               <Route exact path={['/home', '/index.html', `${location.pathname}`]}>
-                <Home theme={theme} setTheme={setTheme} />
+                <Home theme={themes[Apptheme]} setTheme={setTheme} />
               </Route>
 
             </Switch>

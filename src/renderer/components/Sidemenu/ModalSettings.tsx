@@ -62,6 +62,7 @@ export default function ModalSettings({
   setTheme,
   theme,
 }) {
+  console.log(theme)
   const { i18n } = useTranslation();
   const { defineTheme } = useContext(MainContext);
   const [settingTheme, setSettingTheme] = useState({});

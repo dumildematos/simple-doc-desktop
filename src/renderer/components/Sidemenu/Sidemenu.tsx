@@ -55,9 +55,14 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
   const userMenu = (e: any) => {
     console.log(e);
 
+    if (e.key === 'profile') {
+      history.push('/profile');
+    }
+
     if (e.key === 'settings') {
       setSettingModal({ visible: true });
     }
+
 
     if (e.key === 'logout') {
       // defineRoutedState(false);
@@ -90,7 +95,7 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
 
   const MenuDropDown = (
     <Menu onClick={userMenu}>
-      <Menu.Item key="1">{t('home.user_dropdown_menu.profile')}</Menu.Item>
+      <Menu.Item key="profile">{t('home.user_dropdown_menu.profile')}</Menu.Item>
       {/* <Menu.Item key="2">Notificações</Menu.Item> */}
       {/* <Menu.Item key="2" icon={<DownOutlined />} disabled>
         <a
@@ -147,7 +152,6 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
-          theme={ThemeName}
         >
           <Menu.Item key="1" icon={<TeamOutlined />}>
             <Link to="/"> {t('home.side_menu.my_teams')}</Link>
