@@ -8,6 +8,7 @@ import {
   Route,
   Switch,
   useHistory,
+  useLocation,
 } from 'react-router-dom';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Home from './pages/Home/Home';
@@ -108,13 +109,13 @@ const GlobalStyle = createGlobalStyle`
 export default function App() {
 
   const [Apptheme, setTheme] = useState('light');
-  const { theme  } = useContext(MainContext);
-  const [goToLogin, setGoToLogin] = useState();
+  // const { theme  } = useContext(MainContext);
+  const [setGoToLogin] = useState();
   const accessToken = localStorage.getItem('access_token');
   const queryClient = new QueryClient();
 
-  console.log(themes[Apptheme]);
-  console.log(Apptheme);
+  // console.log(themes[Apptheme]);
+  // console.log(Apptheme);
 
   return (
     <QueryClientProvider client={queryClient}>

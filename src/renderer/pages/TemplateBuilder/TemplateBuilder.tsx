@@ -190,6 +190,7 @@ export default function TemplateBuilder(props: any) {
         cover: "",
         categoryId: null,
       };
+      console.log(reqParam);
       createTemplate(reqParam);
       setformTemplateName('');
     } else {

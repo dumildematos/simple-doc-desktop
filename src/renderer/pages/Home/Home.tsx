@@ -7,9 +7,9 @@ import {
   Route,
   useRouteMatch,
   useHistory,
-  useLocation,
   Redirect,
-  useParams
+  useParams,
+  useLocation
 } from "react-router-dom";
 import Sidemenu from 'renderer/components/Sidemenu/Sidemenu';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -36,14 +36,21 @@ const localtoken = localStorage.getItem('access_token');
 export default function Home({ theme, setTheme }) {
 
   const history = useHistory();
+  const location = useLocation();
 
+  // useEffect(() => {
+  //   console.log(location)
+  // }, location)
+
+
+  
   if(!localtoken){
     console.log('No access')
     document.location.replace(document.location.origin);
     // history.push('/')
   }
 
-  const { path, url } = useRouteMatch();
+
   const {
     isRouted,
     defineRoutedState,
@@ -101,7 +108,6 @@ export default function Home({ theme, setTheme }) {
                     {/* <button onClick={() => {
                       Login
                     })}>Ir pra login</button> */}
-
                     {
                       backButton?.state && (
                         <PageHeader
