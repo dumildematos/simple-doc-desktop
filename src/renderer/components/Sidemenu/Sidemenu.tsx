@@ -1,28 +1,23 @@
-import React, { useContext, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { Avatar, Badge, Divider, Dropdown, Layout, Menu } from 'antd';
 import {
   AppstoreAddOutlined,
-  AppstoreOutlined,
-  ContainerOutlined,
-  DesktopOutlined,
   DownOutlined,
-  MailOutlined,
-  PieChartOutlined,
   SearchOutlined,
-  SettingFilled,
   ShopOutlined,
   TeamOutlined,
   UserSwitchOutlined,
 } from '@ant-design/icons';
-import styled, { ThemeContext, useTheme } from 'styled-components';
+import { Avatar, Badge, Dropdown, Layout, Menu } from 'antd';
+import { useContext, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
+import { ThemeContext } from 'styled-components';
+import AvatarIMG from './user-avatar.png';
 import ModalSettings from './ModalSettings';
 
 const { Sider } = Layout;
 const hasLogin = localStorage.getItem('hasLogin');
 
-export default function Sidemenu({ collapse, t, setTheme, theme }) {
+export default function Sidemenu({ collapse , t, setTheme, theme }) {
   const history = useHistory();
   const themeContext = useContext(ThemeContext);
   console.log({ themeContext });
@@ -32,18 +27,6 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     history.push('/');
   }
 
-  const {
-    defineRoutedState,
-    definePageInfo,
-    definedEditorIsOpened,
-    defineDocSideBar,
-    defineCurrentPath,
-    defineUser,
-    defineAcesstoken,
-    defineRefreshtoken,
-    theme: ThemeName,
-    defineBackButton,
-  } = useContext(MainContext);
   const user = JSON.parse(localStorage.getItem('user') || '');
   const [settingModal, setSettingModal] = useState({
     loading: false,
@@ -125,8 +108,10 @@ export default function Sidemenu({ collapse, t, setTheme, theme }) {
     <>
       <Sider trigger={null} collapsible collapsed={collapse.collapsed}>
         <div className="logo" style={{ marginTop: '1.9em' }}>
-          <Badge status={'success'} dot="true" offset={[-6, 28]}>
-            <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" />
+          <Badge status={'success'} dot={true} offset={[-6, 28]}>
+            {/* <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" /> */}
+            { user?.avatar === '' && (<Avatar src={AvatarIMG} />) }
+            { user?.avatar !== '' && (<Avatar src={user?.avatar} />) }
           </Badge>
           {/* <Avatar
             style={{ backgroundColor: '#f56a00', verticalAlign: 'middle' }}
