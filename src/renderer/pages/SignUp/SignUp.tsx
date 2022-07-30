@@ -1,48 +1,43 @@
-import {
-  Layout,
-  Carousel,
-  Row,
-  Col,
-  Form,
-  Button,
-  Input,
-  Checkbox,
-  Select,
-  Image,
-  Alert,
-  DatePicker,
-} from 'antd';
 import styled from '@xstyled/styled-components';
-import { FaLinkedinIn } from '@react-icons/all-files/fa/FaLinkedinIn';
-import { FaFacebookF } from '@react-icons/all-files/fa/FaFacebookF';
-import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
-import { useHistory } from 'react-router-dom';
 import {
-  getUserDataService,
-  onRegistUser,
-  UserLoginService,
-} from 'renderer/services/UserService';
-import { MessageShow, RequestAlert } from 'renderer/utils/messages/Messages';
-import { useContext, useState } from 'react';
-import { MainContext } from 'renderer/contexts/MainContext';
-import { LoginForm, UserRegistrationModel } from 'renderer/models/UserModels';
-import folder1 from './undraw_Add_notes_re_ln36.svg';
-import { onListCoutries } from 'renderer/services/CountryService';
-import { useTranslation } from 'react-i18next';
+  Affix,
+  Alert,
+  Button,
+  Carousel,
+  Col,
+  DatePicker,
+  Form,
+  Image,
+  Input,
+  Layout,
+  Row,
+  Select,
+  PageHeader,
+} from 'antd';
 import moment from 'moment';
-import phonePrefxes from '../../utils/prefixes.json';
+import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import IntroSlider from 'renderer/components/IntroSlider/IntroSlider';
+import { UserRegistrationModel } from 'renderer/models/UserModels';
+import { onRegistUser } from 'renderer/services/UserService';
+import { MessageShow, RequestAlert } from 'renderer/utils/messages/Messages';
+
 import countries from '../../utils/countries.json';
+import phonePrefxes from '../../utils/prefixes.json';
 
 const { Content } = Layout;
 const { Option } = Select;
 
 const LoginBox = styled.divBox`
-  margin-top: 15%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-top: 0;
   .login-container {
-    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+
+    padding: 10px;
     .login-logo {
       header {
         h1 {
@@ -160,6 +155,8 @@ const FolderSlider = styled.divBox`
 const dateFormat = 'DD/MM/YYYY';
 
 const FooterBox = styled.footerBox`
+  font-size: 10px;
+  padding: 5px;
   background: var(--white-1);
 `;
 
@@ -167,9 +164,9 @@ const SignUp = () => {
   const [form] = Form.useForm();
   const history = useHistory();
   const { t, i18n } = useTranslation();
-
+  const [top, setTop] = useState(10);
   const [isLoginError, setIsLoginError] = useState(false);
-  console.log(phonePrefxes)
+
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
       <Select style={{ width: 100 }}>
@@ -205,6 +202,7 @@ const SignUp = () => {
     console.log(data);
     if (data.status === 200 && !data.data.message) {
       MessageShow('success', 'criado com sucesso');
+      form.resetFields();
     } else {
       MessageShow('warning', data.data.message);
     }
@@ -247,7 +245,7 @@ const SignUp = () => {
     const registUserForm: UserRegistrationModel = {
       username: values.username,
       password: values.password,
-      phonenumber: values.prefix+values.phoneNumber,
+      phonenumber: values.prefix + values.phoneNumber,
       firstname: values.firstName,
       lastname: values.lastName,
       country: values.country,
@@ -256,7 +254,7 @@ const SignUp = () => {
     };
     console.log('Success:', registUserForm);
     console.log('values:', values);
-    // onCreateUser(registUserForm);
+    onCreateUser(registUserForm);
   };
 
   return (
@@ -268,257 +266,229 @@ const SignUp = () => {
         <Content style={{ padding: '0 0 0 50px' }}>
           <div className="site-layout-content style={{ height: '100%' }}">
             <Row style={{ height: '100%' }}>
-              <Col span={12} style={{ height: '100%' }}>
+              <Col
+                span={12}
+                style={{
+                  height: '100vh',
+                  maxHeight: '100vh',
+                }}
+              >
                 <LoginBox>
-                  <div className="login-container">
-                    <Row>
-                      <Col span={24}>
-                        <div className="login-logo">
-                          <header>
-                            <h1>
-                              Simple <b>Doc</b>
-                            </h1>
-                          </header>
-                          <h3>Criar Conta</h3>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                      <Col span={24}>
-                        <Form
-                          layout="vertical"
-                          initialValues={{ remember: true }}
-                          onFinish={onFinish}
-                          onFinishFailed={onFinishFailed}
-                          autoComplete="off"
-                        >
-                          <Form.Item style={{ marginBottom: 0 }}>
-                            <Form.Item
-                              name="firstName"
-                              label="First Name"
-                              rules={[{ required: true }]}
+                  <PageHeader
+                    className="site-page-header"
+                    onBack={() => history.push('/login')}
+                    title="Voltar"
+                    subTitle="Login"
+                  >
+                    <div className="login-container">
+                      <Row>
+                        <Col span={24}>
+                          <div className="login-logo">
+                            <header>
+                              <h1>
+                                Simple <b>Doc</b>
+                              </h1>
+                            </header>
+                            <h3
                               style={{
-                                display: 'inline-block',
-                                width: 'calc(50% - 8px)',
+                                marginTop: '-1rem',
                               }}
-                            >
-                              <Input placeholder="Input birth year" />
-                            </Form.Item>
-                            <Form.Item
-                              name="lastName"
-                              label="Last Name"
-                              rules={[{ required: true }]}
-                              style={{
-                                display: 'inline-block',
-                                width: 'calc(50% - 8px)',
-                                margin: '0 8px',
-                              }}
-                            >
-                              <Input placeholder="LastName" />
-                            </Form.Item>
-                          </Form.Item>
-                          <Form.Item
-                            label="Username"
-                            name="username"
-                            rules={[
-                              {
-                                type: 'email',
-                                message: 'The input is not valid E-mail!',
-                              },
-                              {
-                                required: true,
-                                message: 'Please input your username!',
-                              },
-                            ]}
-                          >
-                            <Input />
-                          </Form.Item>
-
-                          <Form.Item style={{ marginBottom: 0 }}>
-                            <Form.Item
-                              name="country"
-                              label="Country"
-                              rules={[{ required: true }]}
-                              style={{
-                                display: 'inline-block',
-                                width: 'calc(50% - 8px)',
-                              }}
-                            >
-                              <Select
-                                showSearch
-                                style={{ width: '100%' }}
-                                placeholder="select one country"
-                                onChange={handleChangeCountrySelect}
-                                optionLabelProp="children"
-                                // filterOption={(input, option) =>
-                                //   (
-                                //     option!.children as unknown as string
-                                //   ).includes(input)
-                                // }
-                                // filterSort={(optionA, optionB) =>
-                                //   (optionA!.children as unknown as string)
-                                //     .toLowerCase()
-                                //     .localeCompare(
-                                //       (
-                                //         optionB!.children as unknown as string
-                                //       ).toLowerCase()
-                                //     )
-                                // }
-                              >
-                                {countries.map((country: any) => (
-                                  <Option
-                                    value={country.name.common}
-                                    label={country.name.common}
-                                  >
-                                    <div className="demo-option-label-item">
-                                      <span role="img" aria-label="China">
-                                        {country.flag}
-                                        {'  '}
-                                      </span>
-                                      {country.name.common}
-                                    </div>
-                                  </Option>
-                                ))}
-                              </Select>
-                            </Form.Item>
-                            <Form.Item
-                              name="birthday"
-                              label="Birthday"
-                              rules={[{ required: true }]}
-                              style={{
-                                display: 'inline-block',
-                                width: 'calc(50% - 8px)',
-                                margin: '0 8px',
-                              }}
-                            >
-                              <DatePicker
-                                style={{ width: '100%' }}
-                                format={dateFormat}
-                              />
-                            </Form.Item>
-                          </Form.Item>
-                          <Form.Item
-                            name="phoneNumber"
-                            label="Phone Number"
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please input your phone number!',
-                              },
-                            ]}
-                          >
-                            <Input
-                              addonBefore={prefixSelector}
-                              style={{ width: '100%' }}
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Palavra-passe:"
-                            name="password"
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please input your password!',
-                              },
-                            ]}
-                            hasFeedback
-                          >
-                            <Input.Password />
-                          </Form.Item>
-                          <Form.Item
-                            label="Confirmar Palavra-passe:"
-                            name="confirmPassword"
-                            dependencies={['password']}
-                            rules={[
-                              {
-                                required: true,
-                                message: 'Please input your password!',
-                              },
-                              ({ getFieldValue }) => ({
-                                validator(_, value) {
-                                  if (
-                                    !value ||
-                                    getFieldValue('password') === value
-                                  ) {
-                                    return Promise.resolve();
-                                  }
-                                  return Promise.reject(
-                                    new Error(
-                                      'The two passwords that you entered do not match!'
-                                    )
-                                  );
-                                },
-                              }),
-                            ]}
-                            hasFeedback
-                          >
-                            <Input.Password />
-                          </Form.Item>
-                          <Form.Item>
-                            <Button
-                              className="btnLogin"
-                              type="primary"
-                              block
-                              htmlType="submit"
                             >
                               Criar Conta
-                            </Button>
-                          </Form.Item>
-                        </Form>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={16}>
-                        {isLoginError && (
-                          <Alert
-                            message="Error"
-                            description="This is an error message about copywriting."
-                            type="error"
-                            showIcon
-                          />
-                        )}
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={16} style={{ textAlign: 'center' }}>
-                        <p>or</p>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="social-login" span={16}>
-                        <div>
-                          <Button>
-                            <FaLinkedinIn />
-                          </Button>{' '}
-                          <Button>
-                            <FaFacebookF />
-                          </Button>{' '}
-                          <Button onClick={() => socialLogin('google')}>
-                            <FaGoogle />
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col
-                        span={16}
-                        className="p-10 sign-up"
-                        style={{ marginTop: '1rem' }}
-                      >
-                        <span>
-                          Ainda não tem uma conta,
-                          <Button
-                            type="link"
-                            onClick={() => {
-                              history.push('/login');
-                            }}
+                            </h3>
+                          </div>
+                        </Col>
+                      </Row>
+
+                      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col span={24}>
+                          <Form
+                            layout="vertical"
+                            initialValues={{ remember: true }}
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
+                            autoComplete="off"
+                            form={form}
                           >
-                            Login
-                          </Button>
-                        </span>
-                      </Col>
-                    </Row>
-                  </div>
+                            <Form.Item style={{ marginBottom: 0 }}>
+                              <Form.Item
+                                name="firstName"
+                                label="Primeiro nome"
+                                rules={[{ required: true }]}
+                                style={{
+                                  display: 'inline-block',
+                                  width: 'calc(50% - 8px)',
+                                }}
+                              >
+                                <Input placeholder="Primeiro nome" />
+                              </Form.Item>
+                              <Form.Item
+                                name="lastName"
+                                label="Sobrenome"
+                                rules={[{ required: true }]}
+                                style={{
+                                  display: 'inline-block',
+                                  width: 'calc(50% - 8px)',
+                                  margin: '0 8px',
+                                }}
+                              >
+                                <Input placeholder="Sobrenome" />
+                              </Form.Item>
+                            </Form.Item>
+                            <Form.Item
+                              label="Username"
+                              name="username"
+                              rules={[
+                                {
+                                  type: 'email',
+                                  message: 'A entrada não é válida E-mail!',
+                                },
+                                {
+                                  required: true,
+                                  message:
+                                    'Por favor introduza o seu nome de utilizador!',
+                                },
+                              ]}
+                            >
+                              <Input placeholder="username@email.com" />
+                            </Form.Item>
+
+                            <Form.Item style={{ marginBottom: 0 }}>
+                              <Form.Item
+                                name="country"
+                                label="País"
+                                rules={[{ required: true }]}
+                                style={{
+                                  display: 'inline-block',
+                                  width: 'calc(50% - 8px)',
+                                }}
+                              >
+                                <Select
+                                  showSearch
+                                  style={{ width: '100%' }}
+                                  placeholder="seleccione um país"
+                                  onChange={handleChangeCountrySelect}
+                                  optionLabelProp="children"
+                                >
+                                  {countries.map((country: any) => (
+                                    <Option
+                                      value={country.name.common}
+                                      label={country.name.common}
+                                    >
+                                      <div className="demo-option-label-item">
+                                        <span role="img" aria-label="China">
+                                          {country.flag}
+                                          {'  '}
+                                        </span>
+                                        {country.name.common}
+                                      </div>
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                              <Form.Item
+                                name="birthday"
+                                label="Data de nascimento"
+                                rules={[{ required: true }]}
+                                style={{
+                                  display: 'inline-block',
+                                  width: 'calc(50% - 8px)',
+                                  margin: '0 8px',
+                                }}
+                              >
+                                <DatePicker
+                                  style={{ width: '100%' }}
+                                  format={dateFormat}
+                                />
+                              </Form.Item>
+                            </Form.Item>
+                            <Form.Item
+                              name="phoneNumber"
+                              label="Número de telefone"
+                              rules={[
+                                {
+                                  required: true,
+                                  message:
+                                    'Por favor introduza o seu número de telefone!',
+                                },
+                              ]}
+                            >
+                              <Input
+                                addonBefore={prefixSelector}
+                                style={{ width: '100%' }}
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              label="Palavra-passe:"
+                              name="password"
+                              rules={[
+                                {
+                                  required: true,
+                                  message:
+                                    'Por favor introduza a sua palavra-chave!',
+                                },
+                              ]}
+                              hasFeedback
+                            >
+                              <Input.Password />
+                            </Form.Item>
+                            <Form.Item
+                              label="Confirmar Palavra-passe:"
+                              name="confirmPassword"
+                              dependencies={['password']}
+                              rules={[
+                                {
+                                  required: true,
+                                  message:
+                                    'Por favor introduza a sua palavra-chave!',
+                                },
+                                ({ getFieldValue }) => ({
+                                  validator(_, value) {
+                                    if (
+                                      !value ||
+                                      getFieldValue('password') === value
+                                    ) {
+                                      return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                      new Error(
+                                        'As duas palavras-passe que introduziu não coincidem!'
+                                      )
+                                    );
+                                  },
+                                }),
+                              ]}
+                              hasFeedback
+                            >
+                              <Input.Password />
+                            </Form.Item>
+                            <Form.Item>
+                              <Button
+                                className="btnLogin"
+                                type="primary"
+                                block
+                                htmlType="submit"
+                              >
+                                Criar Conta
+                              </Button>
+                            </Form.Item>
+                          </Form>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col span={16}>
+                          {isLoginError && (
+                            <Alert
+                              message="Error"
+                              description="This is an error message about copywriting."
+                              type="error"
+                              showIcon
+                            />
+                          )}
+                        </Col>
+                      </Row>
+                    </div>
+                  </PageHeader>
                 </LoginBox>
               </Col>
               <Col span={12} style={{ height: '100%' }}>
@@ -527,30 +497,7 @@ const SignUp = () => {
                   <div className="folder folder-2" />
                   <div className="folder folder-3" />
                   <div className="slider-container">
-                    <Carousel autoplay>
-                      <div>
-                        <h3>Facilidade</h3>
-                        <p>
-                          Lorem ipsum dolor sit amet, consetetur sadipscing
-                          elitr, sed diam nonumy eirmod tempor invidunt ut
-                          labore et dolore magna aliquyam erat, sed diam
-                          voluptua. At vero eos et accusam et justo duo dolores
-                          et ea rebum. Stet clita kasd gubergren, no sea
-                          takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                          ipsum dolor sit amet, consetetur sadipscing elitr.
-                        </p>
-                        <Image src={folder1} width="200" />
-                      </div>
-                      <div>
-                        <h3>2</h3>
-                      </div>
-                      <div>
-                        <h3>3</h3>
-                      </div>
-                      <div>
-                        <h3>4</h3>
-                      </div>
-                    </Carousel>
+                    <IntroSlider />
                   </div>
                 </FolderSlider>
               </Col>

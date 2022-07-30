@@ -23,6 +23,7 @@ const MainContainer = styled(Layout)`
 `;
 
 const Profile = (props: any) => {
+  const user = JSON.parse(localStorage.getItem('user') || '');
   return (
     <MainContainer>
       <Row gutter={24} style={{ marginTop: 50, padding: 25, height: '100%' }}>
@@ -30,12 +31,19 @@ const Profile = (props: any) => {
           <Card bordered={false} style={{ marginBottom: 24 }}>
             <div>
               <div className="avatarHolder">
-                <img alt="" src="https://image.com" />
-                <div className="name">User name</div>
-                <div>assinatura</div>
+                <img alt="" src={user?.avatar} />
+                <div className="name">
+                  {`${user?.firstname} ${user?.lastname}`}
+                </div>
+                <div>{user?.username}</div>
+              </div>
+              <div className="row d-flex justify-content-center">
+                <span>{user?.country}</span>
+              </div>
+              <div className="row d-flex justify-content-center">
+                <span>{user?.phonenumber}</span>
               </div>
             </div>
-            Content1
           </Card>
         </Col>
         <Col lg={17} md={24}>

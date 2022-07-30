@@ -24,6 +24,7 @@ import { useContext, useState } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { LoginForm } from 'renderer/models/UserModels';
 import folder1 from './undraw_Add_notes_re_ln36.svg';
+import IntroSlider from 'renderer/components/IntroSlider/IntroSlider';
 
 const { Content } = Layout;
 
@@ -150,6 +151,8 @@ const FolderSlider = styled.divBox`
 `;
 
 const FooterBox = styled.footerBox`
+  font-size: 10px;
+  padding: 5px;
   background: var(--white-1);
 `;
 
@@ -177,6 +180,7 @@ const Login = (props: any) => {
 
   const onDetailSuccess = (data: any) => {
     if (data?.status === 200) {
+      defineUser(data.data);
       localStorage.setItem('user', JSON.stringify(data.data));
       localStorage.setItem('hasLogin', JSON.stringify(true));
       setTimeout(() => {
@@ -313,11 +317,11 @@ const Login = (props: any) => {
                             rules={[
                               {
                                 required: true,
-                                message: 'Please input your username!',
+                                message: 'Por favor introduza o seu username!',
                               },
                             ]}
                           >
-                            <Input />
+                            <Input placeholder="username@email.com" />
                           </Form.Item>
                           <Form.Item
                             label="Palavra-passe:"
@@ -325,13 +329,18 @@ const Login = (props: any) => {
                             rules={[
                               {
                                 required: true,
-                                message: 'Please input your password!',
+                                message:
+                                  'Por favor introduza a sua palavra-passe!',
                               },
                             ]}
                           >
                             <Input.Password />
                           </Form.Item>
-                          <Form.Item name="remember" valuePropName="checked">
+                          <Form.Item
+                            name="remember"
+                            placeholder="palavra-passe"
+                            valuePropName="checked"
+                          >
                             <Checkbox>Remember me</Checkbox>
                           </Form.Item>
 
@@ -408,30 +417,7 @@ const Login = (props: any) => {
                   <div className="folder folder-2" />
                   <div className="folder folder-3" />
                   <div className="slider-container">
-                    <Carousel autoplay>
-                      <div>
-                        <h3>Facilidade</h3>
-                        <p>
-                          Lorem ipsum dolor sit amet, consetetur sadipscing
-                          elitr, sed diam nonumy eirmod tempor invidunt ut
-                          labore et dolore magna aliquyam erat, sed diam
-                          voluptua. At vero eos et accusam et justo duo dolores
-                          et ea rebum. Stet clita kasd gubergren, no sea
-                          takimata sanctus est Lorem ipsum dolor sit amet. Lorem
-                          ipsum dolor sit amet, consetetur sadipscing elitr.
-                        </p>
-                        <Image src={folder1} width="200" />
-                      </div>
-                      <div>
-                        <h3>2</h3>
-                      </div>
-                      <div>
-                        <h3>3</h3>
-                      </div>
-                      <div>
-                        <h3>4</h3>
-                      </div>
-                    </Carousel>
+                    <IntroSlider />
                   </div>
                 </FolderSlider>
               </Col>

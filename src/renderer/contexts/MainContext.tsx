@@ -135,7 +135,7 @@ export function MainContextProvider({ children }: Node) {
     setRefreshToken(token);
   };
 
-  const defineUser = (user: LoginResponse | {}) => {
+  const defineUser = (user: any) => {
     setUser(user);
   };
 

@@ -110,8 +110,8 @@ export default function Sidemenu({ collapse , t, setTheme, theme }) {
         <div className="logo" style={{ marginTop: '1.9em' }}>
           <Badge status={'success'} dot={true} offset={[-6, 28]}>
             {/* <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" /> */}
-            { user?.avatar === '' && (<Avatar src={AvatarIMG} />) }
-            { user?.avatar !== '' && (<Avatar src={user?.avatar} />) }
+            {/* { user?.avatar === '' && (<Avatar src={AvatarIMG} />) } */}
+            <Avatar src={user?.avatar} />
           </Badge>
           {/* <Avatar
             style={{ backgroundColor: '#f56a00', verticalAlign: 'middle' }}
