@@ -176,11 +176,12 @@ export const EditableTemplatePage = (props: any) => {
           onClick={()=> {
             const templateData = {
               id: currentTemplate.id,
-              category: currentTemplate.category,
-              createdAt: currentTemplate.createdAt,
+              categoryId: 0,
               name: currentTemplate.name,
               price: currentTemplate.price,
               content: JSON.stringify(quill.getContents()),
+              cover: '',
+              description: ''
             }
             updateTemplate(templateData)
           }}

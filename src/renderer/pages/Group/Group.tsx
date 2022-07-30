@@ -195,7 +195,7 @@ const ModalLayout = styled(Modal)`
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 export default function Group({ theme, t }) {
-  console.log(theme);
+  // console.log(theme);
   // console.log('detail group');
   // eslint-disable-next-line react/destructuring-assignment
   const { team, defineBackButton, defineDocument, defineTeam } =
@@ -353,6 +353,7 @@ export default function Group({ theme, t }) {
   };
 
   const onSelectTree = (keys: React.Key[], info: any) => {
+    console.log(info)
     setSelectedTemplate([info]);
   };
 
@@ -706,7 +707,7 @@ export default function Group({ theme, t }) {
                   ? selectedTemplate.node.key
                   : null,
               };
-              console.log(form);
+              // console.log(form);
               createDocument(form);
             }}
           >
