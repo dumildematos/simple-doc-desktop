@@ -334,13 +334,9 @@ const Login = (props: any) => {
                               },
                             ]}
                           >
-                            <Input.Password />
+                            <Input.Password placeholder="palavra-passe" />
                           </Form.Item>
-                          <Form.Item
-                            name="remember"
-                            placeholder="palavra-passe"
-                            valuePropName="checked"
-                          >
+                          <Form.Item name="remember" valuePropName="checked">
                             <Checkbox>Remember me</Checkbox>
                           </Form.Item>
 
