@@ -447,7 +447,7 @@ export default function EditableDocPage({ theme , t }) {
 
           </Drawer>
           <Drawer
-            title={` Drawer`}
+            title={draggableToolModal.type}
             placement="right"
             size={'large'}
             onClose={handleCancelToolsModal}

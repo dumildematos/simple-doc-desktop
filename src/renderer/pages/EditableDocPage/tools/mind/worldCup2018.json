@@ -1,61 +1,61 @@
 {
   "roots": [
     {
-      "label": "法国",
+      "label": "France",
       "children": [
         {
-          "label": "克罗地亚",
+          "label": "Croatia",
           "side": "left",
           "children": [
             {
-              "label": "克罗地亚",
+              "label": "Croatia",
               "children": [
                 {
-                  "label": "克罗地亚",
+                  "label": "Croatia",
                   "children": [
                     {
-                      "label": "克罗地亚"
+                      "label": "Croatia"
                     },
                     {
-                      "label": "丹麦"
+                      "label": "Denmark"
                     }
                   ]
                 },
                 {
-                  "label": "俄罗斯",
+                  "label": "Russia",
                   "children": [
                     {
-                      "label": "俄罗斯"
+                      "label": "Russia"
                     },
                     {
-                      "label": "西班牙"
+                      "label": "Spain"
                     }
                   ]
                 }
               ]
             },
             {
-              "label": "英格兰",
+              "label": "England",
               "children": [
                 {
-                  "label": "英格兰",
+                  "label": "England",
                   "children": [
                     {
-                      "label": "英格兰"
+                      "label": "England"
                     },
                     {
-                      "label": "哥伦比亚"
+                      "label": "Colombia"
                     }
                   ]
                 },
                 {
-                  "label": "瑞典",
+                  "label": "Sweden",
                   "children": [
                     {
-                      "label": "瑞士"
+                      "label": "Switzerland"
                     },
                     {
-                      "label": "瑞典"
+                      "label": "Sweden"
                     }
                   ]
                 }
@@ -64,58 +64,58 @@
           ]
         },
         {
-          "label": "法国",
+          "label": "France",
           "side": "right",
           "children": [
             {
-              "label": "法国",
+              "label": "France",
               "children": [
                 {
-                  "label": "法国",
+                  "label": "France",
                   "children": [
                     {
-                      "label": "法国"
+                      "label": "France"
                     },
                     {
-                      "label": "阿根廷"
+                      "label": "Argentina"
                     }
                   ]
                 },
                 {
-                  "label": "乌拉圭",
+                  "label": "Uruguay",
                   "children": [
                     {
-                      "label": "乌拉圭"
+                      "label": "Uruguay"
                     },
                     {
-                      "label": "葡萄牙"
+                      "label": "Portugal"
                     }
                   ]
                 }
               ]
             },
             {
-              "label": "比利时",
+              "label": "Belgium",
               "children": [
                 {
-                  "label": "比利时",
+                  "label": "Belgium",
                   "children": [
                     {
-                      "label": "比利时"
+                      "label": "Belgium"
                     },
                     {
-                      "label": "日本"
+                      "label": "Japan"
                     }
                   ]
                 },
                 {
-                  "label": "巴西",
+                  "label": "Brazil",
                   "children": [
                     {
-                      "label": "巴西"
+                      "label": "Brazil"
                     },
                     {
-                      "label": "墨西哥"
+                      "label": "Mexico"
                     }
                   ]
                 }

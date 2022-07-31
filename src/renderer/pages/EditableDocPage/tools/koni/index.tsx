@@ -68,6 +68,9 @@ const ContainerBox = styled.div`
   .koni {
     flex: 1;
   }
+  .koni {
+    height: 400px;
+  }
 
 `;
 
@@ -85,7 +88,7 @@ export const KoniEditor = () => (
           <Col span={2} className="editorSidebar">
             <KoniItemPanel />
           </Col>
-          <Col span={16} className="editorContent">
+          <Col span={16} className="editorContent" style={{ height: '400px' }}>
             <Koni className="koni" />
           </Col>
           <Col span={6} className="editorSidebar">
