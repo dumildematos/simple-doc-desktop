@@ -192,7 +192,7 @@ export default function Marketplace(props: any) {
       <MarketPlaceContainer theme={props.theme}>
         <div className="banner">
           <Search
-            placeholder="input search text"
+            placeholder="search..."
             allowClear
             onChange={ontypeSearch}
             onSearch={onSearch}
