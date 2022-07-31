@@ -88,7 +88,7 @@ const ModalLayout = styled(Modal)`
 `;
 const { Paragraph } = Typography;
 
-export default function Groups({ theme, t }) {
+export default function Groups({ theme, t, setShowBackButton }) {
   const history = useHistory();
   // console.log(t)
   const {
@@ -319,6 +319,8 @@ export default function Groups({ theme, t }) {
 
   const navigateToTeam = (team: { id: any }) => {
     if (team) {
+      localStorage.setItem('hasBackPath', 'true');
+      setShowBackButton(true)
       defineBackButton({
         state: true,
         title: team.name || team.title,

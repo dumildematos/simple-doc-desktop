@@ -373,11 +373,12 @@ export default function Group({ theme, t }) {
       document.creator === user.username ||
       isContributor(document.contributors)
     ) {
+      localStorage.setItem('hasBackPath', 'true');
       defineBackButton({
         state: true,
-        title: team.name || team.title,
+        title: team.name,
         subtitle: document.name,
-        prevPath: window.location.pathname,
+        prevPath: `/group/${team.id}`,
       });
       defineDocument(document);
       setTimeout(() => {

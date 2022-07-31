@@ -36,11 +36,7 @@ const localtoken = localStorage.getItem('access_token');
 export default function Home({ theme, setTheme }) {
 
   const history = useHistory();
-  const location = useLocation();
-
-  // useEffect(() => {
-  //   console.log(location)
-  // }, location)
+  const [showBackButton, setShowBackButton] = useState(true);
 
 
   
@@ -83,6 +79,7 @@ export default function Home({ theme, setTheme }) {
                   theme={theme}
                   setTheme={setTheme}
                   collapse={collapse}
+                  setShowBackButton={setShowBackButton}
 
               />
               <Layout
@@ -109,7 +106,7 @@ export default function Home({ theme, setTheme }) {
                       Login
                     })}>Ir pra login</button> */}
                     {
-                      backButton?.state && (
+                      showBackButton && backButton.state && (
                         <PageHeader
                             className="site-page-header"
                             title={backButton.title}
@@ -124,6 +121,7 @@ export default function Home({ theme, setTheme }) {
                               // });
                               defineRoutedState(false);
                               definedEditorIsOpened(false);
+                              console.log(backButton.prevPath)
                               history.push(backButton.prevPath);
                             }}
                           />
@@ -143,7 +141,7 @@ export default function Home({ theme, setTheme }) {
                     <div>
                       <Switch>
                         <Route exact path={["/", "/my-teams"]}>
-                          <Groups t={t} theme={theme}  />
+                          <Groups t={t} theme={theme} setShowBackButton={setShowBackButton} />
                         </Route>
                         <Route exact path={`/group/:id`}>
                           <Group t={t} theme={theme}  />

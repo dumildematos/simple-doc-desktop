@@ -17,10 +17,10 @@ import ModalSettings from './ModalSettings';
 const { Sider } = Layout;
 const hasLogin = localStorage.getItem('hasLogin');
 
-export default function Sidemenu({ collapse , t, setTheme, theme }) {
+export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackButton }) {
   const history = useHistory();
-  const themeContext = useContext(ThemeContext);
-  console.log({ themeContext });
+  const { team,themeContext, defineBackButton, defineDocument, defineTeam } =
+  useContext(MainContext);
 
   if (hasLogin === 'true') {
     console.log('show my teams');
@@ -79,29 +79,14 @@ export default function Sidemenu({ collapse , t, setTheme, theme }) {
   const MenuDropDown = (
     <Menu onClick={userMenu}>
       <Menu.Item key="profile">{t('home.user_dropdown_menu.profile')}</Menu.Item>
-      {/* <Menu.Item key="2">Notificações</Menu.Item> */}
-      {/* <Menu.Item key="2" icon={<DownOutlined />} disabled>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          2nd menu item (disabled)
-        </a>
-      </Menu.Item> */}
-      {/* <Menu.Item key="3" disabled>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.luohanacademy.com"
-        >
-          3rd menu item (disabled)
-        </a>
-      </Menu.Item> */}
       <Menu.Item key="settings">{t('home.settings.setting')}</Menu.Item>
       <Menu.Item key="logout">{t('home.user_dropdown_menu.logout')}</Menu.Item>
     </Menu>
   );
+
+  const sideMenuHandle = (e: any) => {
+    setShowBackButton(false)
+  }
 
   return (
     // eslint-disable-next-line react/destructuring-assignment
@@ -109,17 +94,8 @@ export default function Sidemenu({ collapse , t, setTheme, theme }) {
       <Sider trigger={null} collapsible collapsed={collapse.collapsed}>
         <div className="logo" style={{ marginTop: '1.9em' }}>
           <Badge status={'success'} dot={true} offset={[-6, 28]}>
-            {/* <Avatar src="https://avatars.githubusercontent.com/u/10828841?s=400&u=56ba8276db1da2bc8dfee5532e0a677d40916b9e&v=4" /> */}
-            {/* { user?.avatar === '' && (<Avatar src={AvatarIMG} />) } */}
             <Avatar src={user?.avatar} />
           </Badge>
-          {/* <Avatar
-            style={{ backgroundColor: '#f56a00', verticalAlign: 'middle' }}
-            size={32}
-            gap={4}
-          >
-            D M
-          </Avatar> */}
           {!collapse.collapsed ? (
             <Dropdown overlay={MenuDropDown}>
               <a
@@ -137,6 +113,7 @@ export default function Sidemenu({ collapse , t, setTheme, theme }) {
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
           mode="inline"
+          onClick={sideMenuHandle}
         >
           <Menu.Item key="1" icon={<TeamOutlined />}>
             <Link to="/"> {t('home.side_menu.my_teams')}</Link>
@@ -167,3 +144,5 @@ export default function Sidemenu({ collapse , t, setTheme, theme }) {
     </>
   );
 }
+
+
