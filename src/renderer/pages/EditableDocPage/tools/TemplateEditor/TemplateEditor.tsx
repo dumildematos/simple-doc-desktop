@@ -9,24 +9,23 @@ const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
   [{ size: ['small', false, 'large', 'huge'] }],
   [{ font: [] }],
-  [{ list: 'ordered' }, { list: 'bullet' }],
+  [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
   ['bold', 'italic', 'underline'],
   [{ color: [] }, { background: [] }],
   [{ script: 'sub' }, { script: 'super' }],
-  [{ indent: '-1' }, { indent: '+1' }],
   [{ align: [] }],
-  ['image', 'blockquote', 'code-block', 'link'],
-  [
-    'table',
-    'column-left',
-    'column-right',
-    'row-above',
-    'row-below',
-    'row-remove',
-    'column-remove',
-  ],
-  ['save'],
-  ['print'],
+  ['image', 'blockquote', 'code-block', 'link', 'formula'],
+  // [
+  //   'table',
+  //   'column-left',
+  //   'column-right',
+  //   'row-above',
+  //   'row-below',
+  //   'row-remove',
+  //   'column-remove',
+  // ],
+  // ['save'],
+  // ['print'],
   ['clean'],
 ];
 Quill.register('modules/cursors', QuillCursors);
@@ -38,30 +37,27 @@ const Editor = styled.div`
   }
   .container {
     margin-top: 5.5%;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
   }
   .container .ql-editor {
     width: 100%;
     min-height: 11in;
-    padding: 0.3in;
-    margin: 1rem;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
     background-color: #fff;
   }
 
   .container .ql-container.ql-snow {
     border: none;
-    display: flex;
-    justify-content: center;
   }
 
   .container .ql-toolbar.ql-snow {
-    display: flex;
-    justify-content: center;
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: #f3f3f3;
-    // box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    border: none;
+    background-color: #fff;
+    padding: 5% 8% 25px;
   }
 
   @page {

@@ -52,6 +52,7 @@ import TextArea from 'antd/lib/input/TextArea';
 import { TeamAddForm } from 'renderer/models/TeamModel';
 import { onEditTeam } from 'renderer/services/TeamsService';
 import { MessageShow, RequestAlert } from 'renderer/utils/messages/Messages';
+import { QuillVisualizer } from '../EditableDocPage/tools/QuillVisualizer/QuillVisualizer';
 
 const { Meta } = Card;
 const { Panel } = Collapse;
@@ -739,9 +740,9 @@ export default function Group({ theme, t }) {
                 <Radio value="PRIVATE">{t('comum.private')}</Radio>
               </Radio.Group>
             </div>
-            <div>
+            <div style={{ height: '33%' }}>
               {selectedTemplate.length > 0 && selectedTemplate[0]?.node ? (
-                selectedTemplate[0]?.node?.content
+                <QuillVisualizer quill={selectedTemplate[0]?.node?.content} />
               ) : (
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
               )}

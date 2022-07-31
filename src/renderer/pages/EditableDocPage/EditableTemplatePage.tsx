@@ -156,12 +156,12 @@ export const EditableTemplatePage = (props: any) => {
   return (
     <EditorContainer theme={props.theme}>
       <TemplateEditor quill={quill} setQuill={setQuill}/>
-      <Affix style={{ position: 'fixed', top: '80%', right: '3%' }}>
+      <Affix style={{ position: 'fixed', top: '83%', right: '3%' }}>
             <Button
-              style={{ color: 'var(--purple-1)', fontSize: '1.7rem' }}
+              style={{ color: '#fff', background: 'var(--purple-1)', border: 'none' }}
               size="middle"
               shape="circle"
-              type="link"
+              type="primary"
               onClick={showDrawerTools}
             >
               <AppstoreFilled />
@@ -169,10 +169,10 @@ export const EditableTemplatePage = (props: any) => {
           </Affix>
       <Affix style={{ position: 'fixed', top: '90%', right: '3%' }}>
         <Button
-          style={{ color: 'var(--purple-1)', fontSize: '1.7rem' }}
+          style={{ color: '#fff', background: 'var(--purple-1)', border: 'none' }}
           size="middle"
           shape="circle"
-          type="link"
+          type="primary"
           onClick={()=> {
             const templateData = {
               id: currentTemplate.id,
