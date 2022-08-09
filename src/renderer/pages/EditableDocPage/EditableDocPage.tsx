@@ -7,10 +7,12 @@ import {
   Col,
   Divider,
   Drawer,
+  Dropdown,
   Form,
   Input,
   Layout,
   List,
+  Menu,
   Modal,
   Row,
   Select,
@@ -25,6 +27,7 @@ import {
   UserAddOutlined,
   AppstoreFilled,
   DeleteOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
@@ -56,6 +59,12 @@ const EditorContainer = styled.div`
     right: 5rem;
     z-index: 1;
     width: 24px;
+  }
+  .exportDropDown {
+    position: fixed;
+    top: 0.7em;
+    right: 8rem;
+    z-index: 1;
   }
   .tools-drawer {
     .ant-drawer-body {
@@ -116,6 +125,7 @@ const EditorContainer = styled.div`
 
 const { Header, Content } = Layout;
 const user = JSON.parse(localStorage.getItem('user') || '{}');
+
 
 
 
@@ -252,7 +262,7 @@ export default function EditableDocPage({ theme , t }) {
     setDraggableToolModal({ visible: true , type:type})
   }
 
-
+  
 
  const handleCancelToolsModal = e => {
     setDraggableToolModal({
@@ -268,6 +278,8 @@ export default function EditableDocPage({ theme , t }) {
       showToolsModal(type)
     }
   }
+
+
 
   return (
     <>
@@ -291,6 +303,9 @@ export default function EditableDocPage({ theme , t }) {
               <UserAddOutlined />
             </Button>
           )}
+
+
+          
 
           <QuillEditor id={documentId} />
 

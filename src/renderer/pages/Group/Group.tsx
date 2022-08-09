@@ -741,7 +741,7 @@ export default function Group({ theme, t }) {
                 <Radio value="PRIVATE">{t('comum.private')}</Radio>
               </Radio.Group>
             </div>
-            <div style={{ height: '33%' }}>
+            <div style={{ height: '47%' }}>
               {selectedTemplate.length > 0 && selectedTemplate[0]?.node ? (
                 <QuillVisualizer quill={selectedTemplate[0]?.node?.content} />
               ) : (

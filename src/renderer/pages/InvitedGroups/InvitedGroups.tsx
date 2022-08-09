@@ -26,6 +26,8 @@ import { FaGlobeAfrica } from '@react-icons/all-files/fa/FaGlobeAfrica';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
 import styled from 'styled-components';
 import moment from 'moment';
+import { t } from 'i18next';
+import { RequestAlert } from 'renderer/utils/messages/Messages';
 const { Search } = Input;
 const { Paragraph } = Typography;
 const InvitedContainer = styled.div`
@@ -159,23 +161,32 @@ export default function InvitedGroups(props: any) {
     },
   ];
   const onSuccessListTeams = (data) => {
-    setTableLIstTeam(
-      data?.data.content.map((team) => {
-        return {
-          id: team.id,
-          key: team.id,
-          title: team.name,
-          desc: team.description,
-          type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
-          docs: team.documents.length,
-        };
-      })
-    );
-    // defineBackButton({
-    //   state: false,
-    // });
+    if (data && data.status === 200) {
+      setTableLIstTeam(
+        data?.data.content.map((team) => {
+          return {
+            id: team.id,
+            key: team.id,
+            title: team.name,
+            desc: team.description,
+            type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
+            docs: team.documents.length,
+          };
+        })
+      );
+    } else {
+      RequestAlert(
+        props.t('comum.there_was_a_problem_with_the_request'),
+        props.t('comum.click_okay_to_fix')
+      );
+    }
   };
-  const onErrorListTeams = () => {};
+  const onErrorListTeams = (error: any) => {
+    RequestAlert(
+      props.t('comum.there_was_a_problem_with_the_request'),
+      props.t('comum.click_okay_to_fix')
+    );
+  };
   const {
     data: teamList,
     isLoading,

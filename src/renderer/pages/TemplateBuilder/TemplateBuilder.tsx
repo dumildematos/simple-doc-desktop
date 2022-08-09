@@ -212,7 +212,7 @@ export default function TemplateBuilder(props: any) {
         <Row justify="start">
           <Col span={24}>
             <h1 style={{ fontSize: '2rem' }}>Template Builder</h1>
-            <p>Encontre equipes de trabalho públicos</p>
+            <p>Crie seus templates de documento.</p>
           </Col>
         </Row>
         <Row>

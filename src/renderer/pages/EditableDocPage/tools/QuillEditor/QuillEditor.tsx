@@ -6,6 +6,10 @@ import styled from 'styled-components';
 import { io } from 'socket.io-client';
 import { MainContext } from 'renderer/contexts/MainContext';
 import QuillCursors from 'quill-cursors';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Space, Menu } from 'antd';
+import { saveAs } from 'file-saver';
+import { pdfExporter } from 'quill-to-pdf';
 
 Quill.register('modules/cursors', QuillCursors);
 
@@ -135,12 +139,10 @@ export default function QuillEditor({ id }) {
         if (currentContrinutor?.username !== documentOnWork.creator) {
           if (documentOnWork.type === 'PUBLIC') {
             quill.enable();
+          } else if (currentContrinutor?.role !== 'WRITER') {
+            quill.disable(true);
           } else {
-            if (currentContrinutor?.role !== 'WRITER') {
-              quill.disable(true);
-            }else {
-              quill.enable();
-            }
+            quill.enable();
           }
         }
       } else {
@@ -311,10 +313,9 @@ export default function QuillEditor({ id }) {
       for (const key in cursors._cursors) {
         // console.log(`${key}: ${user[key]}`);
         // console.log(key)
-        if(Number(key) !== user?.id) {
-
+        if (Number(key) !== user?.id) {
           cursors.moveCursor(key, range);
-        }else {
+        } else {
           // cursors.moveCursor(key, range);
         }
       }
@@ -337,11 +338,53 @@ export default function QuillEditor({ id }) {
     };
   }
 
+  const userMenuOption = (e: any) => {
+    if (e.key === 'toPdf') {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      fileExporter();
+    }
+    if (e.key === 'toDoc') {
+    }
+  };
+
+  async function fileExporter() {
+    const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents(), null);
+  }
+
+  const exportMenu = (
+    <Menu>
+      <Menu.Item
+        key="toPdf"
+        onClick={async () => {
+          const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents());
+        }}
+      >
+        {' '}
+        PDF{' '}
+      </Menu.Item>
+      <Menu.Item key="toDoc"> Word </Menu.Item>
+    </Menu>
+  );
+
   return (
-    <Editor>
-      <div className="container" ref={wrapperRef}>
-        TextEditor
-      </div>
-    </Editor>
+    <>
+      <Dropdown
+        overlay={exportMenu}
+        trigger={['click']}
+        className="exportDropDown"
+      >
+        <a onClick={(e) => e.preventDefault()}>
+          <Space>
+            Export As
+            <DownOutlined />
+          </Space>
+        </a>
+      </Dropdown>
+      <Editor>
+        <div className="container" ref={wrapperRef}>
+          TextEditor
+        </div>
+      </Editor>
+    </>
   );
 }
