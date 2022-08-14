@@ -116,6 +116,7 @@ export default function App() {
 
   // console.log(themes[Apptheme]);
   // console.log(Apptheme);
+  if(document.location.protocol === 'chrome-error:') return <Login/>
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -126,7 +127,7 @@ export default function App() {
             <Switch>
               <Route exact path={['/', '/index.html', '/login', "", `${location.pathname}`]}>
                 { !accessToken ? (
-                  <Login setGoToLogin={setGoToLogin} />
+                  <Login />
                 ) : (<Redirect to="/home" />) }
               </Route>
               <Route exact path={['/signup', `${location.pathname}`]}>
@@ -134,6 +135,10 @@ export default function App() {
               </Route>
               <Route exact path={['/home', '/index.html', `${location.pathname}`]}>
                 <Home theme={themes[Apptheme]} setTheme={setTheme} />
+              </Route>
+
+              <Route  path="*">
+                <Login />
               </Route>
 
             </Switch>

@@ -44,7 +44,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
 
 ipcMain.on('reload-window', async (event, arg) => {
   // mainWindow
-  mainWindow.reload();
+  mainWindow?.webContents.reload();
   // console.log('teste');
 });
 
@@ -53,9 +53,10 @@ ipcMain.on('open-file-dialog', async (event, arg) => {
     .showOpenDialog(mainWindow, {
       properties: ['openFile'],
     })
+    // eslint-disable-next-line promise/always-return
     .then((result) => {
-      console.log(result.canceled);
-      console.log(result.filePaths);
+      // console.log(result.canceled);
+      // console.log(result.filePaths);
       event.sender.send('opened-file', result.filePaths);
     })
     .catch((err) => {
@@ -117,6 +118,7 @@ const createWindow = async () => {
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false,
     },
   });
 

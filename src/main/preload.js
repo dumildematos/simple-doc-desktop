@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld('electron', {
       const validChannels = ['ipc-example', 'open-file-dialog'];
       if (validChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`
-        ipcRenderer.once(channel, (event, ...args) => func(...args));
+        // ipcRenderer.once(channel, (event, ...args) => func(...args));
       }
     },
     send(channel, func) {

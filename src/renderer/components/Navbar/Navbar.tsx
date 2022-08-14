@@ -51,14 +51,14 @@ export default function Navbar(props: any) {
   const [countNotification, setCountNotification] = useState(0);
 
   useEffect(() => {
-    console.log(userData);
-    let Sock = new SockJS('http://localhost:8080/ws');
-    stompClient = over(Sock);
-    stompClient.connect({}, onSuccessConnect, onError);
+    // const Sock = new SockJS('http://localhost:8080/ws');
+    // stompClient = over(Sock);
+    // // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    // stompClient.connect({}, onSuccessConnect, onError);
 
-    return () => {
-      stompClient.disconnect();
-    };
+    // return () => {
+    //   stompClient.disconnect();
+    // };
   }, []);
 
   const onSuccessConnect = () => {

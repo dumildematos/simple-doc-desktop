@@ -178,11 +178,13 @@ const Login = (props: any) => {
     history.push('/login');
   };
 
+
   const onDetailSuccess = (data: any) => {
     if (data?.status === 200) {
       defineUser(data.data);
       localStorage.setItem('user', JSON.stringify(data.data));
       localStorage.setItem('hasLogin', JSON.stringify(true));
+      localStorage.setItem('loginPath', String(document.location.href));
       setTimeout(() => {
         // history.push('/home');
         // history.push(`${location.pathname}`)
@@ -421,7 +423,7 @@ const Login = (props: any) => {
           </div>
         </Content>
         <FooterBox style={{ textAlign: 'center' }}>
-          Copyright ©2020 Created by Dumilde Matos
+          Copyright ©2022 Created by Dumilde Matos
         </FooterBox>
       </Layout>
     </>

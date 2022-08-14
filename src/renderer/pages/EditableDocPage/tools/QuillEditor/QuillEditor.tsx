@@ -9,7 +9,7 @@ import QuillCursors from 'quill-cursors';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Menu } from 'antd';
 import { saveAs } from 'file-saver';
-import { pdfExporter } from 'quill-to-pdf';
+// import { pdfExporter } from 'quill-to-pdf';
 
 Quill.register('modules/cursors', QuillCursors);
 
@@ -341,22 +341,22 @@ export default function QuillEditor({ id }) {
   const userMenuOption = (e: any) => {
     if (e.key === 'toPdf') {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      fileExporter();
+      // fileExporter();
     }
     if (e.key === 'toDoc') {
     }
   };
 
-  async function fileExporter() {
-    const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents(), null);
-  }
+  // async function fileExporter() {
+  //   const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents(), null);
+  // }
 
   const exportMenu = (
     <Menu>
       <Menu.Item
         key="toPdf"
         onClick={async () => {
-          const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents());
+          // const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents());
         }}
       >
         {' '}

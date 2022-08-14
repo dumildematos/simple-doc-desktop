@@ -27,7 +27,12 @@ export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackBut
     history.push('/');
   }
 
-  const user = JSON.parse(localStorage.getItem('user') || '');
+  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '') : null;
+
+  if(!user){
+    history.push('/login');
+  }
+
   const [settingModal, setSettingModal] = useState({
     loading: false,
     visible: false,

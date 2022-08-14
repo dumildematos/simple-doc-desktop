@@ -39,7 +39,7 @@ export default function Home({ theme, setTheme }) {
   const [showBackButton, setShowBackButton] = useState(true);
 
 
-  
+
   if(!localtoken){
     console.log('No access')
     document.location.replace(document.location.origin);
@@ -103,8 +103,23 @@ export default function Home({ theme, setTheme }) {
                       }
                     )}
                     {/* <button onClick={() => {
-                      Login
+                      console.log('gotologin')
+                      history.push(backButton.prevPath);
+
                     })}>Ir pra login</button> */}
+
+                    // <Button type="link" onClick={() => {
+                    //   console.log('login')
+                    //   localStorage.clear();
+                    //   setTimeout(() => {
+                    //     // history.push('/login');
+                    //     // document.location.href  = localStorage.getItem('loginPath');
+                    //     document.location.reload();
+                    //     // window.electron.ipcRenderer.reloadWindow()
+                    //   }, 1000)
+                    // }}>Link Button</Button>
+
+
                     {
                       showBackButton && backButton.state && (
                         <PageHeader

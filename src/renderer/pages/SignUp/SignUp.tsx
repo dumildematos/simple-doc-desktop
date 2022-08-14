@@ -226,7 +226,7 @@ const SignUp = () => {
 
   if (isRegistationError) {
     console.log('error091');
-    MessageShow('warning', registredUser.message);
+    MessageShow('warning', 'Aconteceu algum erro');
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -505,7 +505,7 @@ const SignUp = () => {
           </div>
         </Content>
         <FooterBox style={{ textAlign: 'center' }}>
-          Copyright ©2020 Created by Dumilde Matos
+          Copyright ©2022 Created by Dumilde Matos
         </FooterBox>
       </Layout>
     </>
