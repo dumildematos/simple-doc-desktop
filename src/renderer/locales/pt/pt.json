@@ -67,6 +67,15 @@
     "there_was_a_problem_with_the_request":"Ocorreu algum problema na requisição",
     "click_okay_to_fix": "Clique no botão OK para corrigir.",
     "warning": "Aviso",
-    "you_do_not_have_permission_to_open_this_file": "Não possui permissão para abrir este documento!"
+    "search": "Pesquisar",
+    "you_do_not_have_permission_to_open_this_file": "Não possui permissão para abrir este documento!",
+    "find_invied_teams": "Encontre todas as equipes que possuem documento em que foi convidado a contribuir.",
+    "find_public_teams_and_contribuite":"Encontre equipes públicas e contribua em documentos públicos.",
+    "find_amazing_templates":"Encontre incríveis templates para o sou próximo trabalho!",
+    "build_template_and_reuse": "Crie templates e utilize quando for criar um documento.",
+    "new_template": "Novo Template",
+    "no_record": "Sem registo",
+    "create_template": "Criar Template",
+    "template_name":"Nome do Templae"
   }
 }

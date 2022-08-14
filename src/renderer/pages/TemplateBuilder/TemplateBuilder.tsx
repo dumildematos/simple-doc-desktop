@@ -187,7 +187,7 @@ export default function TemplateBuilder(props: any) {
         content: JSON.stringify({ ops: [{ insert: 'New template' }] }),
         price: '0.00',
         description: '',
-        cover: "",
+        cover: '',
         categoryId: null,
       };
       console.log(reqParam);
@@ -211,14 +211,16 @@ export default function TemplateBuilder(props: any) {
       <TemplateBuilderContainer>
         <Row justify="start">
           <Col span={24}>
-            <h1 style={{ fontSize: '2rem' }}>Template Builder</h1>
+            <h1 style={{ fontSize: '2rem' }}>
+              {props.t('home.side_menu.template_builder')}
+            </h1>
             <p>Crie seus templates de documento.</p>
           </Col>
         </Row>
         <Row>
           <Col span={8} style={{ float: 'right' }}>
             <Search
-              placeholder="input search text"
+              placeholder={props.t('comum.search')}
               onSearch={onSearch}
               onChange={(e) => {
                 setLisReqParams({
@@ -236,15 +238,12 @@ export default function TemplateBuilder(props: any) {
             <Button
               type="primary"
               style={{ float: 'right' }}
-              // className="btn-action-pmd"
               onClick={() => {
                 setIsVisibleModalCreate(true);
-                // getCategoryList();
-                // modalSelecTypeShowModal();
               }}
             >
               <p>
-                New Template &nbsp;
+                {props.t('comum.new_template')} &nbsp;
                 <AuditOutlined />
               </p>
             </Button>
@@ -259,13 +258,16 @@ export default function TemplateBuilder(props: any) {
                 marginTop: '5%',
                 marginRight: 'auto',
               }}
-              description={
-                <span>
-                  Customize <a href="#API">Description</a>
-                </span>
-              }
+              description={<span>{props.t('comum.no_record')}</span>}
             >
-              <Button type="primary">Create Now</Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setIsVisibleModalCreate(true);
+                }}
+              >
+                {props.t('comum.new_template')}
+              </Button>
             </Empty>
           )}
         <Row>
@@ -290,13 +292,13 @@ export default function TemplateBuilder(props: any) {
             })}
         </Row>
         <Modal
-          title="Basic Modal"
+          title={props.t('comum.create_template')}
           visible={isVisibleModalCreate}
           onOk={onOkayModalCreate}
           onCancel={onCancelModalCreate}
         >
           <Input
-            placeholder="Basic usage"
+            placeholder={props.t('comum.template_name')}
             value={formTemplateName}
             onChange={onCreatingName}
           />

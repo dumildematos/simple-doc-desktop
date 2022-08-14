@@ -77,7 +77,15 @@
     "there_was_a_problem_with_the_request":"There was a problem with the request",
     "click_okay_to_fix": "Click OK button to fix.",
     "warning": "Warning",
-    "you_do_not_have_permission_to_open_this_file": "You do not have permission to open this document!"
-
+    "search": "Search",
+    "you_do_not_have_permission_to_open_this_file": "You do not have permission to open this document!",
+    "find_invied_teams": "Find all the teams that have a document where you were invited to contribute.",
+    "find_public_teams_and_contribuite":"Find public teams and contribute to public documents.",
+    "find_amazing_templates":"Find amazing templates for my next job!",
+    "build_template_and_reuse": "Create templates and use them when creating a document.",
+    "new_template": "New Template",
+    "no_record": "No record",
+    "create_template": "Create Template",
+    "template_name":"Template Name"
   }
 }

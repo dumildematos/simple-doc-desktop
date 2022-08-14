@@ -35,10 +35,26 @@ const MarketPlaceContainer = styled.div`
     background-attachment: fixed;
     height: 350px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    .ant-row {
+      .ant-col {
+        background: transparent;
+        color: #fff;
+        text-align: center;
+        h1 {
+          font-size: 3rem;
+          color: #fff;
+          line-height: 1em;
+        }
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
     span.ant-input-group-wrapper.ant-input-search {
-      width: 300px;
+      width: 400px;
       background: transparent;
     }
   }
@@ -191,13 +207,23 @@ export default function Marketplace(props: any) {
     <>
       <MarketPlaceContainer theme={props.theme}>
         <div className="banner">
-          <Search
-            placeholder="search..."
-            allowClear
-            onChange={ontypeSearch}
-            onSearch={onSearch}
-            style={{ width: 200 }}
-          />
+          <Row justify="center">
+            <Col>
+              <h1>{props.t('home.side_menu.marketplace')}</h1>
+              <p>{props.t('comum.find_amazing_templates')}</p>
+            </Col>
+          </Row>
+          <Row justify="center">
+            <Col>
+              <Search
+                placeholder={props.t('comum.search')}
+                allowClear
+                onChange={ontypeSearch}
+                onSearch={onSearch}
+                style={{ width: 400 }}
+                />
+            </Col>
+          </Row>
         </div>
         <Row>
           <Col span={24} style={{ height: '100%', overflowY: 'auto' }}>

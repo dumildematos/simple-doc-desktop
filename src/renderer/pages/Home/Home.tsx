@@ -37,7 +37,7 @@ export default function Home({ theme, setTheme }) {
 
   const history = useHistory();
   const [showBackButton, setShowBackButton] = useState(true);
-
+  const [localUser, setLocalUser] = useState(localStorage.getItem('user'))
 
 
   if(!localtoken){
@@ -45,6 +45,13 @@ export default function Home({ theme, setTheme }) {
     document.location.replace(document.location.origin);
     // history.push('/')
   }
+
+  useEffect(()=> {
+    if(!localUser) {
+      history.push('/login')
+      return;
+    }
+  }, [])
 
 
   const {
@@ -108,17 +115,6 @@ export default function Home({ theme, setTheme }) {
 
                     })}>Ir pra login</button> */}
 
-                    // <Button type="link" onClick={() => {
-                    //   console.log('login')
-                    //   localStorage.clear();
-                    //   setTimeout(() => {
-                    //     // history.push('/login');
-                    //     // document.location.href  = localStorage.getItem('loginPath');
-                    //     document.location.reload();
-                    //     // window.electron.ipcRenderer.reloadWindow()
-                    //   }, 1000)
-                    // }}>Link Button</Button>
-
 
                     {
                       showBackButton && backButton.state && (
@@ -171,7 +167,7 @@ export default function Home({ theme, setTheme }) {
                           <Marketplace t={t} theme={theme} setPath={setCurrentPath}  />
                         </Route>
                         <Route exact path="/template-builder">
-                          <TemplateBuilder setPath={setCurrentPath}  />
+                          <TemplateBuilder setPath={setCurrentPath}  t={t} theme={theme}   />
                         </Route>
                         <Route exact path="/page-doc/:id">
                             <EditableDocPage t={t} theme={theme} />

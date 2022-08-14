@@ -116,7 +116,6 @@ export default function App() {
 
   // console.log(themes[Apptheme]);
   // console.log(Apptheme);
-  if(document.location.protocol === 'chrome-error:') return <Login/>
 
   return (
     <QueryClientProvider client={queryClient}>

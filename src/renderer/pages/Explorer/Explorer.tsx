@@ -214,14 +214,14 @@ export default function Explorer(props: any) {
       <ExplorerContainer theme={props.theme}>
         <Row justify="start">
           <Col span={24}>
-            <h1 style={{ fontSize: '2rem' }}>Explorer</h1>
-            <p>Encontre equipes de trabalho públicos</p>
+            <h1 style={{ fontSize: '2rem' }}>{props.t('home.side_menu.explorer')}</h1>
+            <p>{props.t('comum.find_public_teams_and_contribuite')}</p>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <Search
-              placeholder="input search text"
+              placeholder={props.t('comum.search')}
               onSearch={onSearch}
               onChange={(e) => {
                 setSearchTeamName(e.target.value);

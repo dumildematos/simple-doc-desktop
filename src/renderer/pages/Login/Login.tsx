@@ -154,6 +154,7 @@ const FooterBox = styled.footerBox`
   font-size: 10px;
   padding: 5px;
   background: var(--white-1);
+  margin: 1.4rem 0
 `;
 
 const Login = (props: any) => {

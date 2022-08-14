@@ -28,6 +28,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { t } from 'i18next';
 import { RequestAlert } from 'renderer/utils/messages/Messages';
+
 const { Search } = Input;
 const { Paragraph } = Typography;
 const InvitedContainer = styled.div`
@@ -301,14 +302,16 @@ export default function InvitedGroups(props: any) {
       <InvitedContainer theme={props.theme}>
         <Row justify="start">
           <Col span={24}>
-            <h1 style={{ fontSize: '2rem' }}>Invited Teams</h1>
-            <p>Encontre equipes de trabalho públicos</p>
+            <h1 style={{ fontSize: '2rem' }}>
+              {props.t('home.side_menu.inited_teams')}
+            </h1>
+            <p>{props.t('comum.find_invied_teams')}</p>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <Search
-              placeholder="input search text"
+              placeholder={props.t('comum.search')}
               onSearch={onSearch}
               onChange={(e) => {
                 setSearchTeamName(e.target.value);
