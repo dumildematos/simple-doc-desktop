@@ -13,6 +13,19 @@ const userRegistrationRequest = (registrationForm: UserRegistrationModel) => {
     data: registrationForm,
   });
 };
+const userUpdateRequest = (registrationForm: UserRegistrationModel) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/user/edit`,
+    method: 'PUT',
+    data: registrationForm,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    }
+  });
+};
 
 const getCurrentUser = (token) => {
   return Request({
@@ -43,6 +56,17 @@ export const onRegistUser = (
 ) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(userRegistrationRequest, {
+    onSuccess,
+    onError,
+  });
+};
+
+export const onUpdateUserService = (
+  onSuccess: (data: any) => void,
+  onError: (error: any) => void
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(userUpdateRequest, {
     onSuccess,
     onError,
   });

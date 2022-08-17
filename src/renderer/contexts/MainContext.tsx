@@ -87,6 +87,18 @@ export function MainContextProvider({ children }: Node) {
     history,
   ]);
 
+  useEffect(() => {
+    window.addEventListener('storage', () => {
+      // When storage changes refetch
+      refetch();
+    });
+
+    return () => {
+      // When the component unmounts remove the event listener
+      window.removeEventListener('storage');
+    };
+  }, []);
+
   const defineRoutedState = (state: boolean) => {
     setRouted(state);
   };

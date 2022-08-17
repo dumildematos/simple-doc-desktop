@@ -44,7 +44,9 @@ ipcMain.on('ipc-example', async (event, arg) => {
 
 ipcMain.on('reload-window', async (event, arg) => {
   // mainWindow
-  mainWindow?.webContents.reload();
+  // mainWindow?.webContents.reload();
+  app.relaunch();
+  app.exit();
   // console.log('teste');
 });
 

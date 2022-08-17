@@ -7,7 +7,7 @@ import {
   UserSwitchOutlined,
 } from '@ant-design/icons';
 import { Avatar, Badge, Dropdown, Layout, Menu } from 'antd';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { ThemeContext } from 'styled-components';
@@ -32,6 +32,18 @@ export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackBut
   if(!user){
     history.push('/login');
   }
+
+  useEffect(() => {
+    window.addEventListener("storage", () => {
+      // When storage changes refetch
+      refetch();
+    });
+
+    return () => {
+      // When the component unmounts remove the event listener
+      window.removeEventListener("storage");
+    };
+}, []);
 
   const [settingModal, setSettingModal] = useState({
     loading: false,
@@ -63,7 +75,7 @@ export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackBut
       // defineRefreshtoken(undefined);
       // history.push('/login');
       localStorage.clear();
-      document.location.reload();
+      // document.location.reload();
       // history.push('/');
       //window.electron.ipcRenderer.reloadWindow();
       // window.location.reload();
@@ -72,7 +84,12 @@ export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackBut
         // history.push('/');
         // history.push(`${location.pathname}`);
         // window.location.href = window.location.origin;
-        // document.location.reload();
+        if(location.hostname.includes('localhost')){
+          document.location.reload();
+
+        }else {
+          window.electron.ipcRenderer.reloadWindow();
+        }
       }, 2000);
       // history.push(`${location.pathname}`);
       // document.location.reload();
@@ -107,7 +124,7 @@ export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackBut
                 className="ant-dropdown-link"
                 onClick={(e) => e.preventDefault()}
               >
-                {`${user?.firstname} ${user?.lastname}`} <DownOutlined />
+                {`${user.firstname} ${user.lastname}`} <DownOutlined />
               </a>
             </Dropdown>
           ) : (

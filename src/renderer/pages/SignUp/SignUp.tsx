@@ -169,7 +169,7 @@ const SignUp = () => {
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
-      <Select style={{ width: 100 }}>
+      <Select style={{ width: 100 }} defaultValue="+244">
         {phonePrefxes.countries.map((prefix) => (
           <Option value={prefix.code}>{prefix.code}</Option>
         ))}
@@ -245,7 +245,7 @@ const SignUp = () => {
     const registUserForm: UserRegistrationModel = {
       username: values.username,
       password: values.password,
-      phonenumber: values.prefix + values.phoneNumber,
+      phonenumber: `${values.prefix}-${values.phoneNumber}`,
       firstname: values.firstName,
       lastname: values.lastName,
       country: values.country,

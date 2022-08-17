@@ -109,11 +109,11 @@ export default function Home({ theme, setTheme }) {
                         onClick: toggle,
                       }
                     )}
-                    {/* <button onClick={() => {
-                      console.log('gotologin')
-                      history.push(backButton.prevPath);
 
-                    })}>Ir pra login</button> */}
+                    {/* <Button onClick={() => {
+                      localStorage.clear();
+                      window.electron.ipcRenderer.reloadWindow();
+                    }}>Ir pra login</Button> */}
 
 
                     {

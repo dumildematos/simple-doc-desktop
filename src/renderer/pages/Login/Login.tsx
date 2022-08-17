@@ -23,8 +23,8 @@ import { MessageShow } from 'renderer/utils/messages/Messages';
 import { useContext, useState } from 'react';
 import { MainContext } from 'renderer/contexts/MainContext';
 import { LoginForm } from 'renderer/models/UserModels';
-import folder1 from './undraw_Add_notes_re_ln36.svg';
 import IntroSlider from 'renderer/components/IntroSlider/IntroSlider';
+
 
 const { Content } = Layout;
 
@@ -154,7 +154,7 @@ const FooterBox = styled.footerBox`
   font-size: 10px;
   padding: 5px;
   background: var(--white-1);
-  margin: 1.4rem 0
+  margin: 1.4rem 0;
 `;
 
 const Login = (props: any) => {
@@ -178,7 +178,6 @@ const Login = (props: any) => {
   const goToLogin = () => {
     history.push('/login');
   };
-
 
   const onDetailSuccess = (data: any) => {
     if (data?.status === 200) {
@@ -211,7 +210,7 @@ const Login = (props: any) => {
       // history.push(`${location.pathname}`);
       // document.location.reload();
       // document.location.replace(document.location.origin);
-      //setTimeout(() => history.push('/'), 10);
+      // setTimeout(() => history.push('/'), 10);
     }
   };
   const onDetailError = () => {};

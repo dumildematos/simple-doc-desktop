@@ -47,9 +47,11 @@ const MarketPlaceContainer = styled.div`
           font-size: 3rem;
           color: #fff;
           line-height: 1em;
+          font-family: var(--BerninDemiBold);
         }
         p {
           font-size: 1rem;
+          var(--candara);
         }
       }
     }
