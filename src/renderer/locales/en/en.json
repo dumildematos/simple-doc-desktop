@@ -46,6 +46,7 @@
   "comum": {
     "description": "Description",
     "create": "Create",
+    "update": "Update",
     "cancel": "Cancel",
     "public": "Public",
     "private": "Private",
@@ -86,6 +87,15 @@
     "new_template": "New Template",
     "no_record": "No record",
     "create_template": "Create Template",
-    "template_name":"Template Name"
+    "template_name":"Template Name",
+    "edit_user_avatar": "Edit Picture",
+    "edit_profile": "Edit Profile",
+    "country": "Country",
+    "phone": "Phone",
+    "birthday": "Birthday",
+    "edit_user_information": "Edit user information",
+    "edit_user_picture": "Edit user Picture",
+    "first_name": "First Name ",
+    "last_name": "Last Name"
   }
 }

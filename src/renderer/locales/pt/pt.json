@@ -36,6 +36,7 @@
   "comum": {
     "description": "Descrição",
     "create": "Criar",
+    "update": "Atualizar",
     "cancel": "Cancelar",
     "public": "Público",
     "private": "Privado",
@@ -76,6 +77,16 @@
     "new_template": "Novo Template",
     "no_record": "Sem registo",
     "create_template": "Criar Template",
-    "template_name":"Nome do Templae"
+    "template_name":"Nome do Template",
+    "edit_user_avatar": "Editar foto",
+    "edit_profile": "Editar Perfil",
+    "country": "País",
+    "phone": "Telefone",
+    "birthday": "Nascimento",
+    "edit_user_information": "Editar dados do Utilizador",
+    "edit_user_picture": "Editar foto do Utilizador",
+    "first_name": "Primeiro Nome ",
+    "last_name": "Sobrenome"
+
   }
 }

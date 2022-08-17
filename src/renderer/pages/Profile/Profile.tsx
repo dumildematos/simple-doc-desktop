@@ -232,10 +232,10 @@ const Profile = (props: any) => {
               }}
             >
               <Button type="link" onClick={showModalAvatar}>
-                Editar Foto
+                {props.t('comum.edit_user_avatar')}
               </Button>
               <Button type="link" onClick={showModal}>
-                Editar Perfil
+                {props.t('comum.edit_profile')}
               </Button>
             </div>
             <div>
@@ -247,14 +247,18 @@ const Profile = (props: any) => {
                 <div>{user?.username}</div>
               </div>
               <div className="row d-flex justify-content-center">
-                <span>{user?.country}</span>
-              </div>
-              <div className="row d-flex justify-content-center">
-                <span>{user?.phonenumber}</span>
+                <span>
+                  <b>{props.t('comum.country')}:</b> {user?.country}
+                </span>
               </div>
               <div className="row d-flex justify-content-center">
                 <span>
-                  Data de Nascimento:
+                  <b>{props.t('comum.phone')}:</b> {user?.phonenumber}
+                </span>
+              </div>
+              <div className="row d-flex justify-content-center">
+                <span>
+                  <b>{props.t('comum.birthday')}: </b>
                   {user?.birthdate
                     .replaceAll('-', '/')
                     .split('/')
@@ -272,8 +276,8 @@ const Profile = (props: any) => {
       <ModalLayout
         theme={props.theme}
         visible={isModalVisible}
-        title={props.t('home.modal_create_team.create_new_team_work')}
-        okText={props.t('comum.create')}
+        title={props.t('comum.edit_user_information')}
+        okText={props.t('comum.update')}
         cancelText={props.t('comum.cancel')}
         onCancel={onCancel}
         onOk={() => {
@@ -300,7 +304,7 @@ const Profile = (props: any) => {
           <Form.Item style={{ marginBottom: 0 }}>
             <Form.Item
               name="firstName"
-              label="Primeiro nome"
+              label={props.t('comum.first_name')}
               rules={[{ required: true }]}
               initialValue={user.firstname}
               style={{
@@ -308,11 +312,11 @@ const Profile = (props: any) => {
                 width: 'calc(50% - 8px)',
               }}
             >
-              <Input placeholder="Primeiro nome" />
+              <Input placeholder={props.t('comum.first_name')} />
             </Form.Item>
             <Form.Item
               name="lastName"
-              label="Sobrenome"
+              label={props.t('comum.last_name')}
               rules={[{ required: true }]}
               initialValue={user.lastname}
               style={{
@@ -321,13 +325,13 @@ const Profile = (props: any) => {
                 margin: '0 8px',
               }}
             >
-              <Input placeholder="Sobrenome" />
+              <Input placeholder={props.t('comum.last_name')} />
             </Form.Item>
           </Form.Item>
           <Form.Item style={{ marginBottom: 0 }}>
             <Form.Item
               name="country"
-              label="País"
+              label={props.t('comum.country')}
               rules={[{ required: true }]}
               initialValue={user.country}
               style={{
@@ -360,7 +364,7 @@ const Profile = (props: any) => {
             </Form.Item>
             <Form.Item
               name="birthday"
-              label="Data de nascimento"
+              label={props.t('comum.birthday')}
               rules={[{ required: true }]}
               // initialValue={String(
               //   user.birthdate
@@ -379,7 +383,7 @@ const Profile = (props: any) => {
             </Form.Item>
             <Form.Item
               name="phoneNumber"
-              label="Número de telefone"
+              label={props.t('comum.phone')}
               initialValue={user.phonenumber.split('-')[1]}
               rules={[
                 {
@@ -396,8 +400,8 @@ const Profile = (props: any) => {
       <ModalLayout
         theme={props.theme}
         visible={isModalVisibleAvatar}
-        title={props.t('home.modal_create_team.create_new_team_work')}
-        okText={props.t('comum.create')}
+        title={props.t('comum.edit_user_pictur')}
+        okText={props.t('comum.update')}
         cancelText={props.t('comum.cancel')}
         onCancel={onCancelAvatar}
         onOk={() => {
@@ -410,7 +414,7 @@ const Profile = (props: any) => {
             })
             .catch((info) => {
               // console.log('Validate Failed:', info);
-              onUpdateAvatar(values);
+              onUpdateAvatar();
             });
         }}
       >
