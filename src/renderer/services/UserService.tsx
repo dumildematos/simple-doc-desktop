@@ -27,9 +27,37 @@ const userUpdateRequest = (registrationForm: UserRegistrationModel) => {
   });
 };
 
+const userChangePasswordRequest = (registrationForm: UserRegistrationModel) => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/user/change-password`,
+    method: 'PUT',
+    data: registrationForm,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    }
+  });
+};
+
 const getCurrentUser = (token) => {
   return Request({
     url: `/${RequestVersion}/user/me`,
+    method: 'GET',
+    data: null,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const getUserActivity = () => {
+  const token = localStorage.getItem('access_token');
+  return Request({
+    url: `/${RequestVersion}/user/activity`,
     method: 'GET',
     data: null,
     headers: {
@@ -71,6 +99,16 @@ export const onUpdateUserService = (
     onError,
   });
 };
+export const onChangePasswordUserService = (
+  onSuccess: (data: any) => void,
+  onError: (error: any) => void
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useMutation(userChangePasswordRequest, {
+    onSuccess,
+    onError,
+  });
+};
 
 export const getUserDataService = (
   onDetailSuccess: () => void,
@@ -85,5 +123,19 @@ export const getUserDataService = (
     onError,
     enabled: login?.data.status === 200,
     refetchInterval: 1000,
+  });
+};
+
+export const onGetUserActivityService = (
+  onSuccess: () => void,
+  onError: () => void,
+) => {
+  // console.log(token)
+  return useQuery(['user-activity'], () => getUserActivity(), {
+    onSuccess,
+    onError,
+    refetchInterval: 1000,
+    staleTime: 1000,
+    enabled: false
   });
 };

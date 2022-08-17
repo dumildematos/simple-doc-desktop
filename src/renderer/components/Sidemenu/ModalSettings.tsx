@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { Button, Checkbox, Col, Modal, Radio, Row, Select, Tabs } from 'antd';
-import { AppleOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Col, Form, Input, Modal, Radio, Row, Select, Tabs } from 'antd';
+import { AppleOutlined, LockOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { MainContext } from 'renderer/contexts/MainContext';
+import { MessageShow } from 'renderer/utils/messages/Messages';
+import { onChangePasswordUserService } from 'renderer/services/UserService';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -62,10 +64,13 @@ export default function ModalSettings({
   setTheme,
   theme,
 }) {
-  console.log(theme)
+  const user = JSON.parse(localStorage.getItem('user') || '');
+  console.log(theme);
   const { i18n } = useTranslation();
   const { defineTheme } = useContext(MainContext);
   const [settingTheme, setSettingTheme] = useState({});
+  const [currentLang, setCurrentLang] = useState(String(i18n.language));
+  const [formChangePassword] = Form.useForm();
   const showModal = () => {
     setSettingModal({
       loading: false,
@@ -100,6 +105,55 @@ export default function ModalSettings({
 
   const handleChangeLanguage = (e: any) => {
     i18n.changeLanguage(e.value);
+    setCurrentLang(e.value);
+  };
+
+  
+
+   const sucessRequest = (data: any) => {
+    console.log(data);
+    if (data.status === 200 && !data.data.message) {
+      MessageShow('success', 'criado com sucesso');
+      formChangePassword.resetFields();
+
+    } else {
+      MessageShow('warning', data.data.message);
+    }
+  };
+
+  const errorRequest = (error: any) => {
+    console.log(error);
+    MessageShow('warning', error.message);
+  };
+
+  const {
+    mutate: onChangePassword,
+    data: registredUser,
+    isLoading: isLoadingRegistration,
+    isError: isRegistationError,
+  } = onChangePasswordUserService(sucessRequest, errorRequest);
+
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const onFinish = (values: any) => {
+    const userToSend = {
+      id: user.id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      avatar: user.avatar,
+      username: user.username,
+      birthday: String(
+        user?.birthdate.replaceAll('-', '/').split('/').reverse().join('/')
+      ),
+      password: values.confirmPassword,
+      country: user.country,
+      phonenumber: user.phonenumber,
+      role: 'ROLE_USER',
+    };
+    onChangePassword(userToSend);
   };
 
   return (
@@ -193,7 +247,7 @@ export default function ModalSettings({
           </Row>
           <Row style={{ marginTop: 10 }}>
             <Col span={24}>
-              <h4>Idioma</h4>
+              <h4>{t('language.title')}</h4>
             </Col>
             <Col span={24}>
               <small>Reinicie para aplicar definições de idioma.</small>
@@ -201,26 +255,101 @@ export default function ModalSettings({
             <Col span={24}>
               <Select
                 labelInValue
-                defaultValue={{ value: 'pt' }}
+                defaultValue={{ value: currentLang }}
                 style={{ width: 120 }}
                 onChange={handleChangeLanguage}
               >
                 <Option className="mdl-opt" value="en">
-                  English
+                  {t('language.english')}
                 </Option>
                 <Option className="mdl-opt" value="pt">
-                  Português
+                {t('language.portuguese')}
                 </Option>
               </Select>
             </Col>
           </Row>
         </TabPane>
-        <TabPane tab="Card Tab 2" key="2">
-          Content of card tab 2
+        <TabPane
+          tab={
+            <span>
+              <LockOutlined />
+              {t('home.settings.security')}
+            </span>
+          }
+          key="2"
+        >
+          <Row>
+            <Col>
+              <h2>Altera sua palavra passe</h2>
+              <p>Será enviado um email, para confimar a mudança da palavra-passe.</p>
+            </Col>
+          </Row>
+          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="center">
+            <Col span={12}>
+              <Form
+                layout="vertical"
+                initialValues={{ remember: true }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
+                form={formChangePassword}
+              >
+                <Form.Item
+                  label="Palavra-passe:"
+                  name="password"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Por favor introduza a sua palavra-chave!',
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password />
+                </Form.Item>
+                <Form.Item
+                  label="Confirmar Palavra-passe:"
+                  name="confirmPassword"
+                  dependencies={['password']}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Por favor introduza a sua palavra-chave!',
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue('password') === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error(
+                            'As duas palavras-passe que introduziu não coincidem!'
+                          )
+                        );
+                      },
+                    }),
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password />
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    className="btnLogin"
+                    type="primary"
+                    block
+                    htmlType="submit"
+                  >
+                    Alterar senha
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Col>
+          </Row>
         </TabPane>
-        <TabPane tab="Card Tab 3" key="3">
+        {/* <TabPane tab="Card Tab 3" key="3">
           Content of card tab 3
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </ModalContainer>
   );

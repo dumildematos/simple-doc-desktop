@@ -14,11 +14,14 @@ import {
   Select,
 } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { MessageShow } from 'renderer/utils/messages/Messages';
-import { onUpdateUserService } from 'renderer/services/UserService';
+import {
+  onGetUserActivityService,
+  onUpdateUserService,
+} from 'renderer/services/UserService';
 import IntroduceRow from './components/IntroduceRow';
 import countries from '../../utils/countries.json';
 import phonePrefxes from '../../utils/prefixes.json';
@@ -94,6 +97,44 @@ const Profile = (props: any) => {
   const [formAvatar] = Form.useForm();
   const [bannerInput, setBannerInput] = useState([]);
 
+  const onSucessGetActivity = (data: any) => {
+    if (data && data.status === 200) {
+      // setTableLIstTeam(
+      //   data?.data?.content.map((team) => {
+      //     return {
+      //       id: team.id,
+      //       key: team.id,
+      //       title: team.name,
+      //       members: team.contributors.length,
+      //       desc: team.description,
+      //       type: team.type === 'PRIVATE' ? <FaLock /> : <FaGlobeAfrica />,
+      //       docs: team.documents.length,
+      //     };
+      //   })
+      // );
+      console.log(data);
+    } else {
+      RequestAlert(
+        props.t('comum.there_was_a_problem_with_the_request'),
+        props.t('comum.click_okay_to_fix')
+      );
+    }
+  };
+  const onErrorGetActivity = (error: any) => {
+    RequestAlert(
+      props.t('comum.there_was_a_problem_with_the_request'),
+      props.t('comum.click_okay_to_fix')
+    );
+  };
+
+  const { data: userActivityInfo, refetch: refetchUserActivity } =
+    onGetUserActivityService(onSucessGetActivity, onErrorGetActivity);
+
+  useEffect(() => {
+    refetchUserActivity();
+    return;
+  }, []);
+
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -140,16 +181,15 @@ const Profile = (props: any) => {
       MessageShow('success', 'criado com sucesso');
       localStorage.setItem('user', JSON.stringify(data.data));
 
-      if(formUpdateInfo) {
+      if (formUpdateInfo) {
         formUpdateInfo.resetFields();
       }
-      if(formAvatar) {
+      if (formAvatar) {
         formAvatar.resetFields();
       }
 
-      setIsModalVisible(false)
-      setIsModalVisibleAvatar(false)
-
+      setIsModalVisible(false);
+      setIsModalVisibleAvatar(false);
     } else {
       MessageShow('warning', data.data.message);
     }
@@ -270,7 +310,9 @@ const Profile = (props: any) => {
           </Card>
         </Col>
         <Col lg={17} md={24}>
-          <IntroduceRow />
+          {userActivityInfo && userActivityInfo.data && (
+            <IntroduceRow activity={userActivityInfo.data} t={props.t} />
+          )}
         </Col>
       </Row>
       <ModalLayout
@@ -400,7 +442,7 @@ const Profile = (props: any) => {
       <ModalLayout
         theme={props.theme}
         visible={isModalVisibleAvatar}
-        title={props.t('comum.edit_user_pictur')}
+        title={props.t('comum.edit_user_picture')}
         okText={props.t('comum.update')}
         cancelText={props.t('comum.cancel')}
         onCancel={onCancelAvatar}
@@ -426,27 +468,30 @@ const Profile = (props: any) => {
             modifier: 'public',
           }}
         >
-          <Form.Item
-            name="banner"
-            label={props.t('home.modal_create_team.image_cover')}
-            rules={[
-              {
-                required: !(bannerInput.length > 0),
-                message: props.t('home.modal_create_team.required_field'),
-              },
-            ]}
-          >
-            <ImgCrop rotate>
-              <Upload
-                listType="picture-card"
-                fileList={bannerInput}
-                onChange={onChangeBanner}
-                onPreview={onPreviewBannerImage}
+          <Row justify="center">
+            <Col>
+              <Form.Item
+                name="banner"
+                rules={[
+                  {
+                    required: !(bannerInput.length > 0),
+                    message: props.t('home.modal_create_team.required_field'),
+                  },
+                ]}
               >
-                {bannerInput.length < 1 && '+ Upload'}
-              </Upload>
-            </ImgCrop>
-          </Form.Item>
+                <ImgCrop rotate>
+                  <Upload
+                    listType="picture-card"
+                    fileList={bannerInput}
+                    onChange={onChangeBanner}
+                    onPreview={onPreviewBannerImage}
+                  >
+                    {bannerInput.length < 1 && '+ Upload'}
+                  </Upload>
+                </ImgCrop>
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </ModalLayout>
     </MainContainer>

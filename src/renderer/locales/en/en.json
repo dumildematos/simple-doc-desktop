@@ -36,12 +36,18 @@
     "settings": {
       "setting": "Settings",
       "general": "Gerenal",
+      "security": "Security",
       "theme": {
         "title": "Theme",
         "light": "Ligth",
         "dark": "Dark"
       }
     }
+  },
+  "language": {
+    "title": "Languages",
+    "english": "English",
+    "portuguese": "Portuguese"
   },
   "comum": {
     "description": "Description",
@@ -96,6 +102,11 @@
     "edit_user_information": "Edit user information",
     "edit_user_picture": "Edit user Picture",
     "first_name": "First Name ",
-    "last_name": "Last Name"
+    "last_name": "Last Name",
+    "purchases": "Purchases",
+    "teams": "Teams",
+    "total_template_prices": "Total price of templates obtained",
+    "total_created_teams": "Total number of teams created",
+    "total_created_documents": "Total documents created"
   }
 }

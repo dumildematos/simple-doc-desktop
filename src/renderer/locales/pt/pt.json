@@ -23,6 +23,7 @@
     "settings": {
       "setting": "Definições",
       "general": "Geral",
+      "security": "Segurança",
       "theme": {
         "title": "Tema",
         "light": "Claro",
@@ -32,6 +33,11 @@
         "title": "Aplicação"
       }
     }
+  },
+  "language": {
+    "title": "Idiomas",
+    "english": "Inglês",
+    "portuguese": "Português"
   },
   "comum": {
     "description": "Descrição",
@@ -86,7 +92,12 @@
     "edit_user_information": "Editar dados do Utilizador",
     "edit_user_picture": "Editar foto do Utilizador",
     "first_name": "Primeiro Nome ",
-    "last_name": "Sobrenome"
+    "last_name": "Sobrenome",
+    "purchases": "Aquisções",
+    "teams": "Equipes",
+    "total_template_prices": "Preço total de templates obtido",
+    "total_created_teams": "Total de equipes criadas",
+    "total_created_documents": "Total de documentos criados"
 
   }
 }

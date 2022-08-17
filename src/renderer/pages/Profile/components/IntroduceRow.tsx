@@ -12,21 +12,21 @@ const topColResponsiveProps = {
   style: { marginBottom: 24 },
 };
 
-export default function IntroduceRow() {
+export default function IntroduceRow({ activity , t }) {
   return (
     <>
       <Row gutter={24}>
         <Col {...topColResponsiveProps}>
           <ChartCard
             bordered={false}
-            title="Compras"
+            title={t('comum.purchases')}
             action={
-              <Tooltip title="指标说明">
+              <Tooltip title={t('comum.total_template_prices')}>
                 <InfoCircleOutlined />
               </Tooltip>
             }
             // loading={loading}
-            total={() => <Yuan>0</Yuan>}
+            total={() => <Yuan>{activity.totalTemplatePrice}</Yuan>}
             // footer={<Field label="日销售额" value={`￥${numeral(12423).format('0,0')}`} />}
             contentHeight={46}
           >
@@ -43,14 +43,14 @@ export default function IntroduceRow() {
         <Col {...topColResponsiveProps}>
           <ChartCard
             bordered={false}
-            title="Equipes"
+            title={t('comum.teams')}
             action={
-              <Tooltip title="指标说明">
+              <Tooltip title={t('comum.total_created_teams')}>
                 <InfoCircleOutlined />
               </Tooltip>
             }
             // loading={loading}
-            total={() => <p>126560</p>}
+            total={() => <p>{activity.totalOfTeams}</p>}
             // footer={<Field label="日销售额" value={`￥${numeral(12423).format('0,0')}`} />}
             contentHeight={46}
           >
@@ -67,14 +67,14 @@ export default function IntroduceRow() {
         <Col {...topColResponsiveProps}>
           <ChartCard
             bordered={false}
-            title="总销售额"
+            title={t('comum.documents')}
             action={
-              <Tooltip title="指标说明">
+              <Tooltip title={t('comum.total_created_documents')}>
                 <InfoCircleOutlined />
               </Tooltip>
             }
             // loading={loading}
-            total={() => <p>126560</p>}
+            total={() => <p>{activity.totalOfDocuments}</p>}
             // footer={<Field label="日销售额" value={`￥${numeral(12423).format('0,0')}`} />}
             contentHeight={46}
           >
