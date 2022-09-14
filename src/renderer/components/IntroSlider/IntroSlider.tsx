@@ -18,7 +18,7 @@ export default function IntroSlider() {
             temos algumas ferramentas internas distribuidas de uma forma que a
             experiência do usuario seja única.
           </p>
-          <Image src={folder1} width="200" />
+          <img src={folder1} alt="" width="200" />
         </div>
         <div>
           <h3>Colaborariva</h3>
@@ -29,7 +29,7 @@ export default function IntroSlider() {
             um procedimento fácil e de facil acompanhamento para equipes de
             trabalho.
           </p>
-          <Image src={folder2} width="200" />
+          <img src={folder2} alt="" width="200" />
         </div>
         <div>
           <h3>Facilidade</h3>
@@ -39,7 +39,7 @@ export default function IntroSlider() {
             escria bem intuitiva. Os plugins disponibilidados são gratuitoe
             poderá criar gráficos e modelos de dados na plataforma.
           </p>
-          <Image src={folder3} width="200" />
+          <img src={folder3} alt="" width="200" />
         </div>
         <div>
           <h3>Produtividade</h3>
@@ -49,7 +49,7 @@ export default function IntroSlider() {
             de uma equipe de forma expoenencial por isso a Plataforma traz para
             ti esta facilidade.
           </p>
-          <Image src={folder4} width="200" />
+          <img src={folder4} alt="" width="200" />
         </div>
       </Carousel>
     </>

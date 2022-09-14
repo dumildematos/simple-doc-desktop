@@ -34,14 +34,14 @@ export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackBut
   }
 
   useEffect(() => {
-    window.addEventListener("storage", () => {
+    window.addEventListener("storage", (e) => {
       // When storage changes refetch
-      refetch();
+      console.log(e);
     });
 
     return () => {
       // When the component unmounts remove the event listener
-      window.removeEventListener("storage");
+      window.removeEventListener("storage", ()=>{});
     };
 }, []);
 
@@ -140,7 +140,7 @@ export default function Sidemenu({ collapse , t, setTheme, theme, setShowBackBut
           <Menu.Item key="1" icon={<TeamOutlined />}>
             <Link to="/"> {t('home.side_menu.my_teams')}</Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<UserSwitchOutlined />}>
+          <Menu.Item key="2" icon={<UserSwitchOutlined />} >
             <Link to="/invited-teams">{t('home.side_menu.inited_teams')}</Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<SearchOutlined />}>

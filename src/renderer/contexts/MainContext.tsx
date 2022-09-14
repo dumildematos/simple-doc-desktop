@@ -88,14 +88,14 @@ export function MainContextProvider({ children }: Node) {
   ]);
 
   useEffect(() => {
-    window.addEventListener('storage', () => {
+    window.addEventListener('storage', (e) => {
       // When storage changes refetch
-      refetch();
+      console.log(e);
     });
 
     return () => {
       // When the component unmounts remove the event listener
-      window.removeEventListener('storage');
+      window.removeEventListener('storage', () => {});
     };
   }, []);
 

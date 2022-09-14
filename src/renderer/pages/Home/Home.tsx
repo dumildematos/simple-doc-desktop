@@ -39,6 +39,9 @@ export default function Home({ theme, setTheme }) {
   const [showBackButton, setShowBackButton] = useState(true);
   const [localUser, setLocalUser] = useState(localStorage.getItem('user'))
 
+  const location = useLocation();
+
+
 
   if(!localtoken){
     console.log('No access')
@@ -51,7 +54,21 @@ export default function Home({ theme, setTheme }) {
       history.push('/login')
       return;
     }
-  }, [])
+
+    window.addEventListener('storage', (e) => {
+      // When storage changes refetch
+      console.log(e)
+      // refetch();
+    });
+
+    return () => {
+      // When the component unmounts remove the event listener
+      window.removeEventListener('storage', ()=>{});
+    };
+  }, [location])
+  console.log(location.pathname)
+
+
 
 
   const {
@@ -75,6 +92,10 @@ export default function Home({ theme, setTheme }) {
       collapsed: !collapse.collapsed,
     });
   };
+
+  const navigateToGroup = (id: any) => {
+
+  }
 
   return (
     <>
@@ -123,17 +144,16 @@ export default function Home({ theme, setTheme }) {
                             title={backButton.title}
                             subTitle={backButton.subtitle}
                             onBack={() => {
-                              // window.history.back();
-                              // defineBackButton({
-                              //   state: false,
-                              //   title: '',
-                              //   subtitle: '',
-                              //   prevPath: '/'
-                              // });
-                              defineRoutedState(false);
-                              definedEditorIsOpened(false);
+
                               console.log(backButton.prevPath)
-                              history.push(backButton.prevPath);
+                              if(document.location.pathname.includes('/page-doc/')){
+                                let groupID = Number(backButton.prevPath.split("/")[2]);
+                                // history.push(`/group/${groupID}`);
+                                history.goBack()
+                                // navigate(-1)
+                              }else {
+                                history.push(backButton.prevPath);
+                              }
                             }}
                           />
                       )
