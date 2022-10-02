@@ -10,6 +10,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Menu } from 'antd';
 import { saveAs } from 'file-saver';
 import { pdfExporter } from 'quill-to-pdf';
+import * as quillToWord from "quill-to-word";
 
 Quill.register('modules/cursors', QuillCursors);
 
@@ -349,6 +350,12 @@ export default function QuillEditor({ id, t }) {
     }
     if (e.key === 'toDoc') {
       console.log('word');
+      const delta = quill.getContents();
+      const quillToWordConfig = {
+          exportAs: 'blob'
+      };
+      const docAsBlob = await quillToWord.generateWord(delta, quillToWordConfig);
+      saveAs(docAsBlob, `${documentOnWork.name}.docx`);
     }
   };
 
