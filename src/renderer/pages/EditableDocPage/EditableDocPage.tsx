@@ -55,7 +55,7 @@ const EditorContainer = styled.div`
   margin: 0;
   .addContributorBtn {
     position: fixed;
-    top: 0.7em;
+    top: 1em;
     right: 5rem;
     z-index: 1;
     width: 24px;
@@ -262,7 +262,7 @@ export default function EditableDocPage({ theme , t }) {
     setDraggableToolModal({ visible: true , type:type})
   }
 
-  
+
 
  const handleCancelToolsModal = e => {
     setDraggableToolModal({
@@ -305,9 +305,9 @@ export default function EditableDocPage({ theme , t }) {
           )}
 
 
-          
 
-          <QuillEditor id={documentId} />
+
+          <QuillEditor id={documentId} t={t} />
 
           <Modal
             title={t('comum.add_contributor')}

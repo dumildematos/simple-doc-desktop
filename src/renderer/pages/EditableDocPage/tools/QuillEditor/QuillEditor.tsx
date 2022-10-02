@@ -9,7 +9,7 @@ import QuillCursors from 'quill-cursors';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Menu } from 'antd';
 import { saveAs } from 'file-saver';
-// import { pdfExporter } from 'quill-to-pdf';
+import { pdfExporter } from 'quill-to-pdf';
 
 Quill.register('modules/cursors', QuillCursors);
 
@@ -102,7 +102,8 @@ const TOOLBAR_OPTIONS = [
 ];
 const SAVE_INTERVAL_MS = 2000;
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-export default function QuillEditor({ id }) {
+
+export default function QuillEditor({ id, t }) {
   const { isRouted, team, documentOnWork } = useContext(MainContext);
   const documentId = id;
   const [socket, setSocket] = useState();
@@ -118,8 +119,9 @@ export default function QuillEditor({ id }) {
   const currentContrinutor = isContributor(documentOnWork.contributors);
 
   useEffect(() => {
-    // const s = io('https://simpledoc-api-node.herokuapp.com:3231');
-    const s = io('http://localhost:3231');
+    const s = io('https://simpledoc-api-node.herokuapp.com');
+    // https://simpledoc-api-node.herokuapp.com:3232
+    // const s = io('http://localhost:3232');
     setSocket(s);
 
     return () => {
@@ -339,12 +341,14 @@ export default function QuillEditor({ id }) {
     };
   }
 
-  const userMenuOption = (e: any) => {
+  async function userMenuOption (e: any) {
     if (e.key === 'toPdf') {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      // fileExporter();
+      const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents());
+      saveAs(pdfAsBlob, `${documentOnWork.name}.pdf`);
     }
     if (e.key === 'toDoc') {
+      console.log('word');
     }
   };
 
@@ -353,16 +357,8 @@ export default function QuillEditor({ id }) {
   // }
 
   const exportMenu = (
-    <Menu>
-      <Menu.Item
-        key="toPdf"
-        onClick={async () => {
-          // const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents());
-        }}
-      >
-        {' '}
-        PDF{' '}
-      </Menu.Item>
+    <Menu onClick={userMenuOption}>
+      <Menu.Item key="toPdf"> PDF </Menu.Item>
       <Menu.Item key="toDoc"> Word </Menu.Item>
     </Menu>
   );
@@ -376,7 +372,7 @@ export default function QuillEditor({ id }) {
       >
         <a onClick={(e) => e.preventDefault()}>
           <Space>
-            Export As
+            {t('comum.export_as')}
             <DownOutlined />
           </Space>
         </a>

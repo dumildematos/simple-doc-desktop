@@ -107,6 +107,7 @@
     "teams": "Teams",
     "total_template_prices": "Total price of templates obtained",
     "total_created_teams": "Total number of teams created",
-    "total_created_documents": "Total documents created"
+    "total_created_documents": "Total documents created",
+    "export_as": "Export As"
   }
 }
