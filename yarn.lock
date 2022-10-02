@@ -1714,6 +1714,11 @@
     "@types/mime" "*"
     "@types/node" "*"
 
+"@types/sockjs-client@^1.5.1":
+  "integrity" "sha512-bmZM6A1GPdjF0bcuIUC+50hZEMGkzMsiG9by6X9U+7IZFOiPtz7MJ9h05FSpPVxlj4i+TzzoG3ESo1FJlbLb6A=="
+  "resolved" "https://registry.npmjs.org/@types/sockjs-client/-/sockjs-client-1.5.1.tgz"
+  "version" "1.5.1"
+
 "@types/sockjs@^0.3.33":
   "integrity" "sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw=="
   "resolved" "https://registry.npmjs.org/@types/sockjs/-/sockjs-0.3.33.tgz"
@@ -10936,7 +10941,7 @@
     "@socket.io/component-emitter" "~3.0.0"
     "debug" "~4.3.1"
 
-"sockjs-client@^1.4.0", "sockjs-client@^1.6.0":
+"sockjs-client@^1.4.0", "sockjs-client@^1.5.1":
   "integrity" "sha512-2g0tjOR+fRs0amxENLi/q5TiJTqY+WXFOzb5UwXndlK6TO3U/mirZznpx6w34HVMoc3g7cY24yC/ZMIYnDlfkw=="
   "resolved" "https://registry.npmjs.org/sockjs-client/-/sockjs-client-1.6.1.tgz"
   "version" "1.6.1"
