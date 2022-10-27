@@ -53,6 +53,9 @@ a {
   width: fit-content;
   margin: 10px;
 }
+.a-disabled {
+  pointer-events: none;
+}
 #root {
   overflow: hidden;
 }

@@ -451,7 +451,7 @@ export default function EditableDocPage({ theme , t }) {
                     <Skeleton avatar title={false} loading={false} active>
                       <List.Item.Meta
                         avatar={<Avatar shape="square" size={64} src={item.avatar} />}
-                        title={<a href="https://ant.design">{item.title}</a>}
+                        title={<a onClick={(e => e.preventDefault())}>{item.title}</a>}
                         description={item.desc}
                       />
                     </Skeleton>
