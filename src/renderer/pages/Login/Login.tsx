@@ -15,6 +15,7 @@ import { FaLinkedinIn } from '@react-icons/all-files/fa/FaLinkedinIn';
 import { FaFacebookF } from '@react-icons/all-files/fa/FaFacebookF';
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   getUserDataService,
   UserLoginService,
@@ -161,6 +162,7 @@ const Login = (props: any) => {
   const [form] = Form.useForm();
 
   const history = useHistory();
+  //const { t, i18n } = useTranslation();
 
   const {
     defineRoutedState,
@@ -173,6 +175,7 @@ const Login = (props: any) => {
     defineDocSideBar,
   } = useContext(MainContext);
   const [isLoginError, setIsLoginError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const hasAcessToken = localStorage.getItem('access_token');
 
   const goToLogin = () => {
@@ -227,7 +230,9 @@ const Login = (props: any) => {
       setIsLoginError(false);
     } else {
       setIsLoginError(true);
-      MessageShow('error', 'Action in progress');
+      console.log(data.data.message);
+      setErrorMessage(data.data.message)
+      MessageShow('error', data.data.message);
     }
   };
 
@@ -249,7 +254,7 @@ const Login = (props: any) => {
   );
 
   if (isLoading) {
-    MessageShow('loading', 'Action in progress');
+    MessageShow('loading', '');
     console.log('isLoading...');
     // if(!data){
     //   MessageShow('error','Action in progress');
@@ -359,8 +364,8 @@ const Login = (props: any) => {
                       <Col span={16}>
                         {isLoginError && (
                           <Alert
-                            message="Error"
-                            description="This is an error message about copywriting."
+                            message="Erro"
+                            description={errorMessage}
                             type="error"
                             showIcon
                           />

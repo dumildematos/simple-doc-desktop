@@ -421,7 +421,7 @@ const Profile = (props: any) => {
                 margin: '0 8px',
               }}
             >
-              <DatePicker style={{ width: '100%' }} format={dateFormat} />
+              <DatePicker style={{ width: '100%' }} format={dateFormat} disabledDate={d => !d || d.isAfter("2005-12-31") || d.isSameOrBefore("1960-01-01") }/>
             </Form.Item>
             <Form.Item
               name="phoneNumber"

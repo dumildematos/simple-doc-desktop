@@ -98,7 +98,8 @@
     "total_template_prices": "Preço total de templates obtido",
     "total_created_teams": "Total de equipes criadas",
     "total_created_documents": "Total de documentos criados",
-    "export_as": "Exportar Como"
+    "export_as": "Exportar Como",
+    "loading":"A carregar..."
 
   }
 }
