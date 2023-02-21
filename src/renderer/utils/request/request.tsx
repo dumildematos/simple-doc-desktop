@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const springBootClient = axios.create({
-  baseURL: "https://web-production-d10f.up.railway.app/api", //'http://localhost:8080/api', // 'https://simpledoc-io.herokuapp.com/api',
+  baseURL: "https://simpledoc-web-api.onrender.com/api", //'http://localhost:8080/api', // 'https://simpledoc-io.herokuapp.com/api',
 });
 const mongoClient = axios.create({
   baseURL: "https://web-production-fd1f.up.railway.app/" , //'https://localhost:8002', // 'https://simpledoc-node-api.herokuapp.com',
