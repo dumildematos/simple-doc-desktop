@@ -218,7 +218,7 @@ const Profile = (props: any) => {
       birthday: String(moment(values.birthday).format(dateFormat)),
       password: null,
       country: values.country,
-      phonenumber: `${values.prefix}-${values.phoneNumber}`,
+      phonenumber: `${values.prefix ? values.prefix : '+244'}-${values.phoneNumber}`,
       role: 'ROLE_USER',
     };
     onEditUser(userToSend);

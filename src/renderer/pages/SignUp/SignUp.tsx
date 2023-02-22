@@ -246,7 +246,7 @@ const SignUp = () => {
     const registUserForm: UserRegistrationModel = {
       username: values.username,
       password: values.password,
-      phonenumber: `${values.prefix}-${values.phoneNumber}`,
+      phonenumber: `${values.prefix ? values.prefix : '+244'}-${values.phoneNumber}`,
       firstname: values.firstName,
       lastname: values.lastName,
       country: values.country,
