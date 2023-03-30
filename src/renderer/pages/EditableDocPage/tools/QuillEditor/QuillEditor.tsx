@@ -120,7 +120,7 @@ export default function QuillEditor({ id, t }) {
   const currentContrinutor = isContributor(documentOnWork.contributors);
 
   useEffect(() => {
-    const s = io('https://web-production-fd1f.up.railway.app');
+    const s = io('http://localhost:8003');
     // https://simpledoc-api-node.herokuapp.com:3232
     // const s = io('http://localhost:8002');
     setSocket(s);
@@ -346,6 +346,7 @@ export default function QuillEditor({ id, t }) {
     if (e.key === 'toPdf') {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const pdfAsBlob = await pdfExporter.generatePdf(quill.getContents());
+      console.log(pdfAsBlob);
       saveAs(pdfAsBlob, `${documentOnWork.name}.pdf`);
     }
     if (e.key === 'toDoc') {
@@ -366,7 +367,7 @@ export default function QuillEditor({ id, t }) {
   const exportMenu = (
     <Menu onClick={userMenuOption}>
       <Menu.Item key="toPdf"> PDF </Menu.Item>
-      <Menu.Item key="toDoc"> Word </Menu.Item>
+      <Menu.Item key="toDoc" disabled={true}> Word </Menu.Item>
     </Menu>
   );
 

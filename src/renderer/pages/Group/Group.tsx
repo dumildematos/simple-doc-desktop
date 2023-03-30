@@ -298,19 +298,23 @@ export default function Group({ theme, t }) {
     Number(teamId)
   );
 
-  const onCreateDocumentSuccess = async (data: any) => {
+  const onCreateDocumentSuccess =  (data: any) => {
     const docCreated = {
       id: data.data.id,
-      data: data.data.content,
+      data: selectedTemplate[0]?.node?.content,
     };
-    await saveOnMongo(docCreated);
+    console.log(selectedTemplate, docCreated, data)
+    saveOnMongo(docCreated);
+
+    
+
   };
 
   const onCreateDocumentError = () => {
     MessageShow('error', t('comum.an_error_occurred_in_the_operation'));
   };
 
-  const { mutate: createDocument } = onCreateDocument(
+  const { mutate: createNewDocument } = onCreateDocument(
     onCreateDocumentSuccess,
     onCreateDocumentError
   );
@@ -709,8 +713,8 @@ export default function Group({ theme, t }) {
                   ? selectedTemplate.node.key
                   : null,
               };
-              // console.log(form);
-              createDocument(form);
+              console.log(form);
+              createNewDocument(form);
             }}
           >
             {t('comum.create')}

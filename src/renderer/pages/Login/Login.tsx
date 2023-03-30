@@ -184,15 +184,19 @@ const Login = (props: any) => {
 
   const onDetailSuccess = (data: any) => {
     if (data?.status === 200) {
-      defineUser(data.data);
-      localStorage.setItem('user', JSON.stringify(data.data));
-      localStorage.setItem('hasLogin', JSON.stringify(true));
-      localStorage.setItem('loginPath', String(document.location.href));
-      setTimeout(() => {
-        // history.push('/home');
-        // history.push(`${location.pathname}`)
-        document.location.reload();
-      }, 2000);
+      if(data.data.isEnabled){
+        defineUser(data.data);
+        localStorage.setItem('user', JSON.stringify(data.data));
+        localStorage.setItem('hasLogin', JSON.stringify(true));
+        localStorage.setItem('loginPath', String(document.location.href));
+        setTimeout(() => {
+          // history.push('/home');
+          // history.push(`${location.pathname}`)
+          document.location.reload();
+        }, 2000);
+      }else {
+        ///alert("email do unitizador não verificaado!")
+      }
     } else {
       localStorage.clear();
       defineRoutedState(false);
@@ -204,12 +208,10 @@ const Login = (props: any) => {
       defineAcesstoken(undefined);
       defineRefreshtoken(undefined);
       // window.location.href = '/';
-      setTimeout(() => {
-        // history.push('/home');
+      /*setTimeout(() => {
         history.push(`${location.pathname}`);
         window.location.href = window.location.origin;
-        // document.location.reload();
-      }, 2000);
+      }, 2000);*/
       // history.push(`${location.pathname}`);
       // document.location.reload();
       // document.location.replace(document.location.origin);
