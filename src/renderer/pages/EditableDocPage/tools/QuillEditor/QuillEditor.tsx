@@ -120,9 +120,10 @@ export default function QuillEditor({ id, t }) {
   const currentContrinutor = isContributor(documentOnWork.contributors);
 
   useEffect(() => {
-    const s = io('http://localhost:8003');
+    const s = io('https://simpledoc-n2.onrender.com');
     // https://simpledoc-api-node.herokuapp.com:3232
     // const s = io('http://localhost:8002');
+    //  http://localhost:8003
     setSocket(s);
 
     return () => {
