@@ -184,19 +184,17 @@ const Login = (props: any) => {
 
   const onDetailSuccess = (data: any) => {
     if (data?.status === 200) {
-      if(data.data.isEnabled){
-        defineUser(data.data);
-        localStorage.setItem('user', JSON.stringify(data.data));
-        localStorage.setItem('hasLogin', JSON.stringify(true));
-        localStorage.setItem('loginPath', String(document.location.href));
-        setTimeout(() => {
-          // history.push('/home');
-          // history.push(`${location.pathname}`)
-          document.location.reload();
-        }, 2000);
-      }else {
-        ///alert("email do unitizador não verificaado!")
-      }
+
+      defineUser(data.data);
+      localStorage.setItem('user', JSON.stringify(data.data));
+      localStorage.setItem('hasLogin', JSON.stringify(true));
+      localStorage.setItem('loginPath', String(document.location.href));
+      setTimeout(() => {
+        // history.push('/home');
+        // history.push(`${location.pathname}`)
+        document.location.reload();
+      }, 2000);
+
     } else {
       localStorage.clear();
       defineRoutedState(false);
@@ -225,11 +223,16 @@ const Login = (props: any) => {
       const accessToken = data?.data?.access_token;
       const refreshToken = data?.data?.refresh_token;
       if (accessToken && refreshToken) {
-        localStorage.setItem('access_token', accessToken);
-        localStorage.setItem('refresh_token', refreshToken);
-        defineAcesstoken(accessToken);
+        if(data?.data?.user_valid > 0){
+          localStorage.setItem('access_token', accessToken);
+          localStorage.setItem('refresh_token', refreshToken);
+          defineAcesstoken(accessToken);
+          setIsLoginError(false);
+        }else {
+          setIsLoginError(true);
+          setErrorMessage("user not verified");
+        }
       }
-      setIsLoginError(false);
     } else {
       setIsLoginError(true);
       console.log(data.data.message);

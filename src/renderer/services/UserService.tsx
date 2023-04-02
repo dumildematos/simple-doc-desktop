@@ -121,7 +121,7 @@ export const getUserDataService = (
   return useQuery(['detail-user', login], () => getCurrentUser(token), {
     onSuccess: onDetailSuccess,
     onError,
-    enabled: login?.data.status === 200,
+    enabled: login?.data.status === 200 && login?.data.user_valid > 0,
     refetchInterval: 1000,
   });
 };
