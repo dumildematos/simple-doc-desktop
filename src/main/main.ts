@@ -114,7 +114,7 @@ const createWindow = async () => {
     minWidth: 1184,
     minHeight: 713,
     icon: getAssetPath('icon.png'),
-    frame: false,
+    frame: process.platform === 'win32' ? true : false,
     titleBarStyle: 'hidden',
     backgroundColor: '#4c5fe1',
     show: false,
