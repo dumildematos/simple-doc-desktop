@@ -30,7 +30,7 @@
     ]
   },
   "build": {
-    "productName": "SimpleDoc",
+    "productName": "Simple Doc",
     "appId": "org.erb.ElectronReact",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
